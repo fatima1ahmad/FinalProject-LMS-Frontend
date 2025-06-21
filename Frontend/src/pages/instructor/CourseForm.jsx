@@ -30,19 +30,27 @@ import {
 import {
   Add as AddIcon,
   Delete as DeleteIcon,
-  Edit as EditIcon,
   ExpandMore as ExpandMoreIcon,
   VideoFile as VideoIcon,
   Article as ArticleIcon,
   Quiz as QuizIcon,
+  Description as DocumentIcon,
 } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
 import InstructorService from "../../services/instructorService";
 import FileUpload from "../../pages/instructor/FileUpload";
 
+const contentTypes = [
+  { value: "video", label: "Video", accept: "video/*" },
+  { value: "article", label: "Article" },
+  { value: "quiz", label: "Quiz" },
+  { value: "document", label: "Document", accept: ".pdf,.doc,.docx,.txt" },
+];
+
 const CourseForm = ({ initialData }) => {
   const { courseId } = useParams();
   const navigate = useNavigate();
+
   const [courseData, setCourseData] = useState(
     initialData || {
       title: "",
@@ -59,19 +67,21 @@ const CourseForm = ({ initialData }) => {
   const [expandedModule, setExpandedModule] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState({ type: null, id: null });
-
+  const [uploadingFiles, setUploadingFiles] = useState({});
+  const [thumbnailFile, setThumbnailFile] = useState(null);
+  const [thumbnailLoading, setThumbnailLoading] = useState(false);
+  const [videoFiles, setVideoFiles] = useState({});
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [categoriesData, courseDetails] = await Promise.all([
+        const [cats, courseDetails] = await Promise.all([
           InstructorService.getAllCategories(),
-          courseId ? InstructorService.getCourseDetails(courseId) : null,
+          courseId
+            ? InstructorService.getCourseDetails(courseId)
+            : Promise.resolve(null),
         ]);
-
-        setCategories(categoriesData || []);
-
+        setCategories(cats || []);
         if (courseDetails) {
-          // Fetch modules and lessons for existing course
           const modulesWithLessons = await Promise.all(
             courseDetails.modules.map(async (module) => {
               const lessons = await InstructorService.getLessonsByModule(
@@ -80,13 +90,10 @@ const CourseForm = ({ initialData }) => {
               return { ...module, lessons };
             })
           );
-          setCourseData({
-            ...courseDetails,
-            modules: modulesWithLessons,
-          });
+          setCourseData({ ...courseDetails, modules: modulesWithLessons });
         }
-      } catch (error) {
-        console.error("Failed to fetch data", error);
+      } catch (err) {
+        console.error("Failed to fetch data", err);
       }
     };
     fetchData();
@@ -94,29 +101,60 @@ const CourseForm = ({ initialData }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCourseData({
-      ...courseData,
-      [name]: value,
-    });
-    if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: null,
-      });
+    setCourseData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }));
+  };
+
+  const handleThumbnailUpload = async (file) => {
+    setThumbnailFile(file);
+    setThumbnailLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await InstructorService.uploadFile(formData);
+      setCourseData((prev) => ({
+        ...prev,
+        thumbnail_url: response.secure_url,
+      }));
+    } catch (error) {
+      console.error("Error uploading thumbnail:", error);
+    } finally {
+      setThumbnailLoading(false);
     }
   };
-
-  const handleThumbnailUpload = (secureUrl) => {
-    setCourseData((prev) => ({
+  const handleVideoUpload = async (moduleId, lessonId, file) => {
+    setVideoFiles((prev) => ({ ...prev, [`${moduleId}-${lessonId}`]: file }));
+    setUploadingFiles((prev) => ({
       ...prev,
-      thumbnail_url: secureUrl,
+      [`${moduleId}-${lessonId}`]: true,
     }));
-  };
 
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await InstructorService.uploadFile(formData);
+      handleLessonChange(
+        moduleId,
+        lessonId,
+        "content_url",
+        response.secure_url
+      );
+    } catch (error) {
+      console.error("Error uploading video:", error);
+    } finally {
+      setUploadingFiles((prev) => ({
+        ...prev,
+        [`${moduleId}-${lessonId}`]: false,
+      }));
+    }
+  };
   const validateForm = () => {
     const newErrors = {};
-    if (!courseData.title) newErrors.title = "Title is required";
-    if (!courseData.description)
+    if (!courseData.title.trim()) newErrors.title = "Title is required";
+    if (!courseData.description.trim())
       newErrors.description = "Description is required";
     if (!courseData.category_id) newErrors.category_id = "Category is required";
     setErrors(newErrors);
@@ -124,29 +162,112 @@ const CourseForm = ({ initialData }) => {
   };
 
   const handleModuleChange = (moduleId, field, value) => {
-    setCourseData({
-      ...courseData,
-      modules: courseData.modules.map((module) =>
-        module.id === moduleId ? { ...module, [field]: value } : module
+    setCourseData((prev) => ({
+      ...prev,
+      modules: prev.modules.map((mod) =>
+        mod.id === moduleId ? { ...mod, [field]: value } : mod
       ),
-    });
+    }));
   };
 
   const handleLessonChange = (moduleId, lessonId, field, value) => {
-    setCourseData({
-      ...courseData,
-      modules: courseData.modules.map((module) => {
-        if (module.id === moduleId) {
-          return {
-            ...module,
-            lessons: module.lessons.map((lesson) =>
-              lesson.id === lessonId ? { ...lesson, [field]: value } : lesson
-            ),
-          };
-        }
-        return module;
-      }),
-    });
+    setCourseData((prev) => ({
+      ...prev,
+      modules: prev.modules.map((mod) =>
+        mod.id === moduleId
+          ? {
+              ...mod,
+              lessons: mod.lessons.map((lesson) =>
+                lesson.id === lessonId ? { ...lesson, [field]: value } : lesson
+              ),
+            }
+          : mod
+      ),
+    }));
+  };
+
+  // const handleLessonFileUpload = async (moduleId, lessonId, file) => {
+  //   if (!file) return;
+
+  //   setUploadingFiles((prev) => ({
+  //     ...prev,
+  //     [`${moduleId}-${lessonId}`]: true,
+  //   }));
+
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("file", file);
+
+  //     const lesson = courseData.modules
+  //       .find((m) => m.id === moduleId)
+  //       ?.lessons.find((l) => l.id === lessonId);
+
+  //     if (!lesson) return;
+
+  //     const uploadResponse = await InstructorService.uploadFile(formData);
+
+  //     handleLessonChange(
+  //       moduleId,
+  //       lessonId,
+  //       "content_url",
+  //       uploadResponse.secure_url
+  //     );
+  //   } catch (error) {
+  //     console.error("File upload error:", error);
+  //     // You might want to set an error state here to show to the user
+  //   } finally {
+  //     setUploadingFiles((prev) => ({
+  //       ...prev,
+  //       [`${moduleId}-${lessonId}`]: false,
+  //     }));
+  //   }
+  // };
+  const handleLessonFileUpload = async (moduleId, lessonId, file) => {
+    if (!file) return;
+
+    setUploadingFiles((prev) => ({
+      ...prev,
+      [`${moduleId}-${lessonId}`]: true,
+    }));
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const uploadResponse = await InstructorService.uploadFile(formData);
+      const videoUrl = uploadResponse.secure_url;
+
+      // حدّث الفيديو في state
+      handleLessonChange(moduleId, lessonId, "content_url", videoUrl);
+
+      // بناء بيانات الدرس (تعديل حسب الحقول اللي عندك)
+      const lesson = courseData.modules
+        .find((m) => m.id === moduleId)
+        ?.lessons.find((l) => l.id === lessonId);
+
+      if (!lesson) throw new Error("Lesson not found");
+
+      // هنا ضف رابط الفيديو لبيانات الدرس
+      const lessonData = {
+        ...lesson,
+        content_url: videoUrl,
+        module_id: moduleId,
+        duration: Number(lesson.duration),
+        order: Number(lesson.order),
+      };
+
+      // أنشئ الدرس مع البيانات الجديدة
+      await InstructorService.createLesson(lessonData);
+
+      // ممكن تضيف أي تحديث إضافي بعد الإنشاء
+    } catch (error) {
+      console.error("File upload or lesson creation error:", error);
+    } finally {
+      setUploadingFiles((prev) => ({
+        ...prev,
+        [`${moduleId}-${lessonId}`]: false,
+      }));
+    }
   };
 
   const addNewModule = () => {
@@ -158,36 +279,31 @@ const CourseForm = ({ initialData }) => {
       duration: 1,
       lessons: [],
     };
-    setCourseData({
-      ...courseData,
-      modules: [...courseData.modules, newModule],
-    });
+    setCourseData((prev) => ({
+      ...prev,
+      modules: [...prev.modules, newModule],
+    }));
     setExpandedModule(newModule.id);
   };
 
   const addNewLesson = (moduleId) => {
-    setCourseData({
-      ...courseData,
-      modules: courseData.modules.map((module) => {
-        if (module.id === moduleId) {
-          return {
-            ...module,
-            lessons: [
-              ...module.lessons,
-              {
-                id: `temp-${Date.now()}`,
-                title: "New Lesson",
-                content_type: "video",
-                content_url: "",
-                duration: 10,
-                order: module.lessons.length + 1,
-              },
-            ],
-          };
-        }
-        return module;
-      }),
-    });
+    const module = courseData.modules.find((m) => m.id === moduleId);
+    const newLesson = {
+      id: `temp-${Date.now()}`,
+      title: "New Lesson",
+      content_type: "video",
+      content_url: "",
+      duration: 10,
+      order: module.lessons.length + 1,
+    };
+    setCourseData((prev) => ({
+      ...prev,
+      modules: prev.modules.map((mod) =>
+        mod.id === moduleId
+          ? { ...mod, lessons: [...mod.lessons, newLesson] }
+          : mod
+      ),
+    }));
   };
 
   const confirmDelete = (type, id) => {
@@ -198,20 +314,130 @@ const CourseForm = ({ initialData }) => {
   const handleDelete = () => {
     const { type, id } = itemToDelete;
     if (type === "module") {
-      setCourseData({
-        ...courseData,
-        modules: courseData.modules.filter((module) => module.id !== id),
-      });
+      setCourseData((prev) => ({
+        ...prev,
+        modules: prev.modules.filter((mod) => mod.id !== id),
+      }));
     } else if (type === "lesson") {
-      setCourseData({
-        ...courseData,
-        modules: courseData.modules.map((module) => ({
-          ...module,
-          lessons: module.lessons.filter((lesson) => lesson.id !== id),
+      setCourseData((prev) => ({
+        ...prev,
+        modules: prev.modules.map((mod) => ({
+          ...mod,
+          lessons: mod.lessons.filter((les) => les.id !== id),
         })),
-      });
+      }));
     }
     setDeleteDialogOpen(false);
+  };
+  const getLessonIcon = (type) => {
+    switch (type) {
+      case "video":
+        return <VideoIcon />;
+      case "article":
+        return <ArticleIcon />;
+      case "quiz":
+        return <QuizIcon />;
+      case "document":
+        return <DocumentIcon />;
+      default:
+        return <ArticleIcon />;
+    }
+  };
+  const renderLessonContentField = (moduleId, lesson) => {
+    const isUploading = uploadingFiles[`${moduleId}-${lesson.id}`];
+
+    switch (lesson.content_type) {
+      case "video":
+        return (
+          <Box sx={{ mt: 1 }}>
+            <FileUpload
+              accept="video/*"
+              label="Upload Video"
+              onFileUpload={(file) =>
+                handleVideoUpload(moduleId, lesson.id, file)
+              }
+              disabled={loading || isUploading}
+              currentFileUrl={lesson.content_url}
+              fileType="video"
+            />
+            {lesson.content_url && (
+              <Box mt={2}>
+                <video
+                  controls
+                  src={lesson.content_url}
+                  style={{ maxWidth: "100%", maxHeight: 200 }}
+                />
+              </Box>
+            )}
+          </Box>
+        );
+      case "document":
+        return (
+          <Box sx={{ mt: 1 }}>
+            <FileUpload
+              accept=".pdf,.doc,.docx,.txt"
+              label="Upload Document"
+              onFileUpload={(file) => {
+                const formData = new FormData();
+                formData.append("file", file);
+                InstructorService.uploadFile(formData).then((response) => {
+                  handleLessonChange(
+                    moduleId,
+                    lesson.id,
+                    "content_url",
+                    response.secure_url
+                  );
+                });
+              }}
+              disabled={loading || isUploading}
+              currentFileUrl={lesson.content_url}
+            />
+            {lesson.content_url && (
+              <Box mt={2}>
+                <Button
+                  variant="outlined"
+                  component="a"
+                  href={lesson.content_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  startIcon={<DescriptionIcon />}
+                >
+                  View Document
+                </Button>
+              </Box>
+            )}
+          </Box>
+        );
+      case "article":
+        return (
+          <TextField
+            fullWidth
+            label="Article Content"
+            value={lesson.content_url}
+            onChange={(e) =>
+              handleLessonChange(
+                moduleId,
+                lesson.id,
+                "content_url",
+                e.target.value
+              )
+            }
+            multiline
+            rows={4}
+            size="small"
+            sx={{ mt: 1 }}
+            disabled={loading}
+          />
+        );
+      case "quiz":
+        return (
+          <Typography variant="body2" color="textSecondary">
+            Quiz content will be configured separately
+          </Typography>
+        );
+      default:
+        return null;
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -219,23 +445,17 @@ const CourseForm = ({ initialData }) => {
     if (!validateForm()) return;
 
     setLoading(true);
-    try {
-      let response;
-      if (courseId) {
-        // Update existing course
-        response = await InstructorService.updateCourse(courseId, courseData);
 
-        // Process modules and lessons updates
+    try {
+      if (courseId) {
+        await InstructorService.updateCourse(courseId, courseData);
+
         await Promise.all(
           courseData.modules.map(async (module) => {
-            // 🔴 عدلي هذا السطر
             if (
               typeof module.id === "string" &&
               module.id.startsWith("temp-")
             ) {
-              // Create new module
-
-              // Create new module
               const newModule = await InstructorService.createModule(courseId, {
                 title: module.title,
                 description: module.description,
@@ -243,21 +463,20 @@ const CourseForm = ({ initialData }) => {
                 duration: module.duration,
               });
 
-              // Create lessons for new module
               await Promise.all(
-                module.lessons.map((lesson) =>
-                  InstructorService.createLesson({
+                module.lessons.map((lesson) => {
+                  const lessonData = {
                     module_id: newModule.id,
                     title: lesson.title,
                     content_type: lesson.content_type,
                     content_url: lesson.content_url,
-                    duration: lesson.duration,
-                    order: lesson.order,
-                  })
-                )
+                    duration: Number(lesson.duration),
+                    order: Number(lesson.order),
+                  };
+                  return InstructorService.createLesson(lessonData);
+                })
               );
             } else {
-              // Update existing module
               await InstructorService.updateModule(module.id, {
                 title: module.title,
                 description: module.description,
@@ -265,32 +484,26 @@ const CourseForm = ({ initialData }) => {
                 duration: module.duration,
               });
 
-              // Process lessons updates
               await Promise.all(
                 module.lessons.map(async (lesson) => {
+                  const lessonData = {
+                    title: lesson.title,
+                    content_type: lesson.content_type,
+                    content_url: lesson.content_url,
+                    duration: Number(lesson.duration),
+                    order: Number(lesson.order),
+                  };
+
                   if (
                     typeof lesson.id === "string" &&
                     lesson.id.startsWith("temp-")
                   ) {
-                    // create
-                    // Create new lesson
                     await InstructorService.createLesson({
+                      ...lessonData,
                       module_id: module.id,
-                      title: lesson.title,
-                      content_type: lesson.content_type,
-                      content_url: lesson.content_url,
-                      duration: lesson.duration,
-                      order: lesson.order,
                     });
                   } else {
-                    // Update existing lesson
-                    await InstructorService.updateLesson(lesson.id, {
-                      title: lesson.title,
-                      content_type: lesson.content_type,
-                      content_url: lesson.content_url,
-                      duration: lesson.duration,
-                      order: lesson.order,
-                    });
+                    await InstructorService.updateLesson(lesson.id, lessonData);
                   }
                 })
               );
@@ -298,8 +511,7 @@ const CourseForm = ({ initialData }) => {
           })
         );
       } else {
-        // Create new course
-        response = await InstructorService.createCourse({
+        const response = await InstructorService.createCourse({
           title: courseData.title,
           description: courseData.description,
           category_id: courseData.category_id,
@@ -309,7 +521,6 @@ const CourseForm = ({ initialData }) => {
 
         const newCourseId = response.course.id;
 
-        // Create modules and lessons for new course
         await Promise.all(
           courseData.modules.map(async (module) => {
             const newModule = await InstructorService.createModule(
@@ -323,16 +534,17 @@ const CourseForm = ({ initialData }) => {
             );
 
             await Promise.all(
-              module.lessons.map((lesson) =>
-                InstructorService.createLesson({
+              module.lessons.map((lesson) => {
+                const lessonData = {
                   module_id: newModule.id,
                   title: lesson.title,
                   content_type: lesson.content_type,
                   content_url: lesson.content_url,
-                  duration: lesson.duration,
-                  order: lesson.order,
-                })
-              )
+                  duration: Number(lesson.duration),
+                  order: Number(lesson.order),
+                };
+                return InstructorService.createLesson(lessonData);
+              })
             );
           })
         );
@@ -346,19 +558,6 @@ const CourseForm = ({ initialData }) => {
     }
   };
 
-  const getLessonIcon = (type) => {
-    switch (type) {
-      case "video":
-        return <VideoIcon />;
-      case "article":
-        return <ArticleIcon />;
-      case "quiz":
-        return <QuizIcon />;
-      default:
-        return <ArticleIcon />;
-    }
-  };
-
   return (
     <Paper sx={{ p: 4 }}>
       <Typography variant="h5" gutterBottom>
@@ -368,6 +567,7 @@ const CourseForm = ({ initialData }) => {
 
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
+          {/* Title */}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -378,9 +578,11 @@ const CourseForm = ({ initialData }) => {
               error={!!errors.title}
               helperText={errors.title}
               required
+              disabled={loading}
             />
           </Grid>
 
+          {/* Description */}
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -393,11 +595,17 @@ const CourseForm = ({ initialData }) => {
               error={!!errors.description}
               helperText={errors.description}
               required
+              disabled={loading}
             />
           </Grid>
 
+          {/* Category */}
           <Grid item xs={12} md={6}>
-            <FormControl fullWidth error={!!errors.category_id}>
+            <FormControl
+              fullWidth
+              error={!!errors.category_id}
+              disabled={loading}
+            >
               <InputLabel>Category *</InputLabel>
               <Select
                 name="category_id"
@@ -405,9 +613,9 @@ const CourseForm = ({ initialData }) => {
                 onChange={handleChange}
                 label="Category *"
               >
-                {categories.map((category) => (
-                  <MenuItem key={category.id} value={category.id}>
-                    {category.name}
+                {categories.map((cat) => (
+                  <MenuItem key={cat.id} value={cat.id}>
+                    {cat.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -417,6 +625,7 @@ const CourseForm = ({ initialData }) => {
             </FormControl>
           </Grid>
 
+          {/* Duration */}
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
@@ -426,21 +635,26 @@ const CourseForm = ({ initialData }) => {
               value={courseData.duration}
               onChange={handleChange}
               inputProps={{ min: 0, step: 0.5 }}
+              disabled={loading}
             />
           </Grid>
 
+          {/* Thumbnail upload */}
           <Grid item xs={12}>
             <Typography variant="subtitle1" gutterBottom>
-              Course Thumbnail
+              Course Thumbnail (Images Only)
             </Typography>
             <FileUpload
-              onFileUpload={handleThumbnailUpload}
-              disabled={loading}
-              currentFileUrl={courseData.thumbnail_url}
+              accept="image/*"
               label="Upload Course Thumbnail"
+              onFileUpload={handleThumbnailUpload}
+              disabled={loading || thumbnailLoading}
+              currentFileUrl={courseData.thumbnail_url}
+              fileType="image"
             />
           </Grid>
 
+          {/* Modules and lessons */}
           <Grid item xs={12}>
             <Box
               display="flex"
@@ -453,6 +667,7 @@ const CourseForm = ({ initialData }) => {
                 variant="contained"
                 startIcon={<AddIcon />}
                 onClick={addNewModule}
+                disabled={loading}
               >
                 Add Module
               </Button>
@@ -467,285 +682,280 @@ const CourseForm = ({ initialData }) => {
                 No modules added yet. Click "Add Module" to get started.
               </Typography>
             ) : (
-              <Box>
-                {courseData.modules.map((module) => (
-                  <Accordion
-                    key={module.id}
-                    expanded={expandedModule === module.id}
-                    onChange={() =>
-                      setExpandedModule(
-                        expandedModule === module.id ? null : module.id
-                      )
-                    }
-                    sx={{ mb: 2 }}
-                  >
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          width: "100%",
+              courseData.modules.map((module) => (
+                <Accordion
+                  key={module.id}
+                  expanded={expandedModule === module.id}
+                  onChange={() =>
+                    setExpandedModule(
+                      expandedModule === module.id ? null : module.id
+                    )
+                  }
+                  sx={{ mb: 2 }}
+                >
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        width: "100%",
+                      }}
+                    >
+                      <TextField
+                        value={module.title}
+                        onChange={(e) =>
+                          handleModuleChange(module.id, "title", e.target.value)
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                        sx={{ flexGrow: 1, mr: 2 }}
+                        variant="standard"
+                        InputProps={{ disableUnderline: true }}
+                        disabled={loading}
+                      />
+                      <Chip
+                        label={`${module.lessons.length} ${
+                          module.lessons.length === 1 ? "lesson" : "lessons"
+                        }`}
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                      />
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          confirmDelete("module", module.id);
                         }}
+                        size="small"
+                        sx={{ ml: 1 }}
+                        disabled={loading}
                       >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
                         <TextField
-                          value={module.title}
+                          fullWidth
+                          label="Module Description"
+                          value={module.description}
                           onChange={(e) =>
                             handleModuleChange(
                               module.id,
-                              "title",
+                              "description",
                               e.target.value
                             )
                           }
-                          onClick={(e) => e.stopPropagation()}
-                          sx={{ flexGrow: 1, mr: 2 }}
-                          variant="standard"
-                          InputProps={{ disableUnderline: true }}
+                          multiline
+                          rows={3}
+                          disabled={loading}
                         />
-                        <Chip
-                          label={`${module.lessons.length} ${
-                            module.lessons.length === 1 ? "lesson" : "lessons"
-                          }`}
-                          size="small"
-                          color="primary"
-                          variant="outlined"
-                        />
-                        <IconButton
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            confirmDelete("module", module.id);
-                          }}
-                          size="small"
-                          sx={{ ml: 1 }}
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Box>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                          <TextField
-                            fullWidth
-                            label="Module Description"
-                            value={module.description}
-                            onChange={(e) =>
-                              handleModuleChange(
-                                module.id,
-                                "description",
-                                e.target.value
-                              )
-                            }
-                            multiline
-                            rows={3}
-                          />
-                        </Grid>
-                        <Grid item xs={6} md={3}>
-                          <TextField
-                            fullWidth
-                            label="Order"
-                            type="number"
-                            value={module.order}
-                            onChange={(e) =>
-                              handleModuleChange(
-                                module.id,
-                                "order",
-                                e.target.value
-                              )
-                            }
-                            inputProps={{ min: 1 }}
-                          />
-                        </Grid>
-                        <Grid item xs={6} md={3}>
-                          <TextField
-                            fullWidth
-                            label="Duration (hours)"
-                            type="number"
-                            value={module.duration}
-                            onChange={(e) =>
-                              handleModuleChange(
-                                module.id,
-                                "duration",
-                                e.target.value
-                              )
-                            }
-                            inputProps={{ min: 0.5, step: 0.5 }}
-                          />
-                        </Grid>
                       </Grid>
+                      <Grid item xs={6} md={3}>
+                        <TextField
+                          fullWidth
+                          label="Order"
+                          type="number"
+                          value={module.order}
+                          onChange={(e) =>
+                            handleModuleChange(
+                              module.id,
+                              "order",
+                              e.target.value
+                            )
+                          }
+                          inputProps={{ min: 1 }}
+                          disabled={loading}
+                        />
+                      </Grid>
+                      <Grid item xs={6} md={3}>
+                        <TextField
+                          fullWidth
+                          label="Duration (hours)"
+                          type="number"
+                          value={module.duration}
+                          onChange={(e) =>
+                            handleModuleChange(
+                              module.id,
+                              "duration",
+                              e.target.value
+                            )
+                          }
+                          inputProps={{ min: 0.5, step: 0.5 }}
+                          disabled={loading}
+                        />
+                      </Grid>
+                    </Grid>
 
-                      <Box mt={3}>
-                        <Box
-                          display="flex"
-                          justifyContent="space-between"
-                          alignItems="center"
-                          mb={2}
+                    <Box mt={3}>
+                      <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        mb={2}
+                      >
+                        <Typography variant="subtitle1">Lessons</Typography>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          startIcon={<AddIcon />}
+                          onClick={() => addNewLesson(module.id)}
+                          disabled={loading}
                         >
-                          <Typography variant="subtitle1">Lessons</Typography>
-                          <Button
-                            variant="outlined"
-                            size="small"
-                            startIcon={<AddIcon />}
-                            onClick={() => addNewLesson(module.id)}
-                          >
-                            Add Lesson
-                          </Button>
-                        </Box>
+                          Add Lesson
+                        </Button>
+                      </Box>
 
-                        {module.lessons.length === 0 ? (
-                          <Typography
-                            variant="body2"
-                            color="textSecondary"
-                            sx={{ textAlign: "center", py: 2 }}
-                          >
-                            No lessons in this module yet.
-                          </Typography>
-                        ) : (
-                          <List dense>
-                            {module.lessons.map((lesson) => (
-                              <ListItem
-                                key={lesson.id}
-                                secondaryAction={
-                                  <IconButton
-                                    edge="end"
-                                    onClick={() =>
-                                      confirmDelete("lesson", lesson.id)
-                                    }
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                }
+                      {module.lessons.length === 0 ? (
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          sx={{ textAlign: "center", py: 2 }}
+                        >
+                          No lessons in this module yet.
+                        </Typography>
+                      ) : (
+                        <List dense>
+                          {module.lessons.map((lesson) => (
+                            <ListItem
+                              key={lesson.id}
+                              secondaryAction={
+                                <IconButton
+                                  edge="end"
+                                  onClick={() =>
+                                    confirmDelete("lesson", lesson.id)
+                                  }
+                                  disabled={loading}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              }
+                              sx={{
+                                border: "1px solid #eee",
+                                borderRadius: 1,
+                                mb: 1,
+                              }}
+                            >
+                              <Avatar
                                 sx={{
-                                  border: "1px solid #eee",
-                                  borderRadius: 1,
-                                  mb: 1,
+                                  bgcolor: "primary.main",
+                                  mr: 2,
+                                  width: 32,
+                                  height: 32,
                                 }}
                               >
-                                <Avatar
-                                  sx={{
-                                    bgcolor: "primary.main",
-                                    mr: 2,
-                                    width: 32,
-                                    height: 32,
-                                  }}
-                                >
-                                  {getLessonIcon(lesson.content_type)}
-                                </Avatar>
-                                <ListItemText
-                                  primary={
-                                    <TextField
-                                      value={lesson.title}
-                                      onChange={(e) =>
-                                        handleLessonChange(
-                                          module.id,
-                                          lesson.id,
-                                          "title",
-                                          e.target.value
-                                        )
-                                      }
-                                      variant="standard"
-                                      InputProps={{ disableUnderline: true }}
-                                      fullWidth
-                                    />
-                                  }
-                                  secondary={
-                                    <Box sx={{ mt: 1 }}>
-                                      <Grid container spacing={2}>
-                                        <Grid item xs={12} md={4}>
-                                          <FormControl fullWidth size="small">
-                                            <InputLabel>
-                                              Content Type
-                                            </InputLabel>
-                                            <Select
-                                              value={lesson.content_type}
-                                              onChange={(e) =>
-                                                handleLessonChange(
-                                                  module.id,
-                                                  lesson.id,
-                                                  "content_type",
-                                                  e.target.value
-                                                )
-                                              }
-                                              label="Content Type"
-                                            >
-                                              <MenuItem value="video">
-                                                Video
-                                              </MenuItem>
-                                              <MenuItem value="article">
-                                                Article
-                                              </MenuItem>
-                                              <MenuItem value="quiz">
-                                                Quiz
-                                              </MenuItem>
-                                            </Select>
-                                          </FormControl>
-                                        </Grid>
-                                        <Grid item xs={6} md={3}>
-                                          <TextField
-                                            fullWidth
-                                            label="Duration (min)"
-                                            type="number"
-                                            value={lesson.duration}
+                                {getLessonIcon(lesson.content_type)}
+                              </Avatar>
+                              <ListItemText
+                                primary={
+                                  <TextField
+                                    value={lesson.title}
+                                    onChange={(e) =>
+                                      handleLessonChange(
+                                        module.id,
+                                        lesson.id,
+                                        "title",
+                                        e.target.value
+                                      )
+                                    }
+                                    variant="standard"
+                                    InputProps={{ disableUnderline: true }}
+                                    fullWidth
+                                    disabled={loading}
+                                  />
+                                }
+                                secondary={
+                                  <Box sx={{ mt: 1 }}>
+                                    <Grid container spacing={2}>
+                                      <Grid item xs={12} md={4}>
+                                        <FormControl
+                                          fullWidth
+                                          size="small"
+                                          disabled={loading}
+                                        >
+                                          <InputLabel>Content Type</InputLabel>
+                                          <Select
+                                            value={lesson.content_type}
                                             onChange={(e) =>
                                               handleLessonChange(
                                                 module.id,
                                                 lesson.id,
-                                                "duration",
+                                                "content_type",
                                                 e.target.value
                                               )
                                             }
-                                            size="small"
-                                            inputProps={{ min: 1 }}
-                                          />
-                                        </Grid>
-                                        <Grid item xs={6} md={3}>
-                                          <TextField
-                                            fullWidth
-                                            label="Order"
-                                            type="number"
-                                            value={lesson.order}
-                                            onChange={(e) =>
-                                              handleLessonChange(
-                                                module.id,
-                                                lesson.id,
-                                                "order",
-                                                e.target.value
-                                              )
-                                            }
-                                            size="small"
-                                            inputProps={{ min: 1 }}
-                                          />
-                                        </Grid>
+                                            label="Content Type"
+                                          >
+                                            {contentTypes.map((type) => (
+                                              <MenuItem
+                                                key={type.value}
+                                                value={type.value}
+                                              >
+                                                {type.label}
+                                              </MenuItem>
+                                            ))}
+                                          </Select>
+                                        </FormControl>
                                       </Grid>
-                                      <TextField
-                                        fullWidth
-                                        label="Content URL"
-                                        value={lesson.content_url}
-                                        onChange={(e) =>
-                                          handleLessonChange(
-                                            module.id,
-                                            lesson.id,
-                                            "content_url",
-                                            e.target.value
-                                          )
-                                        }
-                                        size="small"
-                                        sx={{ mt: 1 }}
-                                      />
-                                    </Box>
-                                  }
-                                />
-                              </ListItem>
-                            ))}
-                          </List>
-                        )}
-                      </Box>
-                    </AccordionDetails>
-                  </Accordion>
-                ))}
-              </Box>
+                                      <Grid item xs={6} md={3}>
+                                        <TextField
+                                          fullWidth
+                                          label="Duration (min)"
+                                          type="number"
+                                          value={lesson.duration}
+                                          onChange={(e) =>
+                                            handleLessonChange(
+                                              module.id,
+                                              lesson.id,
+                                              "duration",
+                                              e.target.value
+                                            )
+                                          }
+                                          size="small"
+                                          inputProps={{ min: 1 }}
+                                          disabled={loading}
+                                        />
+                                      </Grid>
+                                      <Grid item xs={6} md={3}>
+                                        <TextField
+                                          fullWidth
+                                          label="Order"
+                                          type="number"
+                                          value={lesson.order}
+                                          onChange={(e) =>
+                                            handleLessonChange(
+                                              module.id,
+                                              lesson.id,
+                                              "order",
+                                              e.target.value
+                                            )
+                                          }
+                                          size="small"
+                                          inputProps={{ min: 1 }}
+                                          disabled={loading}
+                                        />
+                                      </Grid>
+                                    </Grid>
+                                    {renderLessonContentField(
+                                      module.id,
+                                      lesson
+                                    )}
+                                  </Box>
+                                }
+                              />
+                            </ListItem>
+                          ))}
+                        </List>
+                      )}
+                    </Box>
+                  </AccordionDetails>
+                </Accordion>
+              ))
             )}
           </Grid>
 
+          {/* Buttons */}
           <Grid item xs={12}>
             <Box display="flex" justifyContent="flex-end" gap={2}>
               <Button
@@ -759,7 +969,7 @@ const CourseForm = ({ initialData }) => {
                 type="submit"
                 variant="contained"
                 disabled={loading}
-                endIcon={loading && <CircularProgress size={20} />}
+                endIcon={loading ? <CircularProgress size={20} /> : null}
               >
                 {courseId ? "Update Course" : "Create Course"}
               </Button>
