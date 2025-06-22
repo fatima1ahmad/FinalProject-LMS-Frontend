@@ -2132,34 +2132,32 @@ import {
   Paper,
   Grid,
   styled,
-  Avatar,
   Divider,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Button,
   CircularProgress,
   Dialog,
+  IconButton,
+  Tooltip,
+  TextField,
+  InputAdornment,
+  CssBaseline,
+  Container,
+  useTheme,
+  useMediaQuery,
   DialogTitle,
   DialogContent,
   DialogActions,
-  IconButton,
+  Snackbar,
+  Alert,
+  Avatar,
+  Badge,
+  Chip,
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Tooltip,
-  Chip,
-  Snackbar,
-  InputAdornment,
-  TextField,
-  Stepper,
-  Step,
-  StepLabel,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  Card,
+  CardContent,
+  CardActions,
 } from "@mui/material";
 import {
   Dashboard as DashboardIcon,
@@ -2169,77 +2167,102 @@ import {
   Message as MessagesIcon,
   Settings as SettingsIcon,
   School as SchoolIcon,
-  VideoLibrary as VideoLibraryIcon,
-  Article as ArticleIcon,
   Add as AddIcon,
   Search as SearchIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  Close as CloseIcon,
-  ExpandMore as ExpandMoreIcon,
   Visibility as VisibilityIcon,
   Schedule as ScheduleIcon,
-  CheckCircle as CheckCircleIcon,
   Assignment as AssignmentIcon,
+  CheckCircle as CheckCircleIcon,
+  ExpandMore as ExpandMoreIcon,
+  VideoLibrary as VideoLibraryIcon,
+  Article as ArticleIcon,
+  Star as StarIcon,
+  Bookmark as BookmarkIcon,
+  MoreVert as MoreVertIcon,
+  Category as CategoryIcon,
+  MenuBook as MenuBookIcon,
+  Class as ClassIcon,
 } from "@mui/icons-material";
-import { useTheme } from "@mui/material/styles";
+// import { useTheme } from "@mui/material/styles";
 import PeopleIcon from "@mui/icons-material/People";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import InstructorService from "../../services/instructorService";
+import InstructorSidebar from "../../components/common/Sidebar/InstructorSidebar";
+import CreateAssignmentDialog from "../../components/assignmnet/CreatAssignmentDialog";
 import StatusChip from "../../pages/instructor/StatusChip";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import { orange } from "@mui/material/colors";
+import { useAuth } from "../../contexts/AuthContext/AuthContext";
+import Header from "../../components/common/Header/Header";
+const collapsedWidth = 72;
 
-// Modern styled components
-const DashboardContainer = styled(Box)(({ theme }) => ({
-  display: "flex",
-  minHeight: "100vh",
-  backgroundColor: theme.palette.background.default,
-}));
-
-const Sidebar = styled(Paper)(({ theme }) => ({
-  width: 280,
-  padding: theme.spacing(3, 2),
-  borderRadius: 0,
-  boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-  backgroundColor: theme.palette.background.paper,
-  borderRight: `1px solid ${theme.palette.divider}`,
-}));
-
-const MainContent = styled(Box)(({ theme }) => ({
-  flexGrow: 1,
-  padding: theme.spacing(4),
-  backgroundColor: theme.palette.background.default,
-}));
-
+// Enhanced Styled Components
 const StatsCard = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
-  borderRadius: theme.shape.borderRadius,
+  borderRadius: theme.shape.borderRadius * 2,
   boxShadow: theme.shadows[2],
   transition: "all 0.3s ease",
-  background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`,
+  background:
+    theme.palette.mode === "light"
+      ? `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.grey[100]} 100%)`
+      : `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.grey[900]} 100%)`,
   border: `1px solid ${theme.palette.divider}`,
+  position: "relative",
+  overflow: "hidden",
+  "&:before": {
+    content: '""',
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "4px",
+    height: "100%",
+    background: theme.palette.primary.main,
+  },
   "&:hover": {
     transform: "translateY(-5px)",
-    boxShadow: theme.shadows[6],
+    boxShadow: theme.shadows[8],
   },
 }));
 
 const CourseCard = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(3),
+  padding: theme.spacing(2.5),
   marginBottom: theme.spacing(2),
-  borderRadius: theme.shape.borderRadius,
+  borderRadius: theme.shape.borderRadius * 2,
   boxShadow: theme.shadows[1],
   transition: "all 0.3s ease",
   border: `1px solid ${theme.palette.divider}`,
+  position: "relative",
+  overflow: "hidden",
   "&:hover": {
     transform: "translateY(-5px)",
-    boxShadow: theme.shadows[4],
+    boxShadow: theme.shadows[6],
     borderColor: theme.palette.primary.main,
+    "& .course-actions": {
+      opacity: 1,
+      transform: "translateY(0)",
+    },
+  },
+  "& .course-actions": {
+    position: "absolute",
+    top: theme.spacing(1),
+    right: theme.spacing(1),
+    opacity: 0,
+    transform: "translateY(-10px)",
+    transition: "all 0.3s ease",
+    display: "flex",
+    gap: theme.spacing(0.5),
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(0.5),
+    boxShadow: theme.shadows[2],
   },
 }));
 
 const SearchInput = styled(TextField)(({ theme }) => ({
   "& .MuiOutlinedInput-root": {
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.borderRadius * 2,
     backgroundColor: theme.palette.background.paper,
     "& fieldset": {
       borderColor: theme.palette.divider,
@@ -2254,393 +2277,25 @@ const SearchInput = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const steps = [
-  "Select Course",
-  "Select Module",
-  "Select Lesson",
-  "Assignment Details",
-];
-
-const CreateAssignmentDialog = ({ open, onClose, onAssignmentCreated }) => {
-  const theme = useTheme();
-  const [activeStep, setActiveStep] = useState(0);
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const [selectedCourse, setSelectedCourse] = useState("");
-  const [selectedModule, setSelectedModule] = useState("");
-  const [selectedLesson, setSelectedLesson] = useState("");
-  const [assignmentData, setAssignmentData] = useState({
-    title: "",
-    description: "",
-    max_score: 100,
-  });
-
-  useEffect(() => {
-    if (open) {
-      fetchCoursesHierarchy();
-    }
-  }, [open]);
-
-  const fetchCoursesHierarchy = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await InstructorService.getCoursesHierarchy();
-      const filteredCourses = data.filter(
-        (course) =>
-          Array.isArray(course.modules) &&
-          course.modules.length > 0 &&
-          course.modules.some(
-            (module) =>
-              Array.isArray(module.lessons) && module.lessons.length > 0
-          )
-      );
-      setCourses(filteredCourses);
-    } catch (err) {
-      setError("Failed to load courses. Please try again.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleCourseChange = (event) => {
-    const selected = event.target.value;
-    setSelectedCourse(selected);
-    setSelectedModule("");
-    setSelectedLesson("");
-  };
-
-  const handleModuleChange = (event) => {
-    const selected = String(event.target.value);
-    setSelectedModule(event.target.value);
-    setSelectedLesson("");
-  };
-
-  const handleLessonChange = (event) => {
-    setSelectedLesson(String(event.target.value));
-  };
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setAssignmentData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const assignment = {
-        lesson_id: selectedLesson,
-        ...assignmentData,
-      };
-      const createdAssignment = await InstructorService.createAssignment(
-        assignment
-      );
-      onAssignmentCreated(createdAssignment);
-      onClose();
-    } catch (err) {
-      setError("Failed to create assignment. Please try again.");
-      console.error(err);
-    }
-  };
-
-  const getSelectedCourse = () =>
-    courses.find((c) => String(c.id || c._id) === String(selectedCourse));
-
-  const getSelectedModule = () => {
-    const course = getSelectedCourse();
-    if (!course) return null;
-    return course.modules.find(
-      (m) => String(m.id || m._id) === String(selectedModule)
-    );
-  };
-
-  return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth
-      maxWidth="md"
-      PaperProps={{
-        sx: {
-          borderRadius: theme.shape.borderRadius * 2,
-          background: theme.palette.background.paper,
-        },
-      }}
-    >
-      <DialogTitle>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6" fontWeight="bold">
-            Create New Assignment
-          </Typography>
-          <IconButton onClick={onClose} size="small">
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        <Stepper activeStep={activeStep} alternativeLabel sx={{ mt: 3 }}>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel
-                sx={{
-                  "& .MuiStepLabel-label": {
-                    color: theme.palette.text.secondary,
-                    "&.Mui-active": {
-                      color: theme.palette.text.primary,
-                    },
-                    "&.Mui-completed": {
-                      color: theme.palette.text.primary,
-                    },
-                  },
-                }}
-              >
-                {label}
-              </StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      </DialogTitle>
-
-      <DialogContent dividers sx={{ py: 3 }}>
-        {loading ? (
-          <Box display="flex" justifyContent="center" p={4}>
-            <CircularProgress />
-          </Box>
-        ) : error ? (
-          <Paper elevation={0} sx={{ p: 2, bgcolor: "error.light" }}>
-            <Typography color="error">{error}</Typography>
-            <Button onClick={fetchCoursesHierarchy} sx={{ mt: 1 }}>
-              Retry
-            </Button>
-          </Paper>
-        ) : (
-          <>
-            {activeStep === 0 && (
-              <Box sx={{ mt: 2 }}>
-                <FormControl fullWidth>
-                  <InputLabel>Select Course</InputLabel>
-                  <Select
-                    value={selectedCourse}
-                    onChange={handleCourseChange}
-                    label="Select Course"
-                    sx={{ mb: 2 }}
-                  >
-                    {courses.map((course) => (
-                      <MenuItem
-                        key={course._id}
-                        value={String(course.id || course._id)}
-                      >
-                        {course.title}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                {selectedCourse && (
-                  <Box
-                    sx={{
-                      mt: 2,
-                      p: 2,
-                      borderRadius: theme.shape.borderRadius,
-                      backgroundColor: theme.palette.action.hover,
-                    }}
-                  >
-                    <Typography variant="subtitle2" fontWeight="bold">
-                      Course Description:
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {getSelectedCourse()?.description ||
-                        "No description available"}
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-            )}
-
-            {activeStep === 1 && (
-              <Box sx={{ mt: 2 }}>
-                <FormControl fullWidth>
-                  <InputLabel>Select Module</InputLabel>
-                  <Select
-                    value={selectedModule}
-                    onChange={handleModuleChange}
-                    label="Select Module"
-                    disabled={!selectedCourse}
-                    sx={{ mb: 2 }}
-                  >
-                    <MenuItem value="">
-                      <em>Select Module</em>
-                    </MenuItem>
-                    {getSelectedCourse()?.modules?.map((module) => (
-                      <MenuItem
-                        key={module.id || module._id}
-                        value={String(module.id || module._id)}
-                      >
-                        {module.title}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-
-                {selectedModule && (
-                  <Box
-                    sx={{
-                      mt: 2,
-                      p: 2,
-                      borderRadius: theme.shape.borderRadius,
-                      backgroundColor: theme.palette.action.hover,
-                    }}
-                  >
-                    <Typography variant="subtitle2" fontWeight="bold">
-                      Module Details:
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {getSelectedModule()?.description ||
-                        "No description available"}
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-            )}
-
-            {activeStep === 2 && (
-              <Box sx={{ mt: 2 }}>
-                <FormControl fullWidth>
-                  <InputLabel>Select Lesson</InputLabel>
-                  <Select
-                    value={selectedLesson}
-                    onChange={handleLessonChange}
-                    label="Select Lesson"
-                    disabled={!selectedModule}
-                    sx={{ mb: 2 }}
-                  >
-                    {getSelectedModule()?.lessons?.map((lesson) => (
-                      <MenuItem
-                        key={lesson.id || lesson._id}
-                        value={String(lesson.id || lesson._id)}
-                      >
-                        {lesson.title}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                {selectedLesson && (
-                  <Box
-                    sx={{
-                      mt: 2,
-                      p: 2,
-                      borderRadius: theme.shape.borderRadius,
-                      backgroundColor: theme.palette.action.hover,
-                    }}
-                  >
-                    <Typography variant="subtitle2" fontWeight="bold">
-                      Lesson Details:
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {getSelectedModule()?.lessons?.find(
-                        (l) => String(l.id || l._id) === selectedLesson
-                      )?.description || "No description available"}
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-            )}
-
-            {activeStep === 3 && (
-              <Box sx={{ mt: 2 }}>
-                <TextField
-                  fullWidth
-                  label="Assignment Title"
-                  name="title"
-                  value={assignmentData.title}
-                  onChange={handleInputChange}
-                  sx={{ mb: 2 }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <AssignmentIcon color="action" />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                <TextField
-                  fullWidth
-                  label="Description"
-                  name="description"
-                  value={assignmentData.description}
-                  onChange={handleInputChange}
-                  multiline
-                  rows={4}
-                  sx={{ mb: 2 }}
-                />
-                <TextField
-                  fullWidth
-                  label="Maximum Score"
-                  name="max_score"
-                  type="number"
-                  value={assignmentData.max_score}
-                  onChange={handleInputChange}
-                  inputProps={{ min: 1 }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <CheckCircleIcon color="action" />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Box>
-            )}
-          </>
-        )}
-      </DialogContent>
-
-      <DialogActions sx={{ p: 2 }}>
-        <Button onClick={handleBack} disabled={activeStep === 0} sx={{ mr: 1 }}>
-          Back
-        </Button>
-        {activeStep === steps.length - 1 ? (
-          <Button
-            onClick={handleSubmit}
-            variant="contained"
-            disabled={!selectedLesson || !assignmentData.title}
-            startIcon={<AssignmentIcon />}
-          >
-            Create Assignment
-          </Button>
-        ) : (
-          <Button
-            onClick={handleNext}
-            variant="contained"
-            disabled={
-              activeStep === 0 &&
-              (!selectedCourse || getSelectedCourse()?.modules?.length === 0)
-            }
-          >
-            Next
-          </Button>
-        )}
-      </DialogActions>
-    </Dialog>
-  );
-};
+const ProgressBadge = styled(Badge)(({ theme }) => ({
+  "& .MuiBadge-badge": {
+    right: 10,
+    top: 10,
+    padding: "0 4px",
+    backgroundColor: theme.palette.success.main,
+    color: theme.palette.success.contrastText,
+  },
+}));
 
 const InstructorDashboard = () => {
   const theme = useTheme();
-  const location = useLocation();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { user, logout, loading } = useAuth();
   const navigate = useNavigate();
+  const drawerWidth = 240;
+
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingCourses, setLoadingCourses] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [stats, setStats] = useState({
     totalCourses: 0,
@@ -2650,17 +2305,20 @@ const InstructorDashboard = () => {
   });
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [modules, setModules] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [recentlyCreatedAssignment, setRecentlyCreatedAssignment] =
     useState(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        setLoading(true);
+        setLoadingCourses(true);
         const data = await InstructorService.getCourses();
         setCourses(data);
 
@@ -2677,49 +2335,49 @@ const InstructorDashboard = () => {
       } catch (error) {
         console.error("Failed to fetch courses:", error);
       } finally {
-        setLoading(false);
+        setLoadingCourses(false);
       }
     };
 
     fetchCourses();
   }, []);
 
-  const handleDeleteCourse = async (courseId) => {
+  const filteredCourses = courses.filter(
+    (course) =>
+      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleViewCourse = (course) => {
+    setSelectedCourse(course);
+    setDialogOpen(true);
+    fetchCourseDetails(course.id);
+  };
+
+  const fetchCourseDetails = async (courseId) => {
     try {
-      await InstructorService.deleteCourse(courseId);
-      setCourses(courses.filter((course) => course.id !== courseId));
-      setStats((prev) => ({
-        ...prev,
-        totalCourses: prev.totalCourses - 1,
-        approvedCourses: courses.filter(
-          (c) => c.id !== courseId && c.status === "approved"
-        ).length,
-        pendingCourses: courses.filter(
-          (c) => c.id !== courseId && c.status === "pending"
-        ).length,
-        rejectedCourses: courses.filter(
-          (c) => c.id !== courseId && c.status === "rejected"
-        ).length,
-      }));
+      setLoadingDetails(true);
+      const modules = await InstructorService.getCourseModules(courseId);
+      setModules(modules);
     } catch (error) {
-      console.error("Failed to delete course:", error);
+      console.error("Failed to fetch course details:", error);
+    } finally {
+      setLoadingDetails(false);
     }
   };
 
-  const handleViewCourse = async (course) => {
-    try {
-      setSelectedCourse(course);
-      setLoadingDetails(true);
-      setDialogOpen(true);
-
-      const modulesData = await InstructorService.getModulesByCourse(
-        course._id || course.id
-      );
-      setModules(modulesData);
-    } catch (error) {
-      console.error("Error fetching course modules:", error);
-    } finally {
-      setLoadingDetails(false);
+  const handleDeleteCourse = async (courseId) => {
+    if (window.confirm("Are you sure you want to delete this course?")) {
+      try {
+        await InstructorService.deleteCourse(courseId);
+        setCourses(courses.filter((course) => course.id !== courseId));
+        setStats({
+          ...stats,
+          totalCourses: stats.totalCourses - 1,
+        });
+      } catch (error) {
+        console.error("Failed to delete course:", error);
+      }
     }
   };
 
@@ -2729,158 +2387,139 @@ const InstructorDashboard = () => {
     setModules([]);
   };
 
-  const filteredCourses = courses.filter(
-    (course) =>
-      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "published":
+        return "success";
+      case "draft":
+        return "warning";
+      case "pending":
+        return "info";
+      default:
+        return "default";
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "published":
+        return <CheckCircleIcon fontSize="small" />;
+      case "draft":
+        return <EditIcon fontSize="small" />;
+      case "pending":
+        return <ScheduleIcon fontSize="small" />;
+      default:
+        return null;
+    }
+  };
+
+  const handleDrawerToggle = () => {
+    if (isMobile) {
+      setMobileOpen(!mobileOpen);
+    } else {
+      setCollapsed(!collapsed);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          background:
+            theme.palette.mode === "light"
+              ? "linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%)"
+              : "linear-gradient(135deg, #121826 0%, #1a2030 100%)",
+        }}
+      >
+        <CircularProgress size={60} />
+      </Box>
+    );
+  }
 
   return (
-    <DashboardContainer>
-      <Sidebar>
-        <Box display="flex" alignItems="center" mb={4}>
-          <Avatar
-            alt="Instructor"
-            src="/path/to/instructor-avatar.jpg"
-            sx={{
-              width: 56,
-              height: 56,
-              mr: 2,
-              border: `2px solid ${theme.palette.primary.main}`,
-            }}
-          />
-          <Box>
-            <Typography variant="h6" fontWeight="bold">
-              Dr. Sarah Johnson
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Computer Science Instructor
-            </Typography>
-          </Box>
-        </Box>
-        <Divider sx={{ my: 2 }} />
-        <List>
-          {[
-            {
-              text: "Dashboard",
-              icon: <DashboardIcon />,
-              path: "/instructor/dashboard",
-            },
-            {
-              text: "My Courses",
-              icon: <CoursesIcon />,
-              path: "/instructor/courses",
-            },
-            {
-              text: "Create Course",
-              icon: <AddIcon />,
-              path: "/instructor/courses/create",
-            },
-            {
-              text: "Enrollment Stats",
-              icon: <PeopleIcon />,
-              path: "/instructor/enrollments",
-            },
-            {
-              text: "Assignment",
-              icon: <StudentsIcon />,
-              path: "/instructor/assignments",
-            },
-            {
-              text: "Visualization",
-              icon: <AnalyticsIcon />,
-              path: "/instructor/Visualization",
-            },
-            {
-              text: "Messages",
-              icon: <MessagesIcon />,
-              path: "/instructor/messages",
-            },
-            {
-              text: "Quizzez",
-              icon: <SettingsIcon />,
-              path: "/instructor/Quizze",
-            },
-          ].map((item) => (
-            <ListItem
-              button
-              key={item.text}
-              component={Link}
-              to={item.path}
-              sx={{
-                borderRadius: theme.shape.borderRadius,
-                mb: 0.5,
-                backgroundColor:
-                  location.pathname === item.path
-                    ? theme.palette.action.selected
-                    : "transparent",
-                "&:hover": {
-                  backgroundColor: theme.palette.action.hover,
-                },
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 40,
-                  color:
-                    location.pathname === item.path
-                      ? theme.palette.primary.main
-                      : theme.palette.text.secondary,
-                }}
-              >
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText
-                primary={item.text}
-                primaryTypographyProps={{
-                  fontWeight:
-                    location.pathname === item.path ? "bold" : "normal",
-                  color:
-                    location.pathname === item.path
-                      ? theme.palette.text.primary
-                      : theme.palette.text.secondary,
-                }}
-              />
-            </ListItem>
-          ))}
-        </List>
-      </Sidebar>
+    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+      <Header />
+      <CssBaseline />
+      <InstructorSidebar
+        mobileOpen={mobileOpen}
+        handleDrawerToggle={handleDrawerToggle}
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+        isMobile={isMobile}
+      />
 
-      <MainContent>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 5,
+          pt: 13,
+          width: {
+            sm: `calc(100% - ${collapsed ? collapsedWidth : drawerWidth}px)`,
+          },
+          backgroundColor: theme.palette.background.default,
+          background:
+            theme.palette.mode === "light"
+              ? "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)"
+              : "linear-gradient(135deg, #121826 0%, #0f172a 100%)",
+        }}
+      >
+        {/* Main content header */}
         <Box mb={4}>
-          <Typography variant="h4" fontWeight="bold" gutterBottom>
-            Instructor Dashboard
-          </Typography>
+          <Box display="flex" alignItems="center" mb={1}>
+            <Box>
+              <Typography variant="h4" fontWeight="bold" gutterBottom>
+                Welcome back, {user?.displayName || "Instructor"}!
+              </Typography>
+              <Box display="flex" alignItems="center">
+                <StarIcon color="warning" fontSize="small" sx={{ mr: 0.5 }} />
+                <Typography variant="body1" color="textSecondary">
+                  Instructor since{" "}
+                  {new Date(user?.metadata?.creationTime).getFullYear() ||
+                    "2024"}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
           <Typography variant="body1" color="textSecondary">
-            Welcome back! Here's what's happening with your courses today.
+            Here's what's happening with your courses today.
           </Typography>
         </Box>
 
+        {/* Stats cards */}
         <Grid container spacing={3} mb={4}>
           {[
             {
               title: "Total Courses",
               value: stats.totalCourses,
-              icon: <CoursesIcon fontSize="large" />,
+              icon: <CoursesIcon fontSize="medium" />,
               color: theme.palette.primary.main,
+              trend: "up",
             },
             {
               title: "Approved Courses",
               value: stats.approvedCourses,
-              icon: <SchoolIcon fontSize="large" />,
+              icon: <SchoolIcon fontSize="medium" />,
               color: theme.palette.success.main,
+              trend: "up",
             },
             {
               title: "Pending Approval",
               value: stats.pendingCourses,
-              icon: <ScheduleIcon fontSize="large" />,
+              icon: <ScheduleIcon fontSize="medium" />,
               color: theme.palette.warning.main,
+              trend: "neutral",
             },
             {
               title: "Rejected Courses",
               value: stats.rejectedCourses,
-              icon: <DeleteIcon fontSize="large" />,
+              icon: <DeleteIcon fontSize="medium" />,
               color: theme.palette.error.main,
+              trend: "down",
             },
           ].map((stat) => (
             <Grid item xs={12} sm={6} md={3} key={stat.title}>
@@ -2895,23 +2534,45 @@ const InstructorDashboard = () => {
                       variant="body2"
                       color="textSecondary"
                       gutterBottom
+                      sx={{
+                        textTransform: "uppercase",
+                        fontWeight: 500,
+                        letterSpacing: 0.5,
+                      }}
                     >
                       {stat.title}
                     </Typography>
                     <Typography
-                      variant="h4"
+                      variant="h3"
                       fontWeight="bold"
                       color={stat.color}
                     >
                       {stat.value}
                     </Typography>
+                    <Chip
+                      label={`5% ${
+                        stat.trend === "up"
+                          ? "↑"
+                          : stat.trend === "down"
+                          ? "↓"
+                          : "→"
+                      }`}
+                      size="small"
+                      sx={{
+                        mt: 1,
+                        backgroundColor: `${stat.color}20`,
+                        color: stat.color,
+                        fontWeight: 600,
+                      }}
+                    />
                   </Box>
                   <Box
                     sx={{
-                      p: 2,
-                      borderRadius: "50%",
-                      backgroundColor: `${stat.color}20`,
+                      p: 1,
+                      borderRadius: "55%",
+                      backgroundColor: `${stat.color}10`,
                       color: stat.color,
+                      border: `1px solid ${stat.color}30`,
                     }}
                   >
                     {stat.icon}
@@ -2922,16 +2583,28 @@ const InstructorDashboard = () => {
           ))}
         </Grid>
 
+        {/* Courses section */}
         <Box mb={4}>
           <Box
             display="flex"
             justifyContent="space-between"
             alignItems="center"
             mb={3}
+            sx={{
+              backgroundColor: theme.palette.background.paper,
+              p: 3,
+              borderRadius: theme.shape.borderRadius * 0.3,
+              border: `1px solid ${theme.palette.divider}`,
+            }}
           >
-            <Typography variant="h5" fontWeight="bold">
-              My Courses
-            </Typography>
+            <Box>
+              <Typography variant="h5" fontWeight="bold">
+                My Courses
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Manage and create new courses
+              </Typography>
+            </Box>
             <Box display="flex" gap={2}>
               <Button
                 component={Link}
@@ -2939,11 +2612,12 @@ const InstructorDashboard = () => {
                 variant="contained"
                 startIcon={<AddIcon />}
                 sx={{
-                  borderRadius: theme.shape.borderRadius,
+                  borderRadius: theme.shape.borderRadius * 2,
                   textTransform: "none",
                   boxShadow: "none",
+                  px: 3,
                   "&:hover": {
-                    boxShadow: theme.shadows[2],
+                    boxShadow: theme.shadows[4],
                   },
                 }}
               >
@@ -2954,11 +2628,16 @@ const InstructorDashboard = () => {
                 startIcon={<AssignmentIcon />}
                 onClick={() => setAssignmentDialogOpen(true)}
                 sx={{
-                  borderRadius: theme.shape.borderRadius,
+                  borderRadius: theme.shape.borderRadius * 2,
                   textTransform: "none",
+                  px: 3,
+                  borderWidth: 2,
+                  "&:hover": {
+                    borderWidth: 2,
+                  },
                 }}
               >
-                Create Assignment
+                New Assignment
               </Button>
             </Box>
           </Box>
@@ -2966,7 +2645,7 @@ const InstructorDashboard = () => {
           <Box mb={3}>
             <SearchInput
               fullWidth
-              placeholder="Search courses..."
+              placeholder="Search courses by title or description..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               InputProps={{
@@ -2982,7 +2661,7 @@ const InstructorDashboard = () => {
             />
           </Box>
 
-          {loading ? (
+          {loadingCourses ? (
             <Box display="flex" justifyContent="center" my={4}>
               <CircularProgress />
             </Box>
@@ -2991,21 +2670,44 @@ const InstructorDashboard = () => {
               sx={{
                 p: 4,
                 textAlign: "center",
-                borderRadius: theme.shape.borderRadius,
+                // borderRadius: theme.shape.borderRadius * 2,
                 backgroundColor: theme.palette.background.paper,
+                border: `1px dashed ${theme.palette.divider}`,
               }}
             >
-              <Typography variant="body1">
+              <Box
+                sx={{
+                  width: 80,
+                  height: 80,
+                  mx: "auto",
+                  mb: 2,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: `${theme.palette.primary.light}20`,
+                  borderRadius: "50%",
+                  color: theme.palette.primary.main,
+                }}
+              >
+                <SchoolIcon fontSize="large" />
+              </Box>
+              <Typography variant="h6" gutterBottom>
+                {searchTerm ? "No courses found" : "No courses created yet"}
+              </Typography>
+              <Typography variant="body1" color="textSecondary" mb={3}>
                 {searchTerm
-                  ? "No courses match your search"
-                  : "You haven't created any courses yet"}
+                  ? "Try adjusting your search query"
+                  : "Get started by creating your first course"}
               </Typography>
               <Button
                 component={Link}
                 to="/instructor/courses/create"
                 variant="contained"
                 startIcon={<AddIcon />}
-                sx={{ mt: 2 }}
+                sx={{
+                  borderRadius: theme.shape.borderRadius * 2,
+                  px: 3,
+                }}
               >
                 Create Your First Course
               </Button>
@@ -3013,83 +2715,236 @@ const InstructorDashboard = () => {
           ) : (
             <Grid container spacing={3}>
               {filteredCourses.map((course) => (
-                <Grid item xs={12} md={6} lg={4} key={course._id || course.id}>
-                  <CourseCard>
+                <Grid item xs={12} sm={6} xl={4} key={course._id || course.id}>
+                  <Card
+                    sx={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      transition: "all 0.3s ease",
+                      borderRadius: 3,
+                      border: `1px solid ${theme.palette.divider}`,
+                      boxShadow: "none",
+                      "&:hover": {
+                        transform: "translateY(-8px)",
+                        boxShadow: theme.shadows[6],
+                        borderColor: theme.palette.primary.main,
+                      },
+                    }}
+                  >
                     <Box
-                      display="flex"
-                      justifyContent="space-between"
-                      alignItems="flex-start"
-                      mb={2}
+                      sx={{
+                        height: 140,
+                        position: "relative",
+                        overflow: "hidden",
+                      }}
                     >
-                      <Typography variant="h6" fontWeight="bold">
+                      {course.thumbnail ? (
+                        <Box
+                          component="img"
+                          src={course.thumbnail}
+                          alt={course.title}
+                          sx={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <Box
+                          sx={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            background:
+                              theme.palette.mode === "light"
+                                ? "linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)"
+                                : "linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%)",
+                          }}
+                        >
+                          <SchoolIcon
+                            sx={{
+                              fontSize: 60,
+                              color: theme.palette.primary.main,
+                            }}
+                          />
+                        </Box>
+                      )}
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: 16,
+                          right: 16,
+                        }}
+                      >
+                        <Chip
+                          icon={getStatusIcon(course.status)}
+                          label={course.status}
+                          color={getStatusColor(course.status)}
+                          size="small"
+                          sx={{
+                            fontWeight: 600,
+                            textTransform: "capitalize",
+                            borderRadius: 1,
+                          }}
+                        />
+                      </Box>
+                    </Box>
+
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Typography
+                        variant="h6"
+                        component="h3"
+                        gutterBottom
+                        sx={{ fontWeight: 600 }}
+                      >
                         {course.title}
                       </Typography>
-                      <StatusChip status={course.status} />
-                    </Box>
-                    <Typography variant="body2" color="textSecondary" mb={2}>
-                      {course.description.length > 100
-                        ? `${course.description.substring(0, 100)}...`
-                        : course.description}
-                    </Typography>
-                    <Box display="flex" justifyContent="flex-end" mb={2}>
-                      <Tooltip title="View Course">
-                        <IconButton
-                          size="small"
-                          onClick={() => handleViewCourse(course)}
-                          sx={{
-                            mr: 1,
-                            "&:hover": {
-                              backgroundColor: theme.palette.primary.light,
-                              color: theme.palette.primary.main,
-                            },
-                          }}
-                        >
-                          <VisibilityIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Edit Course">
-                        <IconButton
-                          size="small"
-                          onClick={() =>
-                            navigate(
-                              `/instructor/courses/edit/${
-                                course._id || course.id
-                              }`
-                            )
-                          }
-                          sx={{
-                            mr: 1,
-                            "&:hover": {
-                              backgroundColor: theme.palette.secondary.light,
-                              color: theme.palette.secondary.main,
-                            },
-                          }}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete Course">
-                        <IconButton
-                          size="small"
-                          color="error"
-                          onClick={() => handleDeleteCourse(course.id)}
-                          sx={{
-                            "&:hover": {
-                              backgroundColor: theme.palette.error.light,
-                            },
-                          }}
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </CourseCard>
+
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        mb={2}
+                        sx={{
+                          display: "-webkit-box",
+                          WebkitLineClamp: 3,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {course.description?.substring(0, 150) ||
+                          "No description available."}
+                        {course.description?.length > 150 && "..."}
+                      </Typography>
+
+                      <Divider sx={{ my: 2 }} />
+
+                      <Grid container spacing={1} mb={1}>
+                        <Grid item xs={6}>
+                          <Box display="flex" alignItems="center">
+                            <CategoryIcon
+                              fontSize="small"
+                              color="action"
+                              sx={{ mr: 1 }}
+                            />
+                            <Typography variant="body2" color="text.secondary">
+                              {categories.find(
+                                (c) => c._id === course.category_id
+                              )?.name || "Uncategorized"}
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Box display="flex" alignItems="center">
+                            <MenuBookIcon
+                              fontSize="small"
+                              color="action"
+                              sx={{ mr: 1 }}
+                            />
+                            <Typography variant="body2" color="text.secondary">
+                              {course.modules?.length || 0} Modules
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Box display="flex" alignItems="center">
+                            <ClassIcon
+                              fontSize="small"
+                              color="action"
+                              sx={{ mr: 1 }}
+                            />
+                            <Typography variant="body2" color="text.secondary">
+                              {course.modules?.reduce(
+                                (acc, module) =>
+                                  acc + (module.lessons?.length || 0),
+                                0
+                              )}{" "}
+                              Lessons
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Box display="flex" alignItems="center">
+                            <StarIcon
+                              fontSize="small"
+                              color="action"
+                              sx={{ mr: 1 }}
+                            />
+                            <Typography variant="body2" color="text.secondary">
+                              4.8 (24)
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+
+                    <CardActions
+                      sx={{
+                        justifyContent: "space-between",
+                        p: 2,
+                        borderTop: `1px solid ${theme.palette.divider}`,
+                      }}
+                    >
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<VisibilityIcon />}
+                        onClick={() => handleViewCourse(course)}
+                        sx={{
+                          borderRadius: 2,
+                          px: 2,
+                        }}
+                      >
+                        View
+                      </Button>
+                      <Box>
+                        <Tooltip title="Edit Course">
+                          <IconButton
+                            onClick={() =>
+                              navigate(
+                                `/instructor/courses/edit/${
+                                  course._id || course.id
+                                }`
+                              )
+                            }
+                            size="small"
+                            sx={{
+                              color: orange[600],
+                              "&:hover": {
+                                bgcolor: `${orange[50]} !important`,
+                              },
+                            }}
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete Course">
+                          <IconButton
+                            onClick={() => handleDeleteCourse(course.id)}
+                            size="small"
+                            sx={{
+                              color: "error.main",
+                              ml: 1,
+                              "&:hover": {
+                                bgcolor: "rgba(244, 67, 54, 0.08) !important",
+                              },
+                            }}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    </CardActions>
+                  </Card>
                 </Grid>
               ))}
             </Grid>
           )}
         </Box>
 
+        {/* Course Details Dialog */}
         <Dialog
           open={dialogOpen}
           onClose={handleCloseDialog}
@@ -3097,180 +2952,257 @@ const InstructorDashboard = () => {
           maxWidth="md"
           PaperProps={{
             sx: {
-              borderRadius: theme.shape.borderRadius * 2,
+              borderRadius: theme.shape.borderRadius * 0.2,
               minHeight: "70vh",
               background: theme.palette.background.paper,
+              border: `1px solid ${theme.palette.divider}`,
             },
           }}
         >
-          <DialogTitle>
+          {loadingDetails ? (
             <Box
               display="flex"
-              justifyContent="space-between"
+              justifyContent="center"
               alignItems="center"
+              height="60vh"
             >
-              <Typography variant="h5" fontWeight="bold">
-                {selectedCourse?.title || "Course Details"}
-              </Typography>
-              <IconButton onClick={handleCloseDialog}>
-                <CloseIcon />
-              </IconButton>
+              <CircularProgress size={60} />
             </Box>
-            <Box mt={1} display="flex" alignItems="center">
-              <StatusChip status={selectedCourse?.status} />
-            </Box>
-          </DialogTitle>
-          <DialogContent dividers>
-            {loadingDetails ? (
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                minHeight="200px"
+          ) : (
+            <>
+              <DialogTitle
+                sx={{ borderBottom: `1px solid ${theme.palette.divider}` }}
               >
-                <CircularProgress />
-              </Box>
-            ) : (
-              <>
-                <Box mb={3}>
-                  <Typography variant="body1" paragraph>
-                    {selectedCourse?.description || "No description available"}
-                  </Typography>
-                </Box>
-
-                <Box mb={2}>
-                  <Typography variant="h6" fontWeight="bold" gutterBottom>
-                    Course Content
-                  </Typography>
-                  {modules.length === 0 ? (
-                    <Paper
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Box display="flex" alignItems="center">
+                    <Avatar
+                      variant="rounded"
                       sx={{
-                        p: 3,
-                        textAlign: "center",
-                        borderRadius: theme.shape.borderRadius,
-                        backgroundColor: theme.palette.action.hover,
+                        width: 48,
+                        height: 48,
+                        mr: 2,
+                        backgroundColor: `${theme.palette.primary.light}20`,
+                        color: theme.palette.primary.main,
                       }}
                     >
-                      <Typography variant="body2" color="textSecondary">
-                        No modules added yet
+                      <SchoolIcon />
+                    </Avatar>
+                    <Box>
+                      <Typography variant="h5" fontWeight="bold">
+                        {selectedCourse?.title}
                       </Typography>
-                      <Button
-                        variant="outlined"
-                        startIcon={<AddIcon />}
-                        sx={{ mt: 2 }}
-                        onClick={() => {
-                          handleCloseDialog();
-                          navigate(
-                            `/instructor/courses/edit/${
-                              selectedCourse._id || selectedCourse.id
-                            }`
-                          );
-                        }}
-                      >
-                        Add Modules
-                      </Button>
-                    </Paper>
-                  ) : (
-                    modules.map((module) => (
-                      <Accordion
-                        key={module._id || module.id}
+                      <Typography variant="body2" color="textSecondary">
+                        Course ID: {selectedCourse?.id}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <StatusChip status={selectedCourse?.status} />
+                </Box>
+              </DialogTitle>
+              <DialogContent dividers>
+                <Typography variant="body1" paragraph>
+                  {selectedCourse?.description}
+                </Typography>
+
+                <Box display="flex" gap={2} mb={3}>
+                  <Chip
+                    icon={<PeopleIcon fontSize="small" />}
+                    label={`${Math.floor(Math.random() * 100) + 20} Students`}
+                    variant="outlined"
+                  />
+                  <Chip
+                    icon={<AssignmentIcon fontSize="small" />}
+                    label={`${Math.floor(Math.random() * 10) + 1} Assignments`}
+                    variant="outlined"
+                  />
+                  <Chip
+                    icon={<BarChartIcon fontSize="small" />}
+                    label={`${Math.floor(Math.random() * 100)}% Completion`}
+                    variant="outlined"
+                    color="success"
+                  />
+                </Box>
+
+                <Typography variant="h6" fontWeight="bold" mt={3} mb={2}>
+                  Course Modules
+                </Typography>
+
+                {modules.length === 0 ? (
+                  <Paper
+                    sx={{
+                      p: 3,
+                      textAlign: "center",
+                      borderRadius: theme.shape.borderRadius,
+                      backgroundColor: theme.palette.background.default,
+                    }}
+                  >
+                    <Typography variant="body2" color="textSecondary">
+                      No modules added yet
+                    </Typography>
+                    <Button
+                      variant="outlined"
+                      startIcon={<AddIcon />}
+                      sx={{ mt: 2 }}
+                    >
+                      Add Module
+                    </Button>
+                  </Paper>
+                ) : (
+                  modules.map((module) => (
+                    <Accordion
+                      key={module.id}
+                      sx={{
+                        mb: 1,
+                        borderRadius: theme.shape.borderRadius,
+                        "&:before": {
+                          display: "none",
+                        },
+                      }}
+                    >
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
                         sx={{
-                          mb: 1,
+                          backgroundColor: theme.palette.background.default,
                           borderRadius: theme.shape.borderRadius,
-                          "&:before": {
-                            display: "none",
-                          },
                         }}
                       >
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          <Box display="flex" alignItems="center" width="100%">
-                            <VideoLibraryIcon color="primary" sx={{ mr: 2 }} />
-                            <Box flexGrow={1}>
-                              <Typography fontWeight="bold">
-                                {module.title}
-                              </Typography>
-                            </Box>
+                        <Box display="flex" alignItems="center" width="100%">
+                          <Box
+                            sx={{
+                              width: 36,
+                              height: 36,
+                              mr: 2,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              backgroundColor: `${theme.palette.secondary.light}20`,
+                              borderRadius: "50%",
+                              color: theme.palette.secondary.main,
+                            }}
+                          >
+                            {module.lessons.length > 0 ? (
+                              <VideoLibraryIcon fontSize="small" />
+                            ) : (
+                              <ArticleIcon fontSize="small" />
+                            )}
                           </Box>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          {module.lessons?.length > 0 ? (
-                            module.lessons.map((lesson) => (
+                          <Typography fontWeight={600}>
+                            {module.title}
+                          </Typography>
+                          <Box flexGrow={1} />
+                          <Chip
+                            label={`${module.lessons.length} Lessons`}
+                            size="small"
+                            variant="outlined"
+                          />
+                        </Box>
+                      </AccordionSummary>
+                      <AccordionDetails
+                        sx={{
+                          backgroundColor: theme.palette.background.paper,
+                          borderTop: `1px solid ${theme.palette.divider}`,
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          mb={2}
+                        >
+                          {module.description}
+                        </Typography>
+
+                        {module.lessons.length === 0 ? (
+                          <Typography variant="body2" color="textSecondary">
+                            No lessons added yet
+                          </Typography>
+                        ) : (
+                          <Box>
+                            <Typography
+                              variant="subtitle2"
+                              fontWeight={600}
+                              mb={1}
+                            >
+                              Lessons:
+                            </Typography>
+                            {module.lessons.map((lesson) => (
                               <Box
-                                key={lesson._id || lesson.id}
+                                key={lesson.id}
+                                display="flex"
+                                alignItems="center"
+                                mb={1}
+                                px={2}
+                                py={1}
                                 sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  p: 1.5,
-                                  mb: 1,
                                   borderRadius: theme.shape.borderRadius,
-                                  bgcolor: theme.palette.action.hover,
+                                  backgroundColor:
+                                    theme.palette.background.default,
                                   "&:hover": {
-                                    bgcolor: theme.palette.action.selected,
-                                    boxShadow: theme.shadows[1],
+                                    backgroundColor: theme.palette.action.hover,
                                   },
                                 }}
                               >
-                                <ArticleIcon color="secondary" sx={{ mr: 2 }} />
+                                {lesson.type === "video" ? (
+                                  <VideoLibraryIcon
+                                    color="primary"
+                                    fontSize="small"
+                                    sx={{ mr: 2 }}
+                                  />
+                                ) : (
+                                  <ArticleIcon
+                                    color="secondary"
+                                    fontSize="small"
+                                    sx={{ mr: 2 }}
+                                  />
+                                )}
                                 <Box flexGrow={1}>
-                                  <Typography>{lesson.title}</Typography>
+                                  <Typography variant="body2">
+                                    {lesson.title}
+                                  </Typography>
                                   <Typography
                                     variant="caption"
                                     color="textSecondary"
                                   >
-                                    {lesson.duration || "No duration set"}
+                                    {lesson.duration || "10 min"}
                                   </Typography>
                                 </Box>
-                                <IconButton
-                                  size="small"
-                                  sx={{
-                                    "&:hover": {
-                                      backgroundColor:
-                                        theme.palette.secondary.light,
-                                      color: theme.palette.secondary.main,
-                                    },
-                                  }}
-                                >
-                                  <EditIcon fontSize="small" />
+                                <IconButton size="small">
+                                  <MoreVertIcon fontSize="small" />
                                 </IconButton>
                               </Box>
-                            ))
-                          ) : (
-                            <Typography variant="body2" color="textSecondary">
-                              No lessons in this module
-                            </Typography>
-                          )}
-                        </AccordionDetails>
-                      </Accordion>
-                    ))
-                  )}
-                </Box>
-              </>
-            )}
-          </DialogContent>
-          <DialogActions sx={{ p: 2 }}>
-            <Button
-              variant="outlined"
-              onClick={handleCloseDialog}
-              sx={{ mr: 1 }}
-            >
-              Close
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => {
-                handleCloseDialog();
-                navigate(
-                  `/instructor/courses/edit/${
-                    selectedCourse._id || selectedCourse.id
-                  }`
-                );
-              }}
-            >
-              Edit Course
-            </Button>
-          </DialogActions>
+                            ))}
+                          </Box>
+                        )}
+                      </AccordionDetails>
+                    </Accordion>
+                  ))
+                )}
+              </DialogContent>
+              <DialogActions
+                sx={{ borderTop: `1px solid ${theme.palette.divider}`, p: 2 }}
+              >
+                <Button
+                  onClick={handleCloseDialog}
+                  variant="outlined"
+                  sx={{ borderRadius: theme.shape.borderRadius * 2 }}
+                >
+                  Close
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{ borderRadius: theme.shape.borderRadius * 2 }}
+                >
+                  Edit Course
+                </Button>
+              </DialogActions>
+            </>
+          )}
         </Dialog>
 
+        {/* Create Assignment Dialog */}
         <CreateAssignmentDialog
           open={assignmentDialogOpen}
           onClose={() => setAssignmentDialogOpen(false)}
@@ -3280,6 +3212,7 @@ const InstructorDashboard = () => {
           }}
         />
 
+        {/* Snackbar Notification */}
         <Snackbar
           open={snackbarOpen}
           autoHideDuration={6000}
@@ -3287,49 +3220,1181 @@ const InstructorDashboard = () => {
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
           sx={{
             "& .MuiPaper-root": {
-              borderRadius: theme.shape.borderRadius,
+              borderRadius: theme.shape.borderRadius * 2,
             },
           }}
         >
-          <Paper
-            elevation={3}
+          <Alert
+            elevation={6}
+            severity="success"
+            onClose={() => setSnackbarOpen(false)}
+            icon={<CheckCircleIcon fontSize="inherit" />}
             sx={{
-              p: 2,
-              backgroundColor: theme.palette.success.light,
-              color: theme.palette.success.contrastText,
+              width: "100%",
+              alignItems: "center",
+              "& .MuiAlert-message": {
+                display: "flex",
+                alignItems: "center",
+              },
             }}
           >
             <Box display="flex" alignItems="center">
-              <CheckCircleIcon sx={{ mr: 1 }} />
-              <Typography variant="body1" sx={{ flexGrow: 1 }}>
-                Assignment created successfully!
+              <Typography>
+                Assignment <strong>"{recentlyCreatedAssignment?.title}"</strong>{" "}
+                created successfully!
               </Typography>
-              <Button
-                color="inherit"
-                size="small"
-                onClick={() => {
-                  navigate(`/assignments/${recentlyCreatedAssignment?.id}`);
-                  setSnackbarOpen(false);
-                }}
-                startIcon={<VisibilityIcon />}
-                sx={{ ml: 2 }}
-              >
-                View
-              </Button>
-              <IconButton
-                size="small"
-                color="inherit"
-                onClick={() => setSnackbarOpen(false)}
-                sx={{ ml: 1 }}
-              >
-                <CloseIcon fontSize="small" />
-              </IconButton>
             </Box>
-          </Paper>
+          </Alert>
         </Snackbar>
-      </MainContent>
-    </DashboardContainer>
+      </Box>
+    </Box>
   );
 };
 
 export default InstructorDashboard;
+
+// // Modern styled components
+// const DashboardContainer = styled(Box)(({ theme }) => ({
+//   display: "flex",
+//   minHeight: "100vh",
+//   backgroundColor: theme.palette.background.default,
+// }));
+
+// const Sidebar = styled(Paper)(({ theme }) => ({
+//   width: 280,
+//   padding: theme.spacing(3, 2),
+//   borderRadius: 0,
+//   boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+//   backgroundColor: theme.palette.background.paper,
+//   borderRight: `1px solid ${theme.palette.divider}`,
+// }));
+
+// const MainContent = styled(Box)(({ theme }) => ({
+//   flexGrow: 1,
+//   padding: theme.spacing(4),
+//   backgroundColor: theme.palette.background.default,
+// }));
+
+// const StatsCard = styled(Paper)(({ theme }) => ({
+//   padding: theme.spacing(3),
+//   borderRadius: theme.shape.borderRadius,
+//   boxShadow: theme.shadows[2],
+//   transition: "all 0.3s ease",
+//   background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`,
+//   border: `1px solid ${theme.palette.divider}`,
+//   "&:hover": {
+//     transform: "translateY(-5px)",
+//     boxShadow: theme.shadows[6],
+//   },
+// }));
+
+// const CourseCard = styled(Paper)(({ theme }) => ({
+//   padding: theme.spacing(3),
+//   marginBottom: theme.spacing(2),
+//   borderRadius: theme.shape.borderRadius,
+//   boxShadow: theme.shadows[1],
+//   transition: "all 0.3s ease",
+//   border: `1px solid ${theme.palette.divider}`,
+//   "&:hover": {
+//     transform: "translateY(-5px)",
+//     boxShadow: theme.shadows[4],
+//     borderColor: theme.palette.primary.main,
+//   },
+// }));
+
+// const SearchInput = styled(TextField)(({ theme }) => ({
+//   "& .MuiOutlinedInput-root": {
+//     borderRadius: theme.shape.borderRadius,
+//     backgroundColor: theme.palette.background.paper,
+//     "& fieldset": {
+//       borderColor: theme.palette.divider,
+//     },
+//     "&:hover fieldset": {
+//       borderColor: theme.palette.primary.light,
+//     },
+//     "&.Mui-focused fieldset": {
+//       borderColor: theme.palette.primary.main,
+//       borderWidth: 1,
+//     },
+//   },
+// }));
+
+// const steps = [
+//   "Select Course",
+//   "Select Module",
+//   "Select Lesson",
+//   "Assignment Details",
+// ];
+
+// const CreateAssignmentDialog = ({ open, onClose, onAssignmentCreated }) => {
+//   const theme = useTheme();
+//   const [activeStep, setActiveStep] = useState(0);
+//   const [courses, setCourses] = useState([]);
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState(null);
+
+//   const [selectedCourse, setSelectedCourse] = useState("");
+//   const [selectedModule, setSelectedModule] = useState("");
+//   const [selectedLesson, setSelectedLesson] = useState("");
+//   const [assignmentData, setAssignmentData] = useState({
+//     title: "",
+//     description: "",
+//     max_score: 100,
+//   });
+
+//   useEffect(() => {
+//     if (open) {
+//       fetchCoursesHierarchy();
+//     }
+//   }, [open]);
+
+//   const fetchCoursesHierarchy = async () => {
+//     setLoading(true);
+//     setError(null);
+//     try {
+//       const data = await InstructorService.getCoursesHierarchy();
+//       const filteredCourses = data.filter(
+//         (course) =>
+//           Array.isArray(course.modules) &&
+//           course.modules.length > 0 &&
+//           course.modules.some(
+//             (module) =>
+//               Array.isArray(module.lessons) && module.lessons.length > 0
+//           )
+//       );
+//       setCourses(filteredCourses);
+//     } catch (err) {
+//       setError("Failed to load courses. Please try again.");
+//       console.error(err);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleNext = () => {
+//     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+//   };
+
+//   const handleBack = () => {
+//     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+//   };
+
+//   const handleCourseChange = (event) => {
+//     const selected = event.target.value;
+//     setSelectedCourse(selected);
+//     setSelectedModule("");
+//     setSelectedLesson("");
+//   };
+
+//   const handleModuleChange = (event) => {
+//     const selected = String(event.target.value);
+//     setSelectedModule(event.target.value);
+//     setSelectedLesson("");
+//   };
+
+//   const handleLessonChange = (event) => {
+//     setSelectedLesson(String(event.target.value));
+//   };
+
+//   const handleInputChange = (event) => {
+//     const { name, value } = event.target;
+//     setAssignmentData((prev) => ({
+//       ...prev,
+//       [name]: value,
+//     }));
+//   };
+
+//   const handleSubmit = async () => {
+//     try {
+//       const assignment = {
+//         lesson_id: selectedLesson,
+//         ...assignmentData,
+//       };
+//       const createdAssignment = await InstructorService.createAssignment(
+//         assignment
+//       );
+//       onAssignmentCreated(createdAssignment);
+//       onClose();
+//     } catch (err) {
+//       setError("Failed to create assignment. Please try again.");
+//       console.error(err);
+//     }
+//   };
+
+//   const getSelectedCourse = () =>
+//     courses.find((c) => String(c.id || c._id) === String(selectedCourse));
+
+//   const getSelectedModule = () => {
+//     const course = getSelectedCourse();
+//     if (!course) return null;
+//     return course.modules.find(
+//       (m) => String(m.id || m._id) === String(selectedModule)
+//     );
+//   };
+
+//   return (
+//     <Dialog
+//       open={open}
+//       onClose={onClose}
+//       fullWidth
+//       maxWidth="md"
+//       PaperProps={{
+//         sx: {
+//           borderRadius: theme.shape.borderRadius * 2,
+//           background: theme.palette.background.paper,
+//         },
+//       }}
+//     >
+//       <DialogTitle>
+//         <Box display="flex" justifyContent="space-between" alignItems="center">
+//           <Typography variant="h6" fontWeight="bold">
+//             Create New Assignment
+//           </Typography>
+//           <IconButton onClick={onClose} size="small">
+//             <CloseIcon />
+//           </IconButton>
+//         </Box>
+//         <Stepper activeStep={activeStep} alternativeLabel sx={{ mt: 3 }}>
+//           {steps.map((label) => (
+//             <Step key={label}>
+//               <StepLabel
+//                 sx={{
+//                   "& .MuiStepLabel-label": {
+//                     color: theme.palette.text.secondary,
+//                     "&.Mui-active": {
+//                       color: theme.palette.text.primary,
+//                     },
+//                     "&.Mui-completed": {
+//                       color: theme.palette.text.primary,
+//                     },
+//                   },
+//                 }}
+//               >
+//                 {label}
+//               </StepLabel>
+//             </Step>
+//           ))}
+//         </Stepper>
+//       </DialogTitle>
+
+//       <DialogContent dividers sx={{ py: 3 }}>
+//         {loading ? (
+//           <Box display="flex" justifyContent="center" p={4}>
+//             <CircularProgress />
+//           </Box>
+//         ) : error ? (
+//           <Paper elevation={0} sx={{ p: 2, bgcolor: "error.light" }}>
+//             <Typography color="error">{error}</Typography>
+//             <Button onClick={fetchCoursesHierarchy} sx={{ mt: 1 }}>
+//               Retry
+//             </Button>
+//           </Paper>
+//         ) : (
+//           <>
+//             {activeStep === 0 && (
+//               <Box sx={{ mt: 2 }}>
+//                 <FormControl fullWidth>
+//                   <InputLabel>Select Course</InputLabel>
+//                   <Select
+//                     value={selectedCourse}
+//                     onChange={handleCourseChange}
+//                     label="Select Course"
+//                     sx={{ mb: 2 }}
+//                   >
+//                     {courses.map((course) => (
+//                       <MenuItem
+//                         key={course._id}
+//                         value={String(course.id || course._id)}
+//                       >
+//                         {course.title}
+//                       </MenuItem>
+//                     ))}
+//                   </Select>
+//                 </FormControl>
+//                 {selectedCourse && (
+//                   <Box
+//                     sx={{
+//                       mt: 2,
+//                       p: 2,
+//                       borderRadius: theme.shape.borderRadius,
+//                       backgroundColor: theme.palette.action.hover,
+//                     }}
+//                   >
+//                     <Typography variant="subtitle2" fontWeight="bold">
+//                       Course Description:
+//                     </Typography>
+//                     <Typography variant="body2" color="text.secondary">
+//                       {getSelectedCourse()?.description ||
+//                         "No description available"}
+//                     </Typography>
+//                   </Box>
+//                 )}
+//               </Box>
+//             )}
+
+//             {activeStep === 1 && (
+//               <Box sx={{ mt: 2 }}>
+//                 <FormControl fullWidth>
+//                   <InputLabel>Select Module</InputLabel>
+//                   <Select
+//                     value={selectedModule}
+//                     onChange={handleModuleChange}
+//                     label="Select Module"
+//                     disabled={!selectedCourse}
+//                     sx={{ mb: 2 }}
+//                   >
+//                     <MenuItem value="">
+//                       <em>Select Module</em>
+//                     </MenuItem>
+//                     {getSelectedCourse()?.modules?.map((module) => (
+//                       <MenuItem
+//                         key={module.id || module._id}
+//                         value={String(module.id || module._id)}
+//                       >
+//                         {module.title}
+//                       </MenuItem>
+//                     ))}
+//                   </Select>
+//                 </FormControl>
+
+//                 {selectedModule && (
+//                   <Box
+//                     sx={{
+//                       mt: 2,
+//                       p: 2,
+//                       borderRadius: theme.shape.borderRadius,
+//                       backgroundColor: theme.palette.action.hover,
+//                     }}
+//                   >
+//                     <Typography variant="subtitle2" fontWeight="bold">
+//                       Module Details:
+//                     </Typography>
+//                     <Typography variant="body2" color="text.secondary">
+//                       {getSelectedModule()?.description ||
+//                         "No description available"}
+//                     </Typography>
+//                   </Box>
+//                 )}
+//               </Box>
+//             )}
+
+//             {activeStep === 2 && (
+//               <Box sx={{ mt: 2 }}>
+//                 <FormControl fullWidth>
+//                   <InputLabel>Select Lesson</InputLabel>
+//                   <Select
+//                     value={selectedLesson}
+//                     onChange={handleLessonChange}
+//                     label="Select Lesson"
+//                     disabled={!selectedModule}
+//                     sx={{ mb: 2 }}
+//                   >
+//                     {getSelectedModule()?.lessons?.map((lesson) => (
+//                       <MenuItem
+//                         key={lesson.id || lesson._id}
+//                         value={String(lesson.id || lesson._id)}
+//                       >
+//                         {lesson.title}
+//                       </MenuItem>
+//                     ))}
+//                   </Select>
+//                 </FormControl>
+//                 {selectedLesson && (
+//                   <Box
+//                     sx={{
+//                       mt: 2,
+//                       p: 2,
+//                       borderRadius: theme.shape.borderRadius,
+//                       backgroundColor: theme.palette.action.hover,
+//                     }}
+//                   >
+//                     <Typography variant="subtitle2" fontWeight="bold">
+//                       Lesson Details:
+//                     </Typography>
+//                     <Typography variant="body2" color="text.secondary">
+//                       {getSelectedModule()?.lessons?.find(
+//                         (l) => String(l.id || l._id) === selectedLesson
+//                       )?.description || "No description available"}
+//                     </Typography>
+//                   </Box>
+//                 )}
+//               </Box>
+//             )}
+
+//             {activeStep === 3 && (
+//               <Box sx={{ mt: 2 }}>
+//                 <TextField
+//                   fullWidth
+//                   label="Assignment Title"
+//                   name="title"
+//                   value={assignmentData.title}
+//                   onChange={handleInputChange}
+//                   sx={{ mb: 2 }}
+//                   InputProps={{
+//                     startAdornment: (
+//                       <InputAdornment position="start">
+//                         <AssignmentIcon color="action" />
+//                       </InputAdornment>
+//                     ),
+//                   }}
+//                 />
+//                 <TextField
+//                   fullWidth
+//                   label="Description"
+//                   name="description"
+//                   value={assignmentData.description}
+//                   onChange={handleInputChange}
+//                   multiline
+//                   rows={4}
+//                   sx={{ mb: 2 }}
+//                 />
+//                 <TextField
+//                   fullWidth
+//                   label="Maximum Score"
+//                   name="max_score"
+//                   type="number"
+//                   value={assignmentData.max_score}
+//                   onChange={handleInputChange}
+//                   inputProps={{ min: 1 }}
+//                   InputProps={{
+//                     startAdornment: (
+//                       <InputAdornment position="start">
+//                         <CheckCircleIcon color="action" />
+//                       </InputAdornment>
+//                     ),
+//                   }}
+//                 />
+//               </Box>
+//             )}
+//           </>
+//         )}
+//       </DialogContent>
+
+//       <DialogActions sx={{ p: 2 }}>
+//         <Button onClick={handleBack} disabled={activeStep === 0} sx={{ mr: 1 }}>
+//           Back
+//         </Button>
+//         {activeStep === steps.length - 1 ? (
+//           <Button
+//             onClick={handleSubmit}
+//             variant="contained"
+//             disabled={!selectedLesson || !assignmentData.title}
+//             startIcon={<AssignmentIcon />}
+//           >
+//             Create Assignment
+//           </Button>
+//         ) : (
+//           <Button
+//             onClick={handleNext}
+//             variant="contained"
+//             disabled={
+//               activeStep === 0 &&
+//               (!selectedCourse || getSelectedCourse()?.modules?.length === 0)
+//             }
+//           >
+//             Next
+//           </Button>
+//         )}
+//       </DialogActions>
+//     </Dialog>
+//   );
+// };
+
+// const InstructorDashboard = () => {
+//   const theme = useTheme();
+//   const location = useLocation();
+//   const navigate = useNavigate();
+//   const [courses, setCourses] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [stats, setStats] = useState({
+//     totalCourses: 0,
+//     approvedCourses: 0,
+//     pendingCourses: 0,
+//     rejectedCourses: 0,
+//   });
+//   const [selectedCourse, setSelectedCourse] = useState(null);
+//   const [modules, setModules] = useState([]);
+//   const [dialogOpen, setDialogOpen] = useState(false);
+//   const [loadingDetails, setLoadingDetails] = useState(false);
+//   const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
+//   const [snackbarOpen, setSnackbarOpen] = useState(false);
+//   const [recentlyCreatedAssignment, setRecentlyCreatedAssignment] =
+//     useState(null);
+
+//   useEffect(() => {
+//     const fetchCourses = async () => {
+//       try {
+//         setLoading(true);
+//         const data = await InstructorService.getCourses();
+//         setCourses(data);
+
+//         const approved = data.filter((c) => c.status === "approved").length;
+//         const pending = data.filter((c) => c.status === "pending").length;
+//         const rejected = data.filter((c) => c.status === "rejected").length;
+
+//         setStats({
+//           totalCourses: data.length,
+//           approvedCourses: approved,
+//           pendingCourses: pending,
+//           rejectedCourses: rejected,
+//         });
+//       } catch (error) {
+//         console.error("Failed to fetch courses:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchCourses();
+//   }, []);
+
+//   const handleDeleteCourse = async (courseId) => {
+//     try {
+//       await InstructorService.deleteCourse(courseId);
+//       setCourses(courses.filter((course) => course.id !== courseId));
+//       setStats((prev) => ({
+//         ...prev,
+//         totalCourses: prev.totalCourses - 1,
+//         approvedCourses: courses.filter(
+//           (c) => c.id !== courseId && c.status === "approved"
+//         ).length,
+//         pendingCourses: courses.filter(
+//           (c) => c.id !== courseId && c.status === "pending"
+//         ).length,
+//         rejectedCourses: courses.filter(
+//           (c) => c.id !== courseId && c.status === "rejected"
+//         ).length,
+//       }));
+//     } catch (error) {
+//       console.error("Failed to delete course:", error);
+//     }
+//   };
+
+//   const handleViewCourse = async (course) => {
+//     try {
+//       setSelectedCourse(course);
+//       setLoadingDetails(true);
+//       setDialogOpen(true);
+
+//       const modulesData = await InstructorService.getModulesByCourse(
+//         course._id || course.id
+//       );
+//       setModules(modulesData);
+//     } catch (error) {
+//       console.error("Error fetching course modules:", error);
+//     } finally {
+//       setLoadingDetails(false);
+//     }
+//   };
+
+//   const handleCloseDialog = () => {
+//     setDialogOpen(false);
+//     setSelectedCourse(null);
+//     setModules([]);
+//   };
+
+//   const filteredCourses = courses.filter(
+//     (course) =>
+//       course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       course.description.toLowerCase().includes(searchTerm.toLowerCase())
+//   );
+
+//   return (
+//     <DashboardContainer>
+//       <Sidebar>
+//         <Box display="flex" alignItems="center" mb={4}>
+//           <Avatar
+//             alt="Instructor"
+//             src="/path/to/instructor-avatar.jpg"
+//             sx={{
+//               width: 56,
+//               height: 56,
+//               mr: 2,
+//               border: `2px solid ${theme.palette.primary.main}`,
+//             }}
+//           />
+//           <Box>
+//             <Typography variant="h6" fontWeight="bold">
+//               Dr. Sarah Johnson
+//             </Typography>
+//             <Typography variant="body2" color="textSecondary">
+//               Computer Science Instructor
+//             </Typography>
+//           </Box>
+//         </Box>
+//         <Divider sx={{ my: 2 }} />
+//         <List>
+//           {[
+//             {
+//               text: "Dashboard",
+//               icon: <DashboardIcon />,
+//               path: "/instructor/dashboard",
+//             },
+//             {
+//               text: "My Courses",
+//               icon: <CoursesIcon />,
+//               path: "/instructor/courses",
+//             },
+//             {
+//               text: "Create Course",
+//               icon: <AddIcon />,
+//               path: "/instructor/courses/create",
+//             },
+//             {
+//               text: "Enrollment Stats",
+//               icon: <PeopleIcon />,
+//               path: "/instructor/enrollments",
+//             },
+//             {
+//               text: "Assignment",
+//               icon: <StudentsIcon />,
+//               path: "/instructor/assignments",
+//             },
+//             {
+//               text: "Visualization",
+//               icon: <AnalyticsIcon />,
+//               path: "/instructor/Visualization",
+//             },
+//             {
+//               text: "Messages",
+//               icon: <MessagesIcon />,
+//               path: "/instructor/messages",
+//             },
+//             {
+//               text: "Quizzez",
+//               icon: <SettingsIcon />,
+//               path: "/instructor/Quizze",
+//             },
+//           ].map((item) => (
+//             <ListItem
+//               button
+//               key={item.text}
+//               component={Link}
+//               to={item.path}
+//               sx={{
+//                 borderRadius: theme.shape.borderRadius,
+//                 mb: 0.5,
+//                 backgroundColor:
+//                   location.pathname === item.path
+//                     ? theme.palette.action.selected
+//                     : "transparent",
+//                 "&:hover": {
+//                   backgroundColor: theme.palette.action.hover,
+//                 },
+//               }}
+//             >
+//               <ListItemIcon
+//                 sx={{
+//                   minWidth: 40,
+//                   color:
+//                     location.pathname === item.path
+//                       ? theme.palette.primary.main
+//                       : theme.palette.text.secondary,
+//                 }}
+//               >
+//                 {item.icon}
+//               </ListItemIcon>
+//               <ListItemText
+//                 primary={item.text}
+//                 primaryTypographyProps={{
+//                   fontWeight:
+//                     location.pathname === item.path ? "bold" : "normal",
+//                   color:
+//                     location.pathname === item.path
+//                       ? theme.palette.text.primary
+//                       : theme.palette.text.secondary,
+//                 }}
+//               />
+//             </ListItem>
+//           ))}
+//         </List>
+//       </Sidebar>
+
+//       <MainContent>
+//         <Box mb={4}>
+//           <Typography variant="h4" fontWeight="bold" gutterBottom>
+//             Instructor Dashboard
+//           </Typography>
+//           <Typography variant="body1" color="textSecondary">
+//             Welcome back! Here's what's happening with your courses today.
+//           </Typography>
+//         </Box>
+
+//         <Grid container spacing={3} mb={4}>
+//           {[
+//             {
+//               title: "Total Courses",
+//               value: stats.totalCourses,
+//               icon: <CoursesIcon fontSize="large" />,
+//               color: theme.palette.primary.main,
+//             },
+//             {
+//               title: "Approved Courses",
+//               value: stats.approvedCourses,
+//               icon: <SchoolIcon fontSize="large" />,
+//               color: theme.palette.success.main,
+//             },
+//             {
+//               title: "Pending Approval",
+//               value: stats.pendingCourses,
+//               icon: <ScheduleIcon fontSize="large" />,
+//               color: theme.palette.warning.main,
+//             },
+//             {
+//               title: "Rejected Courses",
+//               value: stats.rejectedCourses,
+//               icon: <DeleteIcon fontSize="large" />,
+//               color: theme.palette.error.main,
+//             },
+//           ].map((stat) => (
+//             <Grid item xs={12} sm={6} md={3} key={stat.title}>
+//               <StatsCard>
+//                 <Box
+//                   display="flex"
+//                   justifyContent="space-between"
+//                   alignItems="center"
+//                 >
+//                   <Box>
+//                     <Typography
+//                       variant="body2"
+//                       color="textSecondary"
+//                       gutterBottom
+//                     >
+//                       {stat.title}
+//                     </Typography>
+//                     <Typography
+//                       variant="h4"
+//                       fontWeight="bold"
+//                       color={stat.color}
+//                     >
+//                       {stat.value}
+//                     </Typography>
+//                   </Box>
+//                   <Box
+//                     sx={{
+//                       p: 2,
+//                       borderRadius: "50%",
+//                       backgroundColor: `${stat.color}20`,
+//                       color: stat.color,
+//                     }}
+//                   >
+//                     {stat.icon}
+//                   </Box>
+//                 </Box>
+//               </StatsCard>
+//             </Grid>
+//           ))}
+//         </Grid>
+
+//         <Box mb={4}>
+//           <Box
+//             display="flex"
+//             justifyContent="space-between"
+//             alignItems="center"
+//             mb={3}
+//           >
+//             <Typography variant="h5" fontWeight="bold">
+//               My Courses
+//             </Typography>
+//             <Box display="flex" gap={2}>
+//               <Button
+//                 component={Link}
+//                 to="/instructor/courses/create"
+//                 variant="contained"
+//                 startIcon={<AddIcon />}
+//                 sx={{
+//                   borderRadius: theme.shape.borderRadius,
+//                   textTransform: "none",
+//                   boxShadow: "none",
+//                   "&:hover": {
+//                     boxShadow: theme.shadows[2],
+//                   },
+//                 }}
+//               >
+//                 Create Course
+//               </Button>
+//               <Button
+//                 variant="outlined"
+//                 startIcon={<AssignmentIcon />}
+//                 onClick={() => setAssignmentDialogOpen(true)}
+//                 sx={{
+//                   borderRadius: theme.shape.borderRadius,
+//                   textTransform: "none",
+//                 }}
+//               >
+//                 Create Assignment
+//               </Button>
+//             </Box>
+//           </Box>
+
+//           <Box mb={3}>
+//             <SearchInput
+//               fullWidth
+//               placeholder="Search courses..."
+//               value={searchTerm}
+//               onChange={(e) => setSearchTerm(e.target.value)}
+//               InputProps={{
+//                 startAdornment: (
+//                   <InputAdornment position="start">
+//                     <SearchIcon color="action" />
+//                   </InputAdornment>
+//                 ),
+//                 sx: {
+//                   maxWidth: 500,
+//                 },
+//               }}
+//             />
+//           </Box>
+
+//           {loading ? (
+//             <Box display="flex" justifyContent="center" my={4}>
+//               <CircularProgress />
+//             </Box>
+//           ) : filteredCourses.length === 0 ? (
+//             <Paper
+//               sx={{
+//                 p: 4,
+//                 textAlign: "center",
+//                 borderRadius: theme.shape.borderRadius,
+//                 backgroundColor: theme.palette.background.paper,
+//               }}
+//             >
+//               <Typography variant="body1">
+//                 {searchTerm
+//                   ? "No courses match your search"
+//                   : "You haven't created any courses yet"}
+//               </Typography>
+//               <Button
+//                 component={Link}
+//                 to="/instructor/courses/create"
+//                 variant="contained"
+//                 startIcon={<AddIcon />}
+//                 sx={{ mt: 2 }}
+//               >
+//                 Create Your First Course
+//               </Button>
+//             </Paper>
+//           ) : (
+//             <Grid container spacing={3}>
+//               {filteredCourses.map((course) => (
+//                 <Grid item xs={12} md={6} lg={4} key={course._id || course.id}>
+//                   <CourseCard>
+//                     <Box
+//                       display="flex"
+//                       justifyContent="space-between"
+//                       alignItems="flex-start"
+//                       mb={2}
+//                     >
+//                       <Typography variant="h6" fontWeight="bold">
+//                         {course.title}
+//                       </Typography>
+//                       <StatusChip status={course.status} />
+//                     </Box>
+//                     <Typography variant="body2" color="textSecondary" mb={2}>
+//                       {course.description.length > 100
+//                         ? `${course.description.substring(0, 100)}...`
+//                         : course.description}
+//                     </Typography>
+//                     <Box display="flex" justifyContent="flex-end" mb={2}>
+//                       <Tooltip title="View Course">
+//                         <IconButton
+//                           size="small"
+//                           onClick={() => handleViewCourse(course)}
+//                           sx={{
+//                             mr: 1,
+//                             "&:hover": {
+//                               backgroundColor: theme.palette.primary.light,
+//                               color: theme.palette.primary.main,
+//                             },
+//                           }}
+//                         >
+//                           <VisibilityIcon fontSize="small" />
+//                         </IconButton>
+//                       </Tooltip>
+//                       <Tooltip title="Edit Course">
+//                         <IconButton
+//                           size="small"
+//                           onClick={() =>
+//                             navigate(
+//                               `/instructor/courses/edit/${
+//                                 course._id || course.id
+//                               }`
+//                             )
+//                           }
+//                           sx={{
+//                             mr: 1,
+//                             "&:hover": {
+//                               backgroundColor: theme.palette.secondary.light,
+//                               color: theme.palette.secondary.main,
+//                             },
+//                           }}
+//                         >
+//                           <EditIcon fontSize="small" />
+//                         </IconButton>
+//                       </Tooltip>
+//                       <Tooltip title="Delete Course">
+//                         <IconButton
+//                           size="small"
+//                           color="error"
+//                           onClick={() => handleDeleteCourse(course.id)}
+//                           sx={{
+//                             "&:hover": {
+//                               backgroundColor: theme.palette.error.light,
+//                             },
+//                           }}
+//                         >
+//                           <DeleteIcon fontSize="small" />
+//                         </IconButton>
+//                       </Tooltip>
+//                     </Box>
+//                   </CourseCard>
+//                 </Grid>
+//               ))}
+//             </Grid>
+//           )}
+//         </Box>
+
+//         <Dialog
+//           open={dialogOpen}
+//           onClose={handleCloseDialog}
+//           fullWidth
+//           maxWidth="md"
+//           PaperProps={{
+//             sx: {
+//               borderRadius: theme.shape.borderRadius * 2,
+//               minHeight: "70vh",
+//               background: theme.palette.background.paper,
+//             },
+//           }}
+//         >
+//           <DialogTitle>
+//             <Box
+//               display="flex"
+//               justifyContent="space-between"
+//               alignItems="center"
+//             >
+//               <Typography variant="h5" fontWeight="bold">
+//                 {selectedCourse?.title || "Course Details"}
+//               </Typography>
+//               <IconButton onClick={handleCloseDialog}>
+//                 <CloseIcon />
+//               </IconButton>
+//             </Box>
+//             <Box mt={1} display="flex" alignItems="center">
+//               <StatusChip status={selectedCourse?.status} />
+//             </Box>
+//           </DialogTitle>
+//           <DialogContent dividers>
+//             {loadingDetails ? (
+//               <Box
+//                 display="flex"
+//                 justifyContent="center"
+//                 alignItems="center"
+//                 minHeight="200px"
+//               >
+//                 <CircularProgress />
+//               </Box>
+//             ) : (
+//               <>
+//                 <Box mb={3}>
+//                   <Typography variant="body1" paragraph>
+//                     {selectedCourse?.description || "No description available"}
+//                   </Typography>
+//                 </Box>
+
+//                 <Box mb={2}>
+//                   <Typography variant="h6" fontWeight="bold" gutterBottom>
+//                     Course Content
+//                   </Typography>
+//                   {modules.length === 0 ? (
+//                     <Paper
+//                       sx={{
+//                         p: 3,
+//                         textAlign: "center",
+//                         borderRadius: theme.shape.borderRadius,
+//                         backgroundColor: theme.palette.action.hover,
+//                       }}
+//                     >
+//                       <Typography variant="body2" color="textSecondary">
+//                         No modules added yet
+//                       </Typography>
+//                       <Button
+//                         variant="outlined"
+//                         startIcon={<AddIcon />}
+//                         sx={{ mt: 2 }}
+//                         onClick={() => {
+//                           handleCloseDialog();
+//                           navigate(
+//                             `/instructor/courses/edit/${
+//                               selectedCourse._id || selectedCourse.id
+//                             }`
+//                           );
+//                         }}
+//                       >
+//                         Add Modules
+//                       </Button>
+//                     </Paper>
+//                   ) : (
+//                     modules.map((module) => (
+//                       <Accordion
+//                         key={module._id || module.id}
+//                         sx={{
+//                           mb: 1,
+//                           borderRadius: theme.shape.borderRadius,
+//                           "&:before": {
+//                             display: "none",
+//                           },
+//                         }}
+//                       >
+//                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+//                           <Box display="flex" alignItems="center" width="100%">
+//                             <VideoLibraryIcon color="primary" sx={{ mr: 2 }} />
+//                             <Box flexGrow={1}>
+//                               <Typography fontWeight="bold">
+//                                 {module.title}
+//                               </Typography>
+//                             </Box>
+//                           </Box>
+//                         </AccordionSummary>
+//                         <AccordionDetails>
+//                           {module.lessons?.length > 0 ? (
+//                             module.lessons.map((lesson) => (
+//                               <Box
+//                                 key={lesson._id || lesson.id}
+//                                 sx={{
+//                                   display: "flex",
+//                                   alignItems: "center",
+//                                   p: 1.5,
+//                                   mb: 1,
+//                                   borderRadius: theme.shape.borderRadius,
+//                                   bgcolor: theme.palette.action.hover,
+//                                   "&:hover": {
+//                                     bgcolor: theme.palette.action.selected,
+//                                     boxShadow: theme.shadows[1],
+//                                   },
+//                                 }}
+//                               >
+//                                 <ArticleIcon color="secondary" sx={{ mr: 2 }} />
+//                                 <Box flexGrow={1}>
+//                                   <Typography>{lesson.title}</Typography>
+//                                   <Typography
+//                                     variant="caption"
+//                                     color="textSecondary"
+//                                   >
+//                                     {lesson.duration || "No duration set"}
+//                                   </Typography>
+//                                 </Box>
+//                                 <IconButton
+//                                   size="small"
+//                                   sx={{
+//                                     "&:hover": {
+//                                       backgroundColor:
+//                                         theme.palette.secondary.light,
+//                                       color: theme.palette.secondary.main,
+//                                     },
+//                                   }}
+//                                 >
+//                                   <EditIcon fontSize="small" />
+//                                 </IconButton>
+//                               </Box>
+//                             ))
+//                           ) : (
+//                             <Typography variant="body2" color="textSecondary">
+//                               No lessons in this module
+//                             </Typography>
+//                           )}
+//                         </AccordionDetails>
+//                       </Accordion>
+//                     ))
+//                   )}
+//                 </Box>
+//               </>
+//             )}
+//           </DialogContent>
+//           <DialogActions sx={{ p: 2 }}>
+//             <Button
+//               variant="outlined"
+//               onClick={handleCloseDialog}
+//               sx={{ mr: 1 }}
+//             >
+//               Close
+//             </Button>
+//             <Button
+//               variant="contained"
+//               onClick={() => {
+//                 handleCloseDialog();
+//                 navigate(
+//                   `/instructor/courses/edit/${
+//                     selectedCourse._id || selectedCourse.id
+//                   }`
+//                 );
+//               }}
+//             >
+//               Edit Course
+//             </Button>
+//           </DialogActions>
+//         </Dialog>
+
+//         <CreateAssignmentDialog
+//           open={assignmentDialogOpen}
+//           onClose={() => setAssignmentDialogOpen(false)}
+//           onAssignmentCreated={(assignment) => {
+//             setRecentlyCreatedAssignment(assignment);
+//             setSnackbarOpen(true);
+//           }}
+//         />
+
+//         <Snackbar
+//           open={snackbarOpen}
+//           autoHideDuration={6000}
+//           onClose={() => setSnackbarOpen(false)}
+//           anchorOrigin={{ vertical: "top", horizontal: "right" }}
+//           sx={{
+//             "& .MuiPaper-root": {
+//               borderRadius: theme.shape.borderRadius,
+//             },
+//           }}
+//         >
+//           <Paper
+//             elevation={3}
+//             sx={{
+//               p: 2,
+//               backgroundColor: theme.palette.success.light,
+//               color: theme.palette.success.contrastText,
+//             }}
+//           >
+//             <Box display="flex" alignItems="center">
+//               <CheckCircleIcon sx={{ mr: 1 }} />
+//               <Typography variant="body1" sx={{ flexGrow: 1 }}>
+//                 Assignment created successfully!
+//               </Typography>
+//               <Button
+//                 color="inherit"
+//                 size="small"
+//                 onClick={() => {
+//                   navigate(`/assignments/${recentlyCreatedAssignment?.id}`);
+//                   setSnackbarOpen(false);
+//                 }}
+//                 startIcon={<VisibilityIcon />}
+//                 sx={{ ml: 2 }}
+//               >
+//                 View
+//               </Button>
+//               <IconButton
+//                 size="small"
+//                 color="inherit"
+//                 onClick={() => setSnackbarOpen(false)}
+//                 sx={{ ml: 1 }}
+//               >
+//                 <CloseIcon fontSize="small" />
+//               </IconButton>
+//             </Box>
+//           </Paper>
+//         </Snackbar>
+//       </MainContent>
+//     </DashboardContainer>
+//   );
+// };
+
+// export default InstructorDashboard;

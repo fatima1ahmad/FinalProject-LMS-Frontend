@@ -77,7 +77,6 @@ const InProgressCourses = () => {
       try {
         setLoading(true);
         const enrollments = await EnrollmentService.getUserEnrollments();
-
         const courseDetails = await Promise.all(
           enrollments.map(async (enrollment) => {
             const [course, progress] = await Promise.all([
@@ -88,11 +87,13 @@ const InProgressCourses = () => {
             const totalLessons = progress?.summary?.lessons?.total_lessons || 0;
             const completedLessons =
               progress?.summary?.lessons?.completed_lessons || 0;
-            const progressPercentage =
-              totalLessons > 0
-                ? Math.round((completedLessons / totalLessons) * 100)
-                : 0;
-
+            const isCompleted =
+              enrollment.is_completed || completedLessons >= totalLessons;
+            const progressPercentage = isCompleted
+              ? 100
+              : totalLessons > 0
+              ? Math.round((completedLessons / totalLessons) * 100)
+              : 0;
             return {
               ...course,
               enrollmentId: enrollment.id,
@@ -100,7 +101,7 @@ const InProgressCourses = () => {
               progress: progressPercentage,
               totalLessons,
               completedLessons,
-              isCompleted: progressPercentage >= 100,
+              isCompleted,
             };
           })
         );
