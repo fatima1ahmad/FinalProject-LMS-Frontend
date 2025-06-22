@@ -228,7 +228,7 @@
 // //               letterSpacing: "-0.5px",
 // //             }}
 // //           >
-// //             EduFlex
+// //             LearnHub
 // //           </Typography>
 // //           <Chip
 // //             label="Admin"
@@ -548,7 +548,7 @@
 //               WebkitTextFillColor: "transparent",
 //             }}
 //           >
-//             EduFlex
+//             LearnHub
 //           </Typography>
 //         </Stack>
 
@@ -689,6 +689,7 @@
 
 // export default Header;
 // Header Component
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext/AuthContext";
@@ -835,9 +836,9 @@ const Header = () => {
                 letterSpacing: "-0.02em",
               }}
             >
-              EduFlex
+              LearnHub
             </Typography>
-            <Typography
+            {/* <Typography
               variant="caption"
               sx={{
                 color: theme.palette.text.secondary,
@@ -848,7 +849,7 @@ const Header = () => {
               }}
             >
               Learning Management System
-            </Typography>
+            </Typography> */}
           </Box>
         </Stack>
 

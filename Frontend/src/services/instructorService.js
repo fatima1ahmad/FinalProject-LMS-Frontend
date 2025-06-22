@@ -147,16 +147,6 @@ const InstructorService = {
     }
   },
 
-  // createLesson: async (lessonData) => {
-  //   try {
-  //     const response = await api.post("/lessons", lessonData);
-  //     return response.data.lesson;
-  //   } catch (error) {
-  //     console.error("Error creating lesson:", error.response?.data || error);
-  //     throw error;
-  //   }
-  // },
-
   updateLesson: async (lessonId, lessonData) => {
     try {
       const response = await api.put(`/lessons/${lessonId}`, lessonData);
@@ -177,73 +167,6 @@ const InstructorService = {
     }
   },
 
-  // ===== Files =====
-  // uploadFile: async (file) => {
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("file", file);
-  //     const response = await api.post("/attachments/upload", formData, {
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     });
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error("Error uploading file:", error);
-  //     throw error;
-  //   }
-  // },
-  // uploadFile: async (formData) => {
-  //   try {
-  //     const response = await api.post("/attachments/upload", formData, {
-  //       headers: { "Content-Type": "multipart/form-data" },
-  //     });
-  //     return response.data.attachment;
-  //   } catch (error) {
-  //     console.error("Upload file error:", error.response || error);
-  //     throw error;
-  //   }
-  // },
-  // uploadFile: async (formData) => {
-  //   try {
-  //     const response = await api.post("/attachments/upload", formData, {
-  //       headers: { "Content-Type": "multipart/form-data" },
-  //     });
-  //     return response.data.attachment;
-  //   } catch (error) {
-  //     console.error("Upload file error:", error.response || error);
-  //     throw error;
-  //   }
-  // },
-
-  // createLesson: async (lessonData) => {
-  //   try {
-  //     // تحويل القيم الرقمية لضمان التوافق مع الباكند
-  //     const dataToSend = {
-  //       ...lessonData,
-  //       module_id: Number(lessonData.module_id),
-  //       duration: Number(lessonData.duration),
-  //       order: Number(lessonData.order),
-  //     };
-
-  //     const response = await api.post("/lessons", dataToSend);
-  //     return response.data.lesson;
-  //   } catch (error) {
-  //     console.error("Error creating lesson:", error.response?.data || error);
-  //     throw error;
-  //   }
-  // },
-
-  // deleteFile: async (fileId) => {
-  //   try {
-  //     const response = await api.delete(`/attachments/file/${fileId}`);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error("Error deleting file:", error);
-  //     throw error;
-  //   }
-  // },
-
   uploadFile: async (formData) => {
     try {
       const response = await api.post("/attachments/upload", formData, {
@@ -256,22 +179,6 @@ const InstructorService = {
     }
   },
 
-  // createLesson: async (lessonData) => {
-  //   try {
-  //     const dataToSend = {
-  //       ...lessonData,
-  //       module_id: Number(lessonData.module_id),
-  //       duration: Number(lessonData.duration),
-  //       order: Number(lessonData.order),
-  //     };
-
-  //     const response = await api.post("/lessons", dataToSend);
-  //     return response.data.lesson;
-  //   } catch (error) {
-  //     console.error("Error creating lesson:", error.response?.data || error);
-  //     throw error;
-  //   }
-  // },
   createLesson: async (lessonData) => {
     console.log("Lesson data before createLesson:", lessonData);
 
@@ -390,6 +297,15 @@ const InstructorService = {
       return response.data;
     } catch (error) {
       console.error("Error deleting assignment:", error);
+      throw error;
+    }
+  },
+  getQuizzesByLesson: async (lessonId) => {
+    try {
+      const response = await api.get(`/quizzes/lesson/${lessonId}`);
+      return response.data.data || []; // حسب شكل الـ response عندك
+    } catch (error) {
+      console.error("Error fetching quizzes by lesson:", error);
       throw error;
     }
   },
