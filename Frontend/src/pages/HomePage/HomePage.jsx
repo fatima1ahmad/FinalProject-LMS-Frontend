@@ -1,9 +1,846 @@
+// import React, { useState, useEffect } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { useAuth } from "../../contexts/AuthContext/AuthContext";
+// import { useThemeMode } from "../../contexts/ThemeContext";
+// import { getInitials } from "../../utils/stringUtils";
+// import AboutPage from "../../pages/AboutPage/AboutPage";
+// import {
+//   Box,
+//   Container,
+//   Typography,
+//   Button,
+//   Grid,
+//   Card,
+//   CardContent,
+//   Paper,
+//   Avatar,
+//   Chip,
+//   AppBar,
+//   Toolbar,
+//   IconButton,
+//   Stack,
+//   Divider,
+//   useTheme,
+//   useMediaQuery,
+//   Menu,
+//   MenuItem,
+//   ListItemIcon,
+//   alpha,
+//   Slide,
+//   Fade,
+// } from "@mui/material";
+// import {
+//   School,
+//   MenuBook,
+//   TrendingUp,
+//   Groups,
+//   Assignment,
+//   PlayCircle,
+//   ArrowForward,
+//   RocketLaunch,
+//   BarChart,
+//   VerifiedUser,
+//   Forum,
+//   Logout,
+//   AccountCircle,
+//   Dashboard,
+//   Brightness4,
+//   Brightness7,
+// } from "@mui/icons-material";
+
+// const HomePage = () => {
+//   const navigate = useNavigate();
+//   const { user, isAuthenticated, logout } = useAuth();
+//   const theme = useTheme();
+//   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+//   const { toggleColorMode, mode } = useThemeMode();
+
+//   const [anchorEl, setAnchorEl] = useState(null);
+//   const [scrolled, setScrolled] = useState(false);
+//   const open = Boolean(anchorEl);
+
+//   useEffect(() => {
+//     const handleScroll = () => {
+//       setScrolled(window.scrollY > 50);
+//     };
+//     window.addEventListener("scroll", handleScroll);
+//     return () => window.removeEventListener("scroll", handleScroll);
+//   }, []);
+
+//   const heroBackground = "url('/images/hero-bg.jpg')";
+
+//   const features = [
+//     {
+//       icon: <MenuBook sx={{ fontSize: 40 }} />,
+//       title: "Interactive Courses",
+//       description: "Engage with multimedia content.",
+//     },
+//     {
+//       icon: <Assignment sx={{ fontSize: 40 }} />,
+//       title: "Smart Assignments",
+//       description: "AI-powered grading.",
+//     },
+//     {
+//       icon: <TrendingUp sx={{ fontSize: 40 }} />,
+//       title: "Progress Analytics",
+//       description: "Track and optimize your performance.",
+//     },
+//     {
+//       icon: <Groups sx={{ fontSize: 40 }} />,
+//       title: "Community Learning",
+//       description: "Collaborate with peers in study groups.",
+//     },
+//   ];
+
+//   const courses = [
+//     {
+//       title: "Introduction to Programming",
+//       instructor: "Dr. Sarah Johnson",
+//       students: 1250,
+//       rating: 4.8,
+//       category: "Computer Science",
+//     },
+//     {
+//       title: "Data Science Fundamentals",
+//       instructor: "Prof. Michael Chen",
+//       students: 980,
+//       rating: 4.7,
+//       category: "Data Science",
+//     },
+//     {
+//       title: "Digital Marketing Masterclass",
+//       instructor: "Alex Rodriguez",
+//       students: 750,
+//       rating: 4.9,
+//       category: "Business",
+//     },
+//   ];
+
+//   const stats = [
+//     { value: "10K+", label: "Active Students" },
+//     { value: "500+", label: "Courses Available" },
+//     { value: "95%", label: "Satisfaction Rate" },
+//     { value: "50+", label: "Expert Instructors" },
+//   ];
+
+//   const testimonials = [
+//     {
+//       quote: "This platform transformed my career. The courses are top-notch!",
+//       author: "Sarah Johnson",
+//       role: "Software Developer",
+//     },
+//     {
+//       quote: "The best investment I've made in my professional development.",
+//       author: "Michael Chen",
+//       role: "Data Scientist",
+//     },
+//     {
+//       quote:
+//         "Exceptional learning experience with a strong practical outcomes.",
+//       author: "Alex Rodriguez",
+//       role: "Marketing Specialist",
+//     },
+//     {
+//       quote: "I gained real-world skills that helped me. Highly recommended!",
+//       author: "Ahmed Al-Fayez",
+//       role: "Data Analyst",
+//     },
+//   ];
+
+//   const handleClick = (event) => {
+//     setAnchorEl(event.currentTarget);
+//   };
+
+//   const handleClose = () => {
+//     setAnchorEl(null);
+//   };
+
+//   const handleLogout = async () => {
+//     await logout();
+//     navigate("/login");
+//     handleClose();
+//   };
+
+//   return (
+//     <Box sx={{ flexGrow: 1, bgcolor: "background.paper" }}>
+//       {/* Modern Gradient Header */}
+//       <AppBar
+//         position="fixed"
+//         elevation={scrolled ? 4 : 0}
+//         sx={{
+//           backdropFilter: "blur(10px)",
+//           backgroundColor: scrolled
+//             ? alpha(theme.palette.background.paper, 0.8)
+//             : "transparent",
+//           backgroundImage: scrolled
+//             ? `linear-gradient(135deg, ${alpha(
+//                 theme.palette.primary.main,
+//                 0.9
+//               )} 0%, ${alpha(theme.palette.secondary.main, 0.9)} 100%)`
+//             : "none",
+//           transition: "all 0.3s ease",
+//           color: scrolled ? "white" : "text.primary",
+//           py: scrolled ? 0 : 2,
+//         }}
+//       >
+//         <Container maxWidth="xl">
+//           <Toolbar disableGutters>
+//             <Slide direction="right" in={!scrolled} mountOnEnter unmountOnExit>
+//               <Stack direction="row" alignItems="center" spacing={1}>
+//                 <School
+//                   sx={{
+//                     color: scrolled ? "white" : "primary.main",
+//                     fontSize: 32,
+//                   }}
+//                 />
+//                 <Typography variant="h6" fontWeight={700}>
+//                   LearnHub
+//                 </Typography>
+//               </Stack>
+//             </Slide>
+
+//             <Fade in={scrolled}>
+//               <Box>
+//                 <Stack direction="row" alignItems="center" spacing={1}>
+//                   <School sx={{ color: "white", fontSize: 32 }} />
+//                   <Typography variant="h6" fontWeight={700}>
+//                     LearnHub
+//                   </Typography>
+//                 </Stack>
+//               </Box>
+//             </Fade>
+
+//             <Box sx={{ flexGrow: 1 }} />
+
+//             {isAuthenticated ? (
+//               <>
+//                 <Stack direction="row" alignItems="center" spacing={2}>
+//                   <IconButton
+//                     onClick={toggleColorMode}
+//                     color={scrolled ? "inherit" : "default"}
+//                   >
+//                     {mode === "dark" ? <Brightness7 /> : <Brightness4 />}
+//                   </IconButton>
+
+//                   {scrolled && (
+//                     <Chip
+//                       label={user?.role}
+//                       color="primary"
+//                       variant="outlined"
+//                       sx={{
+//                         fontWeight: 600,
+//                         backgroundColor: "white",
+//                         color: theme.palette.primary.main,
+//                       }}
+//                     />
+//                   )}
+//                   <IconButton onClick={handleClick}>
+//                     <Avatar
+//                       sx={{
+//                         bgcolor: scrolled ? "white" : "primary.main",
+//                         color: scrolled ? theme.palette.primary.main : "white",
+//                         width: 40,
+//                         height: 40,
+//                         fontWeight: 600,
+//                       }}
+//                     >
+//                       {getInitials(user?.name || user?.email)}
+//                     </Avatar>
+//                   </IconButton>
+//                 </Stack>
+
+//                 <Menu
+//                   anchorEl={anchorEl}
+//                   open={open}
+//                   onClose={handleClose}
+//                   PaperProps={{
+//                     elevation: 3,
+//                     sx: {
+//                       overflow: "visible",
+//                       filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+//                       mt: 1.5,
+//                       "& .MuiAvatar-root": {
+//                         width: 32,
+//                         height: 32,
+//                         ml: -0.5,
+//                         mr: 1,
+//                       },
+//                     },
+//                   }}
+//                   transformOrigin={{ horizontal: "right", vertical: "top" }}
+//                   anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+//                 >
+//                   <MenuItem
+//                     onClick={() => {
+//                       navigate("/profile");
+//                       handleClose();
+//                     }}
+//                   >
+//                     <ListItemIcon>
+//                       <AccountCircle fontSize="small" />
+//                     </ListItemIcon>
+//                     Profile
+//                   </MenuItem>
+//                   <MenuItem
+//                     onClick={() => {
+//                       navigate(`/${user.role}/dashboard`);
+//                       handleClose();
+//                     }}
+//                   >
+//                     <ListItemIcon>
+//                       <Dashboard fontSize="small" />
+//                     </ListItemIcon>
+//                     Dashboard
+//                   </MenuItem>
+//                   <Divider />
+//                   <MenuItem onClick={handleLogout}>
+//                     <ListItemIcon>
+//                       <Logout fontSize="small" />
+//                     </ListItemIcon>
+//                     Logout
+//                   </MenuItem>
+//                 </Menu>
+//               </>
+//             ) : (
+//               <Stack direction="row" spacing={2} alignItems="center">
+//                 <IconButton
+//                   onClick={toggleColorMode}
+//                   color={scrolled ? "inherit" : "default"}
+//                 >
+//                   {mode === "dark" ? <Brightness7 /> : <Brightness4 />}
+//                 </IconButton>
+
+//                 <Button
+//                   variant={scrolled ? "outlined" : "text"}
+//                   sx={{
+//                     color: scrolled ? "white" : "inherit",
+//                     borderColor: scrolled ? "white" : "inherit",
+//                   }}
+//                   onClick={() => navigate("/login")}
+//                 >
+//                   Sign In
+//                 </Button>
+//                 <Button
+//                   variant={scrolled ? "contained" : "contained"}
+//                   sx={{
+//                     backgroundColor: scrolled ? "white" : "primary.main",
+//                     color: scrolled ? "primary.main" : "white",
+//                     "&:hover": {
+//                       backgroundColor: scrolled
+//                         ? alpha(theme.palette.common.white, 0.9)
+//                         : "primary.dark",
+//                     },
+//                   }}
+//                   onClick={() => navigate("/register")}
+//                 >
+//                   Get Started
+//                 </Button>
+//               </Stack>
+//             )}
+//           </Toolbar>
+//         </Container>
+//       </AppBar>
+
+//       {/* Hero Section - Gradient Background */}
+//       <Box
+//         sx={{
+//           backgroundImage: heroBackground,
+//           backgroundSize: "cover",
+//           backgroundPosition: "center",
+//           color: "white",
+//           pt: 20,
+//           pb: 15,
+//           position: "relative",
+//           "&::before": {
+//             content: '""',
+//             position: "absolute",
+//             top: 0,
+//             left: 0,
+//             right: 0,
+//             bottom: 0,
+//             background:
+//               "linear-gradient(135deg, rgba(25,118,210,0.8) 0%, rgba(156,39,176,0.8) 100%)",
+//           },
+//         }}
+//       >
+//         <Container
+//           maxWidth="lg"
+//           sx={{ position: "relative", zIndex: 1, textAlign: "center" }}
+//         >
+//           <Typography
+//             variant={isMobile ? "h3" : "h2"}
+//             fontWeight="bold"
+//             gutterBottom
+//             sx={{
+//               textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+//               letterSpacing: "0.5px",
+//             }}
+//           >
+//             Advance Your Skills with Our LMS
+//           </Typography>
+//           <Typography
+//             variant={isMobile ? "h6" : "h5"}
+//             sx={{
+//               mb: 6,
+//               maxWidth: 800,
+//               mx: "auto",
+//               textShadow: "0 1px 2px rgba(0,0,0,0.3)",
+//             }}
+//           >
+//             Learn from industry experts and join a community of passionate
+//             learners
+//           </Typography>
+//           <Button
+//             variant="contained"
+//             size="large"
+//             startIcon={<RocketLaunch />}
+//             onClick={
+//               isAuthenticated
+//                 ? () => navigate(`/${user.role}/dashboard`)
+//                 : () => navigate("/register")
+//             }
+//             sx={{
+//               px: 4,
+//               py: 1.5,
+//               fontSize: "1.1rem",
+//               background: "white",
+//               color: "primary.main",
+//               "&:hover": {
+//                 background: alpha(theme.palette.common.white, 0.9),
+//               },
+//               boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+//             }}
+//           >
+//             {isAuthenticated ? "Continue Learning" : "Start Learning Free"}
+//           </Button>
+//         </Container>
+//       </Box>
+
+//       {/* Stats Section - Light Coral */}
+//       <Box sx={{ py: 8, bgcolor: alpha("#FFD6D6", 0.2) }}>
+//         <Container maxWidth="lg">
+//           <Grid container spacing={4} justifyContent="center">
+//             {stats.map((stat, index) => (
+//               <Grid item xs={6} sm={3} key={index}>
+//                 <Box textAlign="center">
+//                   <Typography
+//                     variant="h3"
+//                     fontWeight="bold"
+//                     color="primary.main"
+//                     gutterBottom
+//                   >
+//                     {stat.value}
+//                   </Typography>
+//                   <Typography variant="h6" color="text.secondary">
+//                     {stat.label}
+//                   </Typography>
+//                 </Box>
+//               </Grid>
+//             ))}
+//           </Grid>
+//         </Container>
+//       </Box>
+
+//       {/* Features Section - Light Blue */}
+//       <Box sx={{ py: 10, bgcolor: alpha("#E3F2FD", 0.4) }}>
+//         <Container maxWidth="lg">
+//           <Typography
+//             variant="h4"
+//             textAlign="center"
+//             fontWeight="bold"
+//             gutterBottom
+//             sx={{ color: "text.primary" }}
+//           >
+//             Why Choose Our Platform
+//           </Typography>
+//           <Typography
+//             variant="subtitle1"
+//             color="text.secondary"
+//             textAlign="center"
+//             sx={{ mb: 8 }}
+//           >
+//             We provide everything you need to succeed in your learning journey
+//           </Typography>
+
+//           <Grid container spacing={4}>
+//             {features.map((feature, index) => (
+//               <Grid item xs={12} sm={6} md={3} xl={3} key={index}>
+//                 <Card
+//                   sx={{
+//                     height: "100%",
+//                     boxShadow: 3,
+//                     border: "none",
+//                     transition: "transform 0.3s, box-shadow 0.3s",
+//                     "&:hover": {
+//                       transform: "translateY(-8px)",
+//                       boxShadow: 6,
+//                     },
+//                     bgcolor: "background.paper",
+//                   }}
+//                 >
+//                   <CardContent
+//                     sx={{
+//                       textAlign: "center",
+//                       p: 2,
+//                       display: "flex",
+//                       flexDirection: "column",
+//                       alignItems: "center",
+//                     }}
+//                   >
+//                     <Box
+//                       sx={{
+//                         color: "primary.main",
+//                         mb: 3,
+//                         width: 80,
+//                         height: 80,
+//                         display: "flex",
+//                         alignItems: "center",
+//                         justifyContent: "center",
+//                         borderRadius: "50%",
+//                         bgcolor: alpha(theme.palette.primary.main, 0.1),
+//                       }}
+//                     >
+//                       {feature.icon}
+//                     </Box>
+//                     <Typography variant="h6" gutterBottom fontWeight={600}>
+//                       {feature.title}
+//                     </Typography>
+//                     <Typography variant="body2" color="text.secondary">
+//                       {feature.description}
+//                     </Typography>
+//                   </CardContent>
+//                 </Card>
+//               </Grid>
+//             ))}
+//           </Grid>
+//         </Container>
+//       </Box>
+
+//       {/* Popular Courses - Light Green */}
+//       <Box sx={{ py: 10, bgcolor: alpha("#E8F5E9", 0.4) }}>
+//         <Container maxWidth="lg">
+//           <Typography
+//             variant="h4"
+//             textAlign="center"
+//             fontWeight="bold"
+//             gutterBottom
+//           >
+//             Popular Courses
+//           </Typography>
+//           <Typography
+//             variant="subtitle1"
+//             color="text.secondary"
+//             textAlign="center"
+//             sx={{ mb: 8 }}
+//           >
+//             Explore our most enrolled courses
+//           </Typography>
+
+//           <Grid container spacing={5}>
+//             {courses.map((course, index) => (
+//               <Grid item xs={12} md={4} lg={4} key={index}>
+//                 <Card
+//                   sx={{
+//                     height: "100%",
+//                     display: "flex",
+//                     flexDirection: "column",
+//                     justifyContent: "center",
+//                     transition: "transform 0.3s, box-shadow 0.3s",
+//                     "&:hover": {
+//                       transform: "translateY(-8px)",
+//                       boxShadow: 6,
+//                     },
+//                     bgcolor: "background.paper",
+//                   }}
+//                 >
+//                   <Box
+//                     sx={{
+//                       height: 180,
+//                       position: "relative",
+//                       overflow: "hidden",
+//                       "&:after": {
+//                         content: '""',
+//                         position: "absolute",
+//                         bottom: 0,
+//                         left: 0,
+//                         right: 0,
+//                         height: "40%",
+//                         background:
+//                           "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)",
+//                       },
+//                     }}
+//                   >
+//                     <Box
+//                       sx={{
+//                         height: "100%",
+//                         backgroundImage: "url(/images/course-placeholder.jpg)",
+//                         backgroundSize: "cover",
+//                         backgroundPosition: "center",
+//                         transition: "transform 0.5s",
+//                         "&:hover": {
+//                           transform: "scale(1.05)",
+//                         },
+//                       }}
+//                     />
+//                     <Box
+//                       sx={{
+//                         position: "absolute",
+//                         bottom: 16,
+//                         left: 16,
+//                         zIndex: 1,
+//                       }}
+//                     >
+//                       <Button
+//                         variant="contained"
+//                         size="small"
+//                         startIcon={<PlayCircle />}
+//                         sx={{
+//                           backgroundColor: alpha(
+//                             theme.palette.common.white,
+//                             0.9
+//                           ),
+//                           color: "primary.main",
+//                           "&:hover": {
+//                             backgroundColor: "white",
+//                           },
+//                         }}
+//                       >
+//                         Preview
+//                       </Button>
+//                     </Box>
+//                   </Box>
+//                   <CardContent sx={{ flexGrow: 1 }}>
+//                     <Chip
+//                       label={course.category}
+//                       size="small"
+//                       sx={{ mb: 2 }}
+//                       color="primary"
+//                     />
+//                     <Typography variant="h6" gutterBottom>
+//                       {course.title}
+//                     </Typography>
+//                     <Typography
+//                       variant="body2"
+//                       color="text.secondary"
+//                       sx={{ mb: 2 }}
+//                     >
+//                       Instructor: {course.instructor}
+//                     </Typography>
+//                     <Stack direction="row" spacing={2}>
+//                       <Typography variant="body2">
+//                         ⭐ {course.rating}
+//                       </Typography>
+//                       <Typography variant="body2">
+//                         👥 {course.students}+ students
+//                       </Typography>
+//                     </Stack>
+//                   </CardContent>
+//                 </Card>
+//               </Grid>
+//             ))}
+//           </Grid>
+//           <Box textAlign="center" sx={{ mt: 6 }}>
+//             <Button
+//               variant="outlined"
+//               size="large"
+//               endIcon={<ArrowForward />}
+//               onClick={() => navigate("/courses")}
+//               sx={{
+//                 px: 4,
+//                 "&:hover": {
+//                   backgroundColor: alpha(theme.palette.primary.main, 0.1),
+//                 },
+//               }}
+//             >
+//               View All Courses
+//             </Button>
+//           </Box>
+//         </Container>
+//       </Box>
+
+//       {/* Testimonials Section - Light Yellow */}
+//       <Box sx={{ py: 10, bgcolor: alpha("#FFF9C4", 0.3) }}>
+//         <Container maxWidth="lg">
+//           <Typography
+//             variant="h4"
+//             textAlign="center"
+//             fontWeight="bold"
+//             gutterBottom
+//           >
+//             What Our Students Say
+//           </Typography>
+//           <Typography
+//             variant="subtitle1"
+//             color="text.secondary"
+//             textAlign="center"
+//             sx={{ mb: 8 }}
+//           >
+//             Hear from our successful learners
+//           </Typography>
+
+//           <Grid container spacing={4}>
+//             {testimonials.map((testimonial, index) => (
+//               <Grid item xs={12} md={6} xl={6} key={index}>
+//                 <Card
+//                   sx={{
+//                     height: "100%",
+//                     p: 3,
+//                     bgcolor: "background.paper",
+//                     boxShadow: 3,
+//                     borderRadius: 4,
+//                   }}
+//                 >
+//                   <Box
+//                     sx={{
+//                       display: "flex",
+//                       flexDirection: "column",
+//                       height: "100%",
+//                     }}
+//                   >
+//                     <Typography
+//                       variant="body1"
+//                       sx={{ mb: 3, fontStyle: "italic" }}
+//                     >
+//                       "{testimonial.quote}"
+//                     </Typography>
+//                     <Box sx={{ mt: "auto" }}>
+//                       <Typography fontWeight="bold">
+//                         {testimonial.author}
+//                       </Typography>
+//                       <Typography variant="body2" color="text.secondary">
+//                         {testimonial.role}
+//                       </Typography>
+//                     </Box>
+//                   </Box>
+//                 </Card>
+//               </Grid>
+//             ))}
+//           </Grid>
+//         </Container>
+//       </Box>
+
+//       {/* Call to Action - Light Purple */}
+//       <Box sx={{ py: 10, bgcolor: alpha("#F3E5F5", 0.4) }}>
+//         <Container maxWidth="md">
+//           <Paper
+//             elevation={3}
+//             sx={{
+//               p: 6,
+//               borderRadius: 4,
+//               textAlign: "center",
+//               background:
+//                 "linear-gradient(135deg, rgba(25,118,210,0.1) 0%, rgba(156,39,176,0.1) 100%)",
+//               border: "1px solid",
+//               borderColor: "divider",
+//               bgcolor: "background.paper",
+//             }}
+//           >
+//             <Typography variant="h4" fontWeight="bold" gutterBottom>
+//               Ready to Start Learning?
+//             </Typography>
+//             <Typography
+//               variant="subtitle1"
+//               color="text.secondary"
+//               sx={{ mb: 4 }}
+//             >
+//               Join thousands of students advancing their careers with our
+//               courses
+//             </Typography>
+//             <Button
+//               variant="contained"
+//               size="large"
+//               onClick={
+//                 isAuthenticated
+//                   ? () => navigate(`/${user.role}/dashboard`)
+//                   : () => navigate("/register")
+//               }
+//               sx={{ px: 6, py: 1.5 }}
+//             >
+//               {isAuthenticated ? "Go to Dashboard" : "Enroll Now"}
+//             </Button>
+//           </Paper>
+//         </Container>
+//       </Box>
+
+//       {/* Footer - Light Grey */}
+//       <Box
+//         component="footer"
+//         sx={{
+//           bgcolor: alpha("#ECEFF1", 0.5),
+//           color: "text.primary",
+//           py: 8,
+//           borderTop: "1px solid",
+//           borderColor: "divider",
+//         }}
+//       >
+//         <Container maxWidth="lg">
+//           <Grid container spacing={4}>
+//             <Grid item xs={12} md={4}>
+//               <Stack
+//                 direction="row"
+//                 alignItems="center"
+//                 spacing={1}
+//                 sx={{ mb: 3 }}
+//               >
+//                 <School sx={{ color: "primary.main", fontSize: 32 }} />
+//                 <Typography variant="h6" fontWeight={700}>
+//                   LearnHub
+//                 </Typography>
+//               </Stack>
+//               <Typography variant="body2" color="text.secondary">
+//                 The next-generation learning platform for modern education.
+//               </Typography>
+//             </Grid>
+//             {/* Footer links */}
+//             {["Product", "Resources", "Company", "Legal"].map((section) => (
+//               <Grid item xs={6} md={2} key={section}>
+//                 <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2 }}>
+//                   {section}
+//                 </Typography>
+//                 <Stack spacing={1}>
+//                   {(["Product", "Resources"].includes(section)
+//                     ? ["Features", "Pricing", "Courses", "Demo"]
+//                     : section === "Company"
+//                     ? ["About Us", "Careers", "Contact", "Partners"]
+//                     : ["Privacy", "Terms", "Security", "Cookies"]
+//                   ).map((item) => (
+//                     <Typography
+//                       key={item}
+//                       variant="body2"
+//                       color="text.secondary"
+//                       sx={{
+//                         "&:hover": {
+//                           color: "primary.main",
+//                           cursor: "pointer",
+//                         },
+//                       }}
+//                     >
+//                       {item}
+//                     </Typography>
+//                   ))}
+//                 </Stack>
+//               </Grid>
+//             ))}
+//           </Grid>
+//           <Divider sx={{ my: 6 }} />
+//           <Typography variant="body2" color="text.secondary" textAlign="center">
+//             © {new Date().getFullYear()} LearnHub. All rights reserved.
+//           </Typography>
+//         </Container>
+//       </Box>
+//     </Box>
+//   );
+// };
+
+// export default HomePage;
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext/AuthContext";
 import { useThemeMode } from "../../contexts/ThemeContext";
+// import AllCoursesPage from "../../components/assignmnet";f
 import { getInitials } from "../../utils/stringUtils";
-import AboutPage from "../../pages/AboutPage/AboutPage";
+import { Link } from "react-router-dom";
+
 import {
   Box,
   Container,
@@ -28,6 +865,7 @@ import {
   alpha,
   Slide,
   Fade,
+  CardMedia,
 } from "@mui/material";
 import {
   School,
@@ -46,13 +884,19 @@ import {
   Dashboard,
   Brightness4,
   Brightness7,
+  CheckCircle,
+  Star,
+  Psychology,
+  Speed,
+  Security,
 } from "@mui/icons-material";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isTablet = useMediaQuery(theme.breakpoints.down("lg"));
   const { toggleColorMode, mode } = useThemeMode();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -67,83 +911,119 @@ const HomePage = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const heroBackground = "url('/images/hero-bg.jpg')";
-
   const features = [
     {
-      icon: <MenuBook sx={{ fontSize: 40 }} />,
-      title: "Interactive Courses",
-      description: "Engage with multimedia content.",
+      icon: <Psychology sx={{ fontSize: 48 }} />,
+      title: "AI-Powered Learning",
+      description:
+        "Personalized learning paths powered by advanced AI algorithms to optimize your educational journey.",
+      color: "#4CAF50",
     },
     {
-      icon: <Assignment sx={{ fontSize: 40 }} />,
-      title: "Smart Assignments",
-      description: "AI-powered grading.",
+      icon: <Speed sx={{ fontSize: 48 }} />,
+      title: "Real-Time Progress",
+      description:
+        "Track your learning progress with detailed analytics and performance insights in real-time.",
+      color: "#2196F3",
     },
     {
-      icon: <TrendingUp sx={{ fontSize: 40 }} />,
-      title: "Progress Analytics",
-      description: "Track and optimize your performance.",
+      icon: <Groups sx={{ fontSize: 48 }} />,
+      title: "Collaborative Learning",
+      description:
+        "Join study groups, participate in discussions, and learn together with peers worldwide.",
+      color: "#FF9800",
     },
     {
-      icon: <Groups sx={{ fontSize: 40 }} />,
-      title: "Community Learning",
-      description: "Collaborate with peers in study groups.",
+      icon: <Security sx={{ fontSize: 48 }} />,
+      title: "Certified Courses",
+      description:
+        "Earn industry-recognized certificates upon successful completion of our professional courses.",
+      color: "#9C27B0",
     },
   ];
 
   const courses = [
     {
-      title: "Introduction to Programming",
+      title: "Full Stack Web Development",
       instructor: "Dr. Sarah Johnson",
-      students: 1250,
-      rating: 4.8,
-      category: "Computer Science",
-    },
-    {
-      title: "Data Science Fundamentals",
-      instructor: "Prof. Michael Chen",
-      students: 980,
-      rating: 4.7,
-      category: "Data Science",
-    },
-    {
-      title: "Digital Marketing Masterclass",
-      instructor: "Alex Rodriguez",
-      students: 750,
+      students: 2450,
       rating: 4.9,
-      category: "Business",
+      category: "Programming",
+      duration: "12 weeks",
+      level: "Intermediate",
+      price: "$149",
+      image:
+        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop&auto=format",
+    },
+    {
+      title: "Data Science & Machine Learning",
+      instructor: "Prof. Michael Chen",
+      students: 1850,
+      rating: 4.8,
+      category: "Data Science",
+      duration: "16 weeks",
+      level: "Advanced",
+      price: "$199",
+      image:
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop&auto=format",
+    },
+    {
+      title: "Digital Marketing Mastery",
+      instructor: "Alex Rodriguez",
+      students: 3200,
+      rating: 4.7,
+      category: "Marketing",
+      duration: "8 weeks",
+      level: "Beginner",
+      price: "$99",
+      image:
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop&auto=format",
     },
   ];
 
   const stats = [
-    { value: "10K+", label: "Active Students" },
-    { value: "500+", label: "Courses Available" },
-    { value: "95%", label: "Satisfaction Rate" },
-    { value: "50+", label: "Expert Instructors" },
+    { value: "25K+", label: "Active Students", icon: <Groups /> },
+    { value: "800+", label: "Expert Courses", icon: <MenuBook /> },
+    // { value: "98%", label: "Success Rate", icon: <TrendingUp /> },
+    // { value: "150+", label: "Industry Partners", icon: <VerifiedUser /> },
   ];
 
   const testimonials = [
     {
-      quote: "This platform transformed my career. The courses are top-notch!",
-      author: "Sarah Johnson",
-      role: "Software Developer",
-    },
-    {
-      quote: "The best investment I've made in my professional development.",
-      author: "Michael Chen",
-      role: "Data Scientist",
+      quote:
+        "LearnHub transformed my career trajectory. The quality of courses and instructors is exceptional.",
+      author: "Sarah Mitchell",
+      role: "Senior Software Engineer at Google",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108755-2616b332c87f?w=100&h=100&fit=crop&auto=format",
+      rating: 5,
     },
     {
       quote:
-        "Exceptional learning experience with a strong practical outcomes.",
-      author: "Alex Rodriguez",
-      role: "Marketing Specialist",
+        "The AI-powered learning paths helped me focus on exactly what I needed to advance my skills.",
+      author: "David Kim",
+      role: "Data Scientist at Microsoft",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&auto=format",
+      rating: 5,
     },
     {
-      quote: "I gained real-world skills that helped me. Highly recommended!",
+      quote:
+        "Best investment I've made in my professional development. The community aspect is incredible.",
+      author: "Maria Rodriguez",
+      role: "Marketing Director at Adobe",
+      avatar:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&auto=format",
+      rating: 5,
+    },
+    {
+      quote:
+        "The practical approach and real-world projects gave me confidence to switch careers successfully.",
       author: "Ahmed Al-Fayez",
-      role: "Data Analyst",
+      role: "Product Manager at Amazon",
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&auto=format",
+      rating: 5,
     },
   ];
 
@@ -162,109 +1042,108 @@ const HomePage = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, bgcolor: "background.paper" }}>
-      {/* Modern Gradient Header */}
+    <Box sx={{ flexGrow: 1, bgcolor: "background.default" }}>
+      {/* Modern Navigation Header */}
       <AppBar
         position="fixed"
-        elevation={scrolled ? 4 : 0}
+        elevation={scrolled ? 8 : 0}
         sx={{
-          backdropFilter: "blur(10px)",
+          backdropFilter: "blur(20px)",
           backgroundColor: scrolled
-            ? alpha(theme.palette.background.paper, 0.8)
+            ? alpha(theme.palette.background.paper, 0.95)
             : "transparent",
-          backgroundImage: scrolled
-            ? `linear-gradient(135deg, ${alpha(
-                theme.palette.primary.main,
-                0.9
-              )} 0%, ${alpha(theme.palette.secondary.main, 0.9)} 100%)`
+          borderBottom: scrolled
+            ? `1px solid ${theme.palette.divider}`
             : "none",
-          transition: "all 0.3s ease",
-          color: scrolled ? "white" : "text.primary",
-          py: scrolled ? 0 : 2,
+          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
         <Container maxWidth="xl">
-          <Toolbar disableGutters>
-            <Slide direction="right" in={!scrolled} mountOnEnter unmountOnExit>
-              <Stack direction="row" alignItems="center" spacing={1}>
-                <School
-                  sx={{
-                    color: scrolled ? "white" : "primary.main",
-                    fontSize: 32,
-                  }}
-                />
-                <Typography variant="h6" fontWeight={700}>
-                  LearnHub
-                </Typography>
-              </Stack>
-            </Slide>
-
-            <Fade in={scrolled}>
-              <Box>
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  <School sx={{ color: "white", fontSize: 32 }} />
-                  <Typography variant="h6" fontWeight={700}>
-                    LearnHub
-                  </Typography>
-                </Stack>
+          <Toolbar disableGutters sx={{ minHeight: { xs: 64, md: 80 } }}>
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Box
+                sx={{
+                  background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                  borderRadius: 2,
+                  p: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <School sx={{ color: "white", fontSize: 28 }} />
               </Box>
-            </Fade>
+              <Typography
+                variant="h5"
+                fontWeight={800}
+                sx={{
+                  background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  letterSpacing: "-0.5px",
+                }}
+              >
+                LearnHub
+              </Typography>
+            </Stack>
 
             <Box sx={{ flexGrow: 1 }} />
 
             {isAuthenticated ? (
-              <>
-                <Stack direction="row" alignItems="center" spacing={2}>
-                  <IconButton
-                    onClick={toggleColorMode}
-                    color={scrolled ? "inherit" : "default"}
-                  >
-                    {mode === "dark" ? <Brightness7 /> : <Brightness4 />}
-                  </IconButton>
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <IconButton
+                  onClick={toggleColorMode}
+                  sx={{
+                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                    "&:hover": {
+                      bgcolor: alpha(theme.palette.primary.main, 0.2),
+                    },
+                  }}
+                >
+                  {mode === "dark" ? <Brightness7 /> : <Brightness4 />}
+                </IconButton>
 
-                  {scrolled && (
-                    <Chip
-                      label={user?.role}
-                      color="primary"
-                      variant="outlined"
-                      sx={{
-                        fontWeight: 600,
-                        backgroundColor: "white",
-                        color: theme.palette.primary.main,
-                      }}
-                    />
-                  )}
-                  <IconButton onClick={handleClick}>
-                    <Avatar
-                      sx={{
-                        bgcolor: scrolled ? "white" : "primary.main",
-                        color: scrolled ? theme.palette.primary.main : "white",
-                        width: 40,
-                        height: 40,
-                        fontWeight: 600,
-                      }}
-                    >
-                      {getInitials(user?.name || user?.email)}
-                    </Avatar>
-                  </IconButton>
-                </Stack>
+                <Chip
+                  label={user?.role}
+                  color="primary"
+                  variant="filled"
+                  sx={{
+                    fontWeight: 600,
+                    textTransform: "capitalize",
+                    display: { xs: "none", sm: "flex" },
+                  }}
+                />
+
+                <IconButton onClick={handleClick}>
+                  <Avatar
+                    sx={{
+                      bgcolor: "primary.main",
+                      width: 44,
+                      height: 44,
+                      fontWeight: 700,
+                      border: 2,
+                      borderColor: "primary.main",
+                    }}
+                  >
+                    {getInitials(user?.name || user?.email)}
+                  </Avatar>
+                </IconButton>
 
                 <Menu
                   anchorEl={anchorEl}
                   open={open}
                   onClose={handleClose}
                   PaperProps={{
-                    elevation: 3,
+                    elevation: 16,
                     sx: {
                       overflow: "visible",
-                      filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                      filter: "drop-shadow(0px 8px 32px rgba(0,0,0,0.12))",
                       mt: 1.5,
-                      "& .MuiAvatar-root": {
-                        width: 32,
-                        height: 32,
-                        ml: -0.5,
-                        mr: 1,
-                      },
+                      borderRadius: 3,
+                      minWidth: 200,
+                      bgcolor: "background.paper",
+                      border: `1px solid ${theme.palette.divider}`,
                     },
                   }}
                   transformOrigin={{ horizontal: "right", vertical: "top" }}
@@ -300,36 +1179,47 @@ const HomePage = () => {
                     Logout
                   </MenuItem>
                 </Menu>
-              </>
+              </Stack>
             ) : (
               <Stack direction="row" spacing={2} alignItems="center">
                 <IconButton
                   onClick={toggleColorMode}
-                  color={scrolled ? "inherit" : "default"}
+                  sx={{
+                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                    "&:hover": {
+                      bgcolor: alpha(theme.palette.primary.main, 0.2),
+                    },
+                  }}
                 >
                   {mode === "dark" ? <Brightness7 /> : <Brightness4 />}
                 </IconButton>
 
                 <Button
-                  variant={scrolled ? "outlined" : "text"}
+                  variant="text"
                   sx={{
-                    color: scrolled ? "white" : "inherit",
-                    borderColor: scrolled ? "white" : "inherit",
+                    fontWeight: 600,
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    px: 3,
                   }}
                   onClick={() => navigate("/login")}
                 >
                   Sign In
                 </Button>
                 <Button
-                  variant={scrolled ? "contained" : "contained"}
+                  variant="contained"
                   sx={{
-                    backgroundColor: scrolled ? "white" : "primary.main",
-                    color: scrolled ? "primary.main" : "white",
-                    "&:hover": {
-                      backgroundColor: scrolled
-                        ? alpha(theme.palette.common.white, 0.9)
-                        : "primary.dark",
-                    },
+                    fontWeight: 600,
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: 3,
+                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    boxShadow: `0 8px 32px ${alpha(
+                      theme.palette.primary.main,
+                      0.3
+                    )}`,
                   }}
                   onClick={() => navigate("/register")}
                 >
@@ -340,172 +1230,415 @@ const HomePage = () => {
           </Toolbar>
         </Container>
       </AppBar>
-
-      {/* Hero Section - Gradient Background */}
+      {/* Hero Section with Split Layout */}
       <Box
         sx={{
-          backgroundImage: heroBackground,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          color: "white",
-          pt: 20,
-          pb: 15,
-          position: "relative",
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background:
-              "linear-gradient(135deg, rgba(25,118,210,0.8) 0%, rgba(156,39,176,0.8) 100%)",
-          },
+          pt: { xs: 12, md: 16 },
+          pb: { xs: 8, md: 12 },
+          overflow: "hidden",
         }}
       >
-        <Container
-          maxWidth="lg"
-          sx={{ position: "relative", zIndex: 1, textAlign: "center" }}
-        >
-          <Typography
-            variant={isMobile ? "h3" : "h2"}
-            fontWeight="bold"
-            gutterBottom
-            sx={{
-              textShadow: "0 2px 4px rgba(0,0,0,0.3)",
-              letterSpacing: "0.5px",
-            }}
+        <Container maxWidth="xl">
+          <Grid
+            container
+            spacing={6}
+            alignItems="center"
+            sx={{ minHeight: { md: "80vh" } }}
           >
-            Advance Your Skills with Our LMS
-          </Typography>
-          <Typography
-            variant={isMobile ? "h6" : "h5"}
-            sx={{
-              mb: 6,
-              maxWidth: 800,
-              mx: "auto",
-              textShadow: "0 1px 2px rgba(0,0,0,0.3)",
-            }}
-          >
-            Learn from industry experts and join a community of passionate
-            learners
-          </Typography>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<RocketLaunch />}
-            onClick={
-              isAuthenticated
-                ? () => navigate(`/${user.role}/dashboard`)
-                : () => navigate("/register")
-            }
-            sx={{
-              px: 4,
-              py: 1.5,
-              fontSize: "1.1rem",
-              background: "white",
-              color: "primary.main",
-              "&:hover": {
-                background: alpha(theme.palette.common.white, 0.9),
-              },
-              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-            }}
-          >
-            {isAuthenticated ? "Continue Learning" : "Start Learning Free"}
-          </Button>
+            <Grid item xs={12} lg={6}>
+              <Box sx={{ pr: { lg: 4 } }}>
+                <Chip
+                  label="🚀 #1 Learning Platform"
+                  color="primary"
+                  variant="outlined"
+                  sx={{
+                    mb: 3,
+                    fontWeight: 600,
+                    fontSize: "0.9rem",
+                    py: 2,
+                    px: 3,
+                    borderRadius: 6,
+                  }}
+                />
+
+                <Typography
+                  variant={isMobile ? "h3" : "h1"}
+                  fontWeight={800}
+                  sx={{
+                    mb: 3,
+                    lineHeight: 1.2,
+                    letterSpacing: "-1px",
+                    background: `linear-gradient(135deg, ${
+                      theme.palette.text.primary
+                    }, ${alpha(theme.palette.text.primary, 0.7)})`,
+                    backgroundClip: "text",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  Master New Skills with{" "}
+                  <Box
+                    component="span"
+                    sx={{
+                      background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                      backgroundClip: "text",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    LearnHub
+                  </Box>
+                </Typography>
+
+                <Typography
+                  variant={isMobile ? "h6" : "h5"}
+                  color="text.secondary"
+                  sx={{
+                    mb: 5,
+                    lineHeight: 1.6,
+                    fontWeight: 400,
+                    maxWidth: 600,
+                  }}
+                >
+                  Transform your career with our AI-powered learning management
+                  system. Join thousands of professionals who've accelerated
+                  their growth with expert-led courses, interactive projects,
+                  and personalized learning paths.
+                </Typography>
+
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={3}
+                  sx={{ mb: 6 }}
+                >
+                  <Button
+                    variant="contained"
+                    size="large"
+                    startIcon={<RocketLaunch />}
+                    onClick={
+                      isAuthenticated
+                        ? () => navigate(`/${user.role}/dashboard`)
+                        : () => navigate("/register")
+                    }
+                    sx={{
+                      px: 6,
+                      py: 2,
+                      fontSize: "1.1rem",
+                      fontWeight: 700,
+                      textTransform: "none",
+                      borderRadius: 4,
+                      background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                      boxShadow: `0 12px 40px ${alpha(
+                        theme.palette.primary.main,
+                        0.4
+                      )}`,
+                      "&:hover": {
+                        transform: "translateY(-2px)",
+                        boxShadow: `0 16px 48px ${alpha(
+                          theme.palette.primary.main,
+                          0.5
+                        )}`,
+                      },
+                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    }}
+                  >
+                    {isAuthenticated
+                      ? "Continue Learning"
+                      : "Start Learning Free"}
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    startIcon={<PlayCircle />}
+                    sx={{
+                      px: 6,
+                      py: 2,
+                      fontSize: "1.1rem",
+                      fontWeight: 600,
+                      textTransform: "none",
+                      borderRadius: 4,
+                      borderWidth: 2,
+                      "&:hover": {
+                        borderWidth: 2,
+                        transform: "translateY(-2px)",
+                      },
+                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    }}
+                  >
+                    Watch Demo
+                  </Button>
+                </Stack>
+
+                <Stack direction="row" spacing={4} sx={{ pt: 2 }}>
+                  {[].map((item, index) => (
+                    <Stack
+                      key={index}
+                      direction="row"
+                      spacing={1}
+                      alignItems="center"
+                    >
+                      {item.icon}
+                      <Typography variant="body2" fontWeight={500}>
+                        {item.text}
+                      </Typography>
+                    </Stack>
+                  ))}
+                </Stack>
+              </Box>
+            </Grid>
+
+            <Grid item xs={12} lg={6}>
+              <Box
+                sx={{
+                  position: "relative",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Box
+                  sx={{
+                    width: "100%",
+                    maxWidth: 600,
+                    height: { xs: 400, md: 500 },
+                    borderRadius: 6,
+                    overflow: "hidden",
+                    boxShadow: `0 24px 80px ${alpha(
+                      theme.palette.primary.main,
+                      0.2
+                    )}`,
+                    transform:
+                      "perspective(1000px) rotateY(-10deg) rotateX(5deg)",
+                    transition: "transform 0.6s ease",
+                    "&:hover": {
+                      transform:
+                        "perspective(1000px) rotateY(-5deg) rotateX(2deg)",
+                    },
+                  }}
+                >
+                  <img
+                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop&auto=format"
+                    alt="Students learning together"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: `linear-gradient(135deg, ${alpha(
+                        theme.palette.primary.main,
+                        0.1
+                      )}, ${alpha(theme.palette.secondary.main, 0.1)})`,
+                    }}
+                  />
+                </Box>
+
+                {/* Floating Elements */}
+                <Paper
+                  elevation={12}
+                  sx={{
+                    position: "absolute",
+                    top: { xs: 20, md: 40 },
+                    right: { xs: -10, md: -30 },
+                    p: 3,
+                    borderRadius: 4,
+                    bgcolor: "background.paper",
+                    border: `1px solid ${theme.palette.divider}`,
+                  }}
+                >
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Box
+                      sx={{
+                        width: 48,
+                        height: 48,
+                        borderRadius: 3,
+                        bgcolor: alpha(theme.palette.success.main, 0.1),
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <TrendingUp color="success" />
+                    </Box>
+                    <Box>
+                      {/* <Typography variant="h6" fontWeight={700}>
+                        98%
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Success Rate
+                      </Typography> */}
+                    </Box>
+                  </Stack>
+                </Paper>
+
+                <Paper
+                  elevation={12}
+                  sx={{
+                    position: "absolute",
+                    bottom: { xs: 20, md: 40 },
+                    left: { xs: -10, md: -30 },
+                    p: 3,
+                    borderRadius: 4,
+                    bgcolor: "background.paper",
+                    border: `1px solid ${theme.palette.divider}`,
+                  }}
+                >
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Box
+                      sx={{
+                        width: 48,
+                        height: 48,
+                        borderRadius: 3,
+                        bgcolor: alpha(theme.palette.primary.main, 0.1),
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Groups color="primary" />
+                    </Box>
+                    <Box>
+                      {/* <Typography variant="h6" fontWeight={700}>
+                        25K+
+                      </Typography> */}
+                      {/* <Typography variant="body2" color="text.secondary">
+                        Active Students
+                      </Typography> */}
+                    </Box>
+                  </Stack>
+                </Paper>
+              </Box>
+            </Grid>
+          </Grid>
         </Container>
       </Box>
-
-      {/* Stats Section - Light Coral */}
-      <Box sx={{ py: 8, bgcolor: alpha("#FFD6D6", 0.2) }}>
+      {/* Stats Section */}
+      <Box
+        sx={{
+          py: { xs: 8, md: 12 },
+          bgcolor: alpha(theme.palette.primary.main, 0.02),
+        }}
+      >
         <Container maxWidth="lg">
-          <Grid container spacing={4} justifyContent="center">
+          <Grid container spacing={4}>
             {stats.map((stat, index) => (
-              <Grid item xs={6} sm={3} key={index}>
-                <Box textAlign="center">
+              <Grid item xs={6} md={3} key={index}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 4,
+                    textAlign: "center",
+                    bgcolor: "background.paper",
+                    border: `1px solid ${theme.palette.divider}`,
+                    borderRadius: 4,
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      transform: "translateY(-8px)",
+                      boxShadow: `0 16px 48px ${alpha(
+                        theme.palette.primary.main,
+                        0.1
+                      )}`,
+                    },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      mb: 2,
+                      color: "primary.main",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {React.cloneElement(stat.icon, { sx: { fontSize: 40 } })}
+                  </Box>
                   <Typography
                     variant="h3"
-                    fontWeight="bold"
+                    fontWeight={800}
                     color="primary.main"
                     gutterBottom
                   >
                     {stat.value}
                   </Typography>
-                  <Typography variant="h6" color="text.secondary">
+                  <Typography
+                    variant="body1"
+                    color="text.secondary"
+                    fontWeight={500}
+                  >
                     {stat.label}
                   </Typography>
-                </Box>
+                </Paper>
               </Grid>
             ))}
           </Grid>
         </Container>
       </Box>
-
-      {/* Features Section - Light Blue */}
-      <Box sx={{ py: 10, bgcolor: alpha("#E3F2FD", 0.4) }}>
+      {/* Features Section */}
+      <Box sx={{ py: { xs: 8, md: 12 } }}>
         <Container maxWidth="lg">
-          <Typography
-            variant="h4"
-            textAlign="center"
-            fontWeight="bold"
-            gutterBottom
-            sx={{ color: "text.primary" }}
-          >
-            Why Choose Our Platform
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            color="text.secondary"
-            textAlign="center"
-            sx={{ mb: 8 }}
-          >
-            We provide everything you need to succeed in your learning journey
-          </Typography>
+          <Box textAlign="center" sx={{ mb: 8 }}>
+            <Typography variant="h3" fontWeight={800} gutterBottom>
+              Why Choose LearnHub?
+            </Typography>
+            <Typography
+              variant="h6"
+              color="text.secondary"
+              sx={{ maxWidth: 600, mx: "auto" }}
+            >
+              We provide cutting-edge learning solutions designed for the modern
+              professional
+            </Typography>
+          </Box>
 
           <Grid container spacing={4}>
             {features.map((feature, index) => (
-              <Grid item xs={12} sm={6} md={3} xl={3} key={index}>
+              <Grid item xs={12} sm={6} lg={3} key={index}>
                 <Card
                   sx={{
                     height: "100%",
-                    boxShadow: 3,
-                    border: "none",
-                    transition: "transform 0.3s, box-shadow 0.3s",
+                    border: `1px solid ${theme.palette.divider}`,
+                    borderRadius: 4,
+                    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                     "&:hover": {
-                      transform: "translateY(-8px)",
-                      boxShadow: 6,
+                      transform: "translateY(-12px)",
+                      boxShadow: `0 20px 60px ${alpha(feature.color, 0.15)}`,
+                      borderColor: feature.color,
                     },
-                    bgcolor: "background.paper",
                   }}
                 >
-                  <CardContent
-                    sx={{
-                      textAlign: "center",
-                      p: 2,
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
+                  <CardContent sx={{ p: 4, textAlign: "center" }}>
                     <Box
                       sx={{
-                        color: "primary.main",
-                        mb: 3,
                         width: 80,
                         height: 80,
+                        borderRadius: "50%",
+                        bgcolor: alpha(feature.color, 0.1),
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        borderRadius: "50%",
-                        bgcolor: alpha(theme.palette.primary.main, 0.1),
+                        mx: "auto",
+                        mb: 3,
                       }}
                     >
-                      {feature.icon}
+                      {React.cloneElement(feature.icon, {
+                        sx: { color: feature.color, fontSize: 48 },
+                      })}
                     </Box>
-                    <Typography variant="h6" gutterBottom fontWeight={600}>
+                    <Typography variant="h6" fontWeight={700} gutterBottom>
                       {feature.title}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ lineHeight: 1.6 }}
+                    >
                       {feature.description}
                     </Typography>
                   </CardContent>
@@ -515,141 +1648,151 @@ const HomePage = () => {
           </Grid>
         </Container>
       </Box>
-
-      {/* Popular Courses - Light Green */}
-      <Box sx={{ py: 10, bgcolor: alpha("#E8F5E9", 0.4) }}>
+      // Popular Courses Section
+      <Box
+        sx={{
+          py: { xs: 8, md: 12 },
+          bgcolor: alpha(theme.palette.secondary.main, 0.02),
+        }}
+      >
         <Container maxWidth="lg">
-          <Typography
-            variant="h4"
-            textAlign="center"
-            fontWeight="bold"
-            gutterBottom
-          >
-            Popular Courses
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            color="text.secondary"
-            textAlign="center"
-            sx={{ mb: 8 }}
-          >
-            Explore our most enrolled courses
-          </Typography>
+          <Box textAlign="center" sx={{ mb: 8 }}>
+            <Typography variant="h3" fontWeight={800} gutterBottom>
+              Featured Courses
+            </Typography>
+            <Typography variant="h6" color="text.secondary">
+              Explore our top courses to kickstart your learning journey
+            </Typography>
+          </Box>
 
-          <Grid container spacing={5}>
-            {courses.map((course, index) => (
-              <Grid item xs={12} md={4} lg={4} key={index}>
-                <Card
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    transition: "transform 0.3s, box-shadow 0.3s",
-                    "&:hover": {
-                      transform: "translateY(-8px)",
-                      boxShadow: 6,
-                    },
-                    bgcolor: "background.paper",
-                  }}
-                >
-                  <Box
+          <Grid container spacing={4}>
+            {courses
+              .sort(() => 0.5 - Math.random()) // Randomize the courses
+              .slice(0, 3) // Take only 3 courses
+              .map((course, index) => (
+                <Grid item xs={12} md={4} key={index}>
+                  <Card
                     sx={{
-                      height: 180,
-                      position: "relative",
+                      height: "100%",
+                      border: `1px solid ${theme.palette.divider}`,
+                      borderRadius: 4,
                       overflow: "hidden",
-                      "&:after": {
-                        content: '""',
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        height: "40%",
-                        background:
-                          "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)",
+                      transition: "all 0.4s ease",
+                      "&:hover": {
+                        transform: "translateY(-8px)",
+                        boxShadow: `0 20px 60px ${alpha(
+                          theme.palette.primary.main,
+                          0.15
+                        )}`,
                       },
                     }}
+                    onClick={() => navigate(`/courses`)} // Navigate to courses page
                   >
-                    <Box
+                    <CardMedia
+                      component="img"
+                      height="240"
+                      image={course.image}
+                      alt={course.title}
                       sx={{
-                        height: "100%",
-                        backgroundImage: "url(/images/course-placeholder.jpg)",
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        transition: "transform 0.5s",
-                        "&:hover": {
-                          transform: "scale(1.05)",
-                        },
+                        transition: "transform 0.4s ease",
+                        "&:hover": { transform: "scale(1.05)" },
                       }}
                     />
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        bottom: 16,
-                        left: 16,
-                        zIndex: 1,
-                      }}
-                    >
-                      <Button
-                        variant="contained"
-                        size="small"
-                        startIcon={<PlayCircle />}
-                        sx={{
-                          backgroundColor: alpha(
-                            theme.palette.common.white,
-                            0.9
-                          ),
-                          color: "primary.main",
-                          "&:hover": {
-                            backgroundColor: "white",
-                          },
-                        }}
+                    <CardContent sx={{ p: 3 }}>
+                      <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+                        <Chip
+                          label={course.category}
+                          size="small"
+                          color="primary"
+                        />
+                        <Chip
+                          label={course.level}
+                          size="small"
+                          variant="outlined"
+                        />
+                      </Stack>
+
+                      <Typography variant="h6" fontWeight={700} gutterBottom>
+                        {course.title}
+                      </Typography>
+
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mb: 2 }}
                       >
-                        Preview
-                      </Button>
-                    </Box>
-                  </Box>
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Chip
-                      label={course.category}
-                      size="small"
-                      sx={{ mb: 2 }}
-                      color="primary"
-                    />
-                    <Typography variant="h6" gutterBottom>
-                      {course.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 2 }}
-                    >
-                      Instructor: {course.instructor}
-                    </Typography>
-                    <Stack direction="row" spacing={2}>
-                      <Typography variant="body2">
-                        ⭐ {course.rating}
+                        by {course.instructor}
                       </Typography>
-                      <Typography variant="body2">
-                        👥 {course.students}+ students
-                      </Typography>
-                    </Stack>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
+
+                      <Stack direction="row" spacing={3} sx={{ mb: 3 }}>
+                        <Stack
+                          direction="row"
+                          spacing={0.5}
+                          alignItems="center"
+                        >
+                          <Star sx={{ fontSize: 16, color: "#FFD700" }} />
+                          <Typography variant="body2" fontWeight={600}>
+                            {course.rating}
+                          </Typography>
+                        </Stack>
+                        <Typography variant="body2" color="text.secondary">
+                          {course.students.toLocaleString()} students
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {course.duration}
+                        </Typography>
+                      </Stack>
+
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
+                        <Typography
+                          variant="h6"
+                          fontWeight={700}
+                          color="primary.main"
+                        >
+                          {course.price}
+                        </Typography>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          sx={{ borderRadius: 2 }}
+                          onClick={() => navigate(`/courses`)} // Navigate to courses page
+                        >
+                          View Course
+                        </Button>
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
           </Grid>
+
           <Box textAlign="center" sx={{ mt: 6 }}>
-            <Button
-              variant="outlined"
+            {/* <Button
+              variant="contained"
               size="large"
               endIcon={<ArrowForward />}
-              onClick={() => navigate("/courses")}
               sx={{
-                px: 4,
-                "&:hover": {
-                  backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                },
+                px: 6,
+                py: 2,
+                borderRadius: 3,
+                textTransform: "none",
+                fontSize: "1.1rem",
+                fontWeight: 600,
+              }}
+            > */}
+
+            <Button
+              variant="contained"
+              component={Link}
+              to="/courses"
+              size="large"
+              sx={{
+                bgcolor: "primary",
+                "&:hover": { bgcolor: "primary.main" },
               }}
             >
               View All Courses
@@ -657,175 +1800,312 @@ const HomePage = () => {
           </Box>
         </Container>
       </Box>
-
-      {/* Testimonials Section - Light Yellow */}
-      <Box sx={{ py: 10, bgcolor: alpha("#FFF9C4", 0.3) }}>
+      {/* Testimonials Section */}
+      <Box sx={{ py: { xs: 8, md: 12 } }}>
         <Container maxWidth="lg">
-          <Typography
-            variant="h4"
-            textAlign="center"
-            fontWeight="bold"
-            gutterBottom
-          >
-            What Our Students Say
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            color="text.secondary"
-            textAlign="center"
-            sx={{ mb: 8 }}
-          >
-            Hear from our successful learners
-          </Typography>
+          <Box textAlign="center" sx={{ mb: 8 }}>
+            <Typography variant="h3" fontWeight={800} gutterBottom>
+              Success Stories
+            </Typography>
+            <Typography variant="h6" color="text.secondary">
+              Hear from professionals who transformed their careers with
+              LearnHub
+            </Typography>
+          </Box>
 
           <Grid container spacing={4}>
             {testimonials.map((testimonial, index) => (
-              <Grid item xs={12} md={6} xl={6} key={index}>
+              <Grid item xs={12} md={6} key={index}>
                 <Card
                   sx={{
                     height: "100%",
-                    p: 3,
-                    bgcolor: "background.paper",
-                    boxShadow: 3,
+                    p: 4,
+                    border: `1px solid ${theme.palette.divider}`,
                     borderRadius: 4,
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      transform: "translateY(-8px)",
+                      boxShadow: `0 16px 48px ${alpha(
+                        theme.palette.primary.main,
+                        0.1
+                      )}`,
+                    },
                   }}
                 >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      height: "100%",
-                    }}
-                  >
+                  <Stack spacing={3} sx={{ height: "100%" }}>
+                    <Stack direction="row" spacing={1}>
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} sx={{ fontSize: 20, color: "#FFD700" }} />
+                      ))}
+                    </Stack>
+
                     <Typography
                       variant="body1"
-                      sx={{ mb: 3, fontStyle: "italic" }}
+                      sx={{
+                        fontStyle: "italic",
+                        lineHeight: 1.6,
+                        fontSize: "1.1rem",
+                        flexGrow: 1,
+                      }}
                     >
                       "{testimonial.quote}"
                     </Typography>
-                    <Box sx={{ mt: "auto" }}>
-                      <Typography fontWeight="bold">
-                        {testimonial.author}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {testimonial.role}
-                      </Typography>
-                    </Box>
-                  </Box>
+
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Avatar
+                        src={testimonial.avatar}
+                        sx={{ width: 56, height: 56 }}
+                      />
+                      <Box>
+                        <Typography variant="subtitle1" fontWeight={700}>
+                          {testimonial.author}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {testimonial.role}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </Stack>
                 </Card>
               </Grid>
             ))}
           </Grid>
         </Container>
       </Box>
-
-      {/* Call to Action - Light Purple */}
-      <Box sx={{ py: 10, bgcolor: alpha("#F3E5F5", 0.4) }}>
+      {/* Call to Action Section */}
+      <Box
+        sx={{
+          py: { xs: 8, md: 12 },
+          bgcolor: alpha(theme.palette.primary.main, 0.02),
+        }}
+      >
         <Container maxWidth="md">
           <Paper
-            elevation={3}
+            elevation={0}
             sx={{
-              p: 6,
-              borderRadius: 4,
+              p: { xs: 6, md: 8 },
+              borderRadius: 6,
               textAlign: "center",
-              background:
-                "linear-gradient(135deg, rgba(25,118,210,0.1) 0%, rgba(156,39,176,0.1) 100%)",
-              border: "1px solid",
-              borderColor: "divider",
-              bgcolor: "background.paper",
+              background: `linear-gradient(135deg, ${alpha(
+                theme.palette.primary.main,
+                0.05
+              )}, ${alpha(theme.palette.secondary.main, 0.05)})`,
+              border: `1px solid ${theme.palette.divider}`,
             }}
           >
-            <Typography variant="h4" fontWeight="bold" gutterBottom>
-              Ready to Start Learning?
+            <Typography variant="h3" fontWeight={800} gutterBottom>
+              Ready to Transform Your Career?
             </Typography>
             <Typography
-              variant="subtitle1"
+              variant="h6"
               color="text.secondary"
+              sx={{ mb: 6, maxWidth: 500, mx: "auto" }}
+            >
+              Join thousands of professionals who've accelerated their growth
+              with LearnHub's comprehensive learning platform
+            </Typography>
+
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={3}
+              justifyContent="center"
               sx={{ mb: 4 }}
             >
-              Join thousands of students advancing their careers with our
-              courses
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={<RocketLaunch />}
+                onClick={
+                  isAuthenticated
+                    ? () => navigate(`/${user.role}/dashboard`)
+                    : () => navigate("/register")
+                }
+                sx={{
+                  px: 6,
+                  py: 2,
+                  fontSize: "1.1rem",
+                  fontWeight: 700,
+                  textTransform: "none",
+                  borderRadius: 4,
+                  background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                  boxShadow: `0 12px 40px ${alpha(
+                    theme.palette.primary.main,
+                    0.4
+                  )}`,
+                }}
+              >
+                {isAuthenticated ? "Go to Dashboard" : "Start Free Trial"}
+              </Button>
+
+              <Button
+                variant="outlined"
+                size="large"
+                startIcon={<PlayCircle />}
+                sx={{
+                  px: 6,
+                  py: 2,
+                  fontSize: "1.1rem",
+                  fontWeight: 600,
+                  textTransform: "none",
+                  borderRadius: 4,
+                  borderWidth: 2,
+                  "&:hover": { borderWidth: 2 },
+                }}
+              >
+                Schedule Demo
+              </Button>
+            </Stack>
+
+            <Typography variant="body2" color="text.secondary">
+              No credit card required • 14-day free trial • Cancel anytime
             </Typography>
-            <Button
-              variant="contained"
-              size="large"
-              onClick={
-                isAuthenticated
-                  ? () => navigate(`/${user.role}/dashboard`)
-                  : () => navigate("/register")
-              }
-              sx={{ px: 6, py: 1.5 }}
-            >
-              {isAuthenticated ? "Go to Dashboard" : "Enroll Now"}
-            </Button>
           </Paper>
         </Container>
       </Box>
-
-      {/* Footer - Light Grey */}
+      {/* Modern Footer */}
       <Box
         component="footer"
         sx={{
-          bgcolor: alpha("#ECEFF1", 0.5),
-          color: "text.primary",
-          py: 8,
-          borderTop: "1px solid",
-          borderColor: "divider",
+          bgcolor: theme.palette.mode === "dark" ? "grey.900" : "grey.50",
+          pt: { xs: 8, md: 12 },
+          pb: 4,
+          borderTop: `1px solid ${theme.palette.divider}`,
         }}
       >
         <Container maxWidth="lg">
-          <Grid container spacing={4}>
+          <Grid container spacing={6}>
             <Grid item xs={12} md={4}>
               <Stack
                 direction="row"
                 alignItems="center"
-                spacing={1}
-                sx={{ mb: 3 }}
+                spacing={2}
+                sx={{ mb: 4 }}
               >
-                <School sx={{ color: "primary.main", fontSize: 32 }} />
-                <Typography variant="h6" fontWeight={700}>
+                <Box
+                  sx={{
+                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    borderRadius: 2,
+                    p: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <School sx={{ color: "white", fontSize: 28 }} />
+                </Box>
+                <Typography variant="h5" fontWeight={800}>
                   LearnHub
                 </Typography>
               </Stack>
-              <Typography variant="body2" color="text.secondary">
-                The next-generation learning platform for modern education.
+              <Typography
+                variant="body1"
+                color="text.secondary"
+                sx={{ mb: 4, lineHeight: 1.6 }}
+              >
+                Empowering professionals worldwide with cutting-edge learning
+                experiences. Transform your career with our AI-powered platform.
               </Typography>
-            </Grid>
-            {/* Footer links */}
-            {["Product", "Resources", "Company", "Legal"].map((section) => (
-              <Grid item xs={6} md={2} key={section}>
-                <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2 }}>
-                  {section}
-                </Typography>
-                <Stack spacing={1}>
-                  {(["Product", "Resources"].includes(section)
-                    ? ["Features", "Pricing", "Courses", "Demo"]
-                    : section === "Company"
-                    ? ["About Us", "Careers", "Contact", "Partners"]
-                    : ["Privacy", "Terms", "Security", "Cookies"]
-                  ).map((item) => (
-                    <Typography
-                      key={item}
-                      variant="body2"
-                      color="text.secondary"
+              <Stack direction="row" spacing={2}>
+                {["Facebook", "Twitter", "LinkedIn", "Instagram"].map(
+                  (social) => (
+                    <IconButton
+                      key={social}
                       sx={{
+                        bgcolor: alpha(theme.palette.primary.main, 0.1),
                         "&:hover": {
-                          color: "primary.main",
-                          cursor: "pointer",
+                          bgcolor: alpha(theme.palette.primary.main, 0.2),
                         },
                       }}
                     >
-                      {item}
+                      <Typography variant="body2">{social[0]}</Typography>
+                    </IconButton>
+                  )
+                )}
+              </Stack>
+            </Grid>
+
+            {[
+              {
+                title: "Platform",
+                links: [
+                  "Courses",
+                  "Instructors",
+                  "Pricing",
+                  "Enterprise",
+                  "Mobile App",
+                ],
+              },
+              {
+                title: "Resources",
+                links: [
+                  "Help Center",
+                  "Blog",
+                  "Webinars",
+                  "Case Studies",
+                  "Community",
+                ],
+              },
+              {
+                title: "Company",
+                links: ["About Us", "Careers", "Press", "Partners", "Contact"],
+              },
+            ].map((section) => (
+              <Grid item xs={6} md={2} key={section.title}>
+                <Typography variant="h6" fontWeight={700} sx={{ mb: 3 }}>
+                  {section.title}
+                </Typography>
+                <Stack spacing={2}>
+                  {section.links.map((link) => (
+                    <Typography
+                      key={link}
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{
+                        cursor: "pointer",
+                        "&:hover": {
+                          color: "primary.main",
+                        },
+                        transition: "color 0.2s ease",
+                      }}
+                    >
+                      {link}
                     </Typography>
                   ))}
                 </Stack>
               </Grid>
             ))}
           </Grid>
+
           <Divider sx={{ my: 6 }} />
-          <Typography variant="body2" color="text.secondary" textAlign="center">
-            © {new Date().getFullYear()} LearnHub. All rights reserved.
-          </Typography>
+
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            justifyContent="space-between"
+            alignItems="center"
+            spacing={2}
+          >
+            <Typography variant="body2" color="text.secondary">
+              © {new Date().getFullYear()} LearnHub. All rights reserved.
+            </Typography>
+            <Stack direction="row" spacing={4}>
+              {["Privacy Policy", "Terms of Service", "Cookie Policy"].map(
+                (link) => (
+                  <Typography
+                    key={link}
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": { color: "primary.main" },
+                      transition: "color 0.2s ease",
+                    }}
+                  >
+                    {link}
+                  </Typography>
+                )
+              )}
+            </Stack>
+          </Stack>
         </Container>
       </Box>
     </Box>

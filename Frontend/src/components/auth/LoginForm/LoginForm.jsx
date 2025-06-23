@@ -1,3 +1,763 @@
+// // // // // import React, { useState, useEffect } from "react";
+// // // // // import { useForm, Controller } from "react-hook-form";
+// // // // // import { useAuth } from "../../../contexts/AuthContext/AuthContext";
+// // // // // import { useNavigate, useLocation } from "react-router-dom";
+// // // // // import {
+// // // // //   Box,
+// // // // //   TextField,
+// // // // //   Button,
+// // // // //   Typography,
+// // // // //   Alert,
+// // // // //   IconButton,
+// // // // //   InputAdornment,
+// // // // //   Checkbox,
+// // // // //   FormControlLabel,
+// // // // //   Link,
+// // // // //   Divider,
+// // // // //   Container,
+// // // // //   Paper,
+// // // // //   CircularProgress,
+// // // // // } from "@mui/material";
+// // // // // import {
+// // // // //   Visibility,
+// // // // //   VisibilityOff,
+// // // // //   Email,
+// // // // //   Lock,
+// // // // //   Google,
+// // // // // } from "@mui/icons-material";
+
+// // // // // const LoginForm = () => {
+// // // // //   const {
+// // // // //     control,
+// // // // //     handleSubmit,
+// // // // //     formState: { errors },
+// // // // //   } = useForm();
+// // // // //   const { login, loading, error } = useAuth();
+// // // // //   const navigate = useNavigate();
+// // // // //   const [showPassword, setShowPassword] = useState(false);
+// // // // //   const location = useLocation();
+
+// // // // //   useEffect(() => {
+// // // // //     if (location.state?.registrationSuccess) {
+// // // // //       alert(
+// // // // //         `Registration successful! Please login with ${location.state.email}`
+// // // // //       );
+// // // // //     }
+// // // // //   }, [location]);
+
+// // // // //   const handleClickShowPassword = () => {
+// // // // //     setShowPassword(!showPassword);
+// // // // //   };
+
+// // // // //   const onSubmit = async (data) => {
+// // // // //     try {
+// // // // //       const response = await login(data);
+
+// // // // //       const role = response.user?.role;
+// // // // //       let redirectPath = "/";
+// // // // //       if (role === "student") {
+// // // // //         redirectPath = "/student/dashboard";
+// // // // //       } else if (role === "instructor" || role === "teacher") {
+// // // // //         redirectPath = "/instructor/dashboard";
+// // // // //       } else if (role === "admin") {
+// // // // //         redirectPath = "/admin/dashboard";
+// // // // //       }
+
+// // // // //       navigate(redirectPath, { replace: true });
+// // // // //     } catch (error) {
+// // // // //       console.log(error);
+// // // // //     }
+// // // // //   };
+
+// // // // //   return (
+// // // // //     <Container
+// // // // //       maxWidth="sm"
+// // // // //       sx={{
+// // // // //         display: "flex",
+// // // // //         flexDirection: "column",
+// // // // //         alignItems: "center",
+// // // // //         justifyContent: "center",
+// // // // //         minHeight: "100vh",
+// // // // //         p: 3,
+// // // // //         backgroundColor: "#f9fafb",
+// // // // //       }}
+// // // // //     >
+// // // // //       <Box sx={{ mb: 4 }}>
+// // // // //         {/* Replace this with your logo component or image */}
+// // // // //         <Typography
+// // // // //           variant="h4"
+// // // // //           component="h1"
+// // // // //           fontWeight="bold"
+// // // // //           color="primary"
+// // // // //         >
+// // // // //           LMS
+// // // // //         </Typography>
+// // // // //       </Box>
+
+// // // // //       <Paper
+// // // // //         elevation={0}
+// // // // //         sx={{
+// // // // //           width: "100%",
+// // // // //           p: 4,
+// // // // //           backgroundColor: "white",
+// // // // //           borderRadius: 2,
+// // // // //           boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+// // // // //         }}
+// // // // //       >
+// // // // //         <Typography
+// // // // //           variant="h5"
+// // // // //           component="h2"
+// // // // //           textAlign="center"
+// // // // //           mb={3}
+// // // // //           fontWeight="medium"
+// // // // //         >
+// // // // //           Sign in
+// // // // //         </Typography>
+
+// // // // //         {error && (
+// // // // //           <Alert severity="error" sx={{ mb: 3 }}>
+// // // // //             {error}
+// // // // //           </Alert>
+// // // // //         )}
+
+// // // // //         <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+// // // // //           <Controller
+// // // // //             name="email"
+// // // // //             control={control}
+// // // // //             defaultValue=""
+// // // // //             rules={{
+// // // // //               required: "Email is required",
+// // // // //               pattern: {
+// // // // //                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+// // // // //                 message: "Invalid email address",
+// // // // //               },
+// // // // //             }}
+// // // // //             render={({ field }) => (
+// // // // //               <TextField
+// // // // //                 {...field}
+// // // // //                 fullWidth
+// // // // //                 label="Email"
+// // // // //                 type="email"
+// // // // //                 margin="normal"
+// // // // //                 error={!!errors.email}
+// // // // //                 helperText={errors.email?.message}
+// // // // //                 placeholder="Enter your email"
+// // // // //                 sx={{ mb: 2 }}
+// // // // //                 InputProps={{
+// // // // //                   startAdornment: (
+// // // // //                     <InputAdornment position="start">
+// // // // //                       <Email color="action" />
+// // // // //                     </InputAdornment>
+// // // // //                   ),
+// // // // //                 }}
+// // // // //               />
+// // // // //             )}
+// // // // //           />
+
+// // // // //           <Controller
+// // // // //             name="password"
+// // // // //             control={control}
+// // // // //             defaultValue=""
+// // // // //             rules={{
+// // // // //               required: "Password is required",
+// // // // //               minLength: {
+// // // // //                 value: 6,
+// // // // //                 message: "Password must be at least 6 characters",
+// // // // //               },
+// // // // //             }}
+// // // // //             render={({ field }) => (
+// // // // //               <TextField
+// // // // //                 {...field}
+// // // // //                 fullWidth
+// // // // //                 label="Password"
+// // // // //                 type={showPassword ? "text" : "password"}
+// // // // //                 margin="normal"
+// // // // //                 error={!!errors.password}
+// // // // //                 helperText={errors.password?.message}
+// // // // //                 placeholder="••••••••"
+// // // // //                 sx={{ mb: 2 }}
+// // // // //                 InputProps={{
+// // // // //                   startAdornment: (
+// // // // //                     <InputAdornment position="start">
+// // // // //                       <Lock color="action" />
+// // // // //                     </InputAdornment>
+// // // // //                   ),
+// // // // //                   endAdornment: (
+// // // // //                     <InputAdornment position="end">
+// // // // //                       <IconButton
+// // // // //                         aria-label="toggle password visibility"
+// // // // //                         onClick={handleClickShowPassword}
+// // // // //                         edge="end"
+// // // // //                       >
+// // // // //                         {showPassword ? <VisibilityOff /> : <Visibility />}
+// // // // //                       </IconButton>
+// // // // //                     </InputAdornment>
+// // // // //                   ),
+// // // // //                 }}
+// // // // //               />
+// // // // //             )}
+// // // // //           />
+
+// // // // //           <Box
+// // // // //             sx={{
+// // // // //               display: "flex",
+// // // // //               justifyContent: "space-between",
+// // // // //               alignItems: "center",
+// // // // //               mb: 3,
+// // // // //             }}
+// // // // //           >
+// // // // //             <FormControlLabel
+// // // // //               control={<Checkbox color="primary" size="small" />}
+// // // // //               label="Remember me"
+// // // // //               sx={{ "& .MuiTypography-root": { fontSize: "0.875rem" } }}
+// // // // //             />
+// // // // //             <Link href="#" variant="body2" color="primary">
+// // // // //               Forgot password?
+// // // // //             </Link>
+// // // // //           </Box>
+
+// // // // //           <Button
+// // // // //             type="submit"
+// // // // //             fullWidth
+// // // // //             variant="contained"
+// // // // //             size="large"
+// // // // //             disabled={loading}
+// // // // //             sx={{
+// // // // //               mb: 2,
+// // // // //               py: 1,
+// // // // //               fontWeight: 500,
+// // // // //               textTransform: "none",
+// // // // //               fontSize: "0.875rem",
+// // // // //             }}
+// // // // //           >
+// // // // //             {loading ? (
+// // // // //               <Box sx={{ display: "flex", alignItems: "center" }}>
+// // // // //                 <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+// // // // //                 Signing in...
+// // // // //               </Box>
+// // // // //             ) : (
+// // // // //               "Sign in"
+// // // // //             )}
+// // // // //           </Button>
+
+// // // // //           <Divider sx={{ my: 3 }}>
+// // // // //             <Typography variant="body2" color="text.secondary">
+// // // // //               or
+// // // // //             </Typography>
+// // // // //           </Divider>
+
+// // // // //           <Button
+// // // // //             fullWidth
+// // // // //             variant="outlined"
+// // // // //             size="large"
+// // // // //             startIcon={<Google />}
+// // // // //             sx={{
+// // // // //               py: 1,
+// // // // //               fontWeight: 500,
+// // // // //               textTransform: "none",
+// // // // //               fontSize: "0.875rem",
+// // // // //             }}
+// // // // //           >
+// // // // //             Sign in with Google
+// // // // //           </Button>
+
+// // // // //           <Box sx={{ textAlign: "center", mt: 3 }}>
+// // // // //             <Typography variant="body2" color="text.secondary">
+// // // // //               Don't have an account?{" "}
+// // // // //               <Link href="/register" color="primary" fontWeight="medium">
+// // // // //                 Sign up
+// // // // //               </Link>
+// // // // //             </Typography>
+// // // // //           </Box>
+// // // // //         </Box>
+// // // // //       </Paper>
+// // // // //     </Container>
+// // // // //   );
+// // // // // };
+
+// // // // // export default LoginForm;
+
+// // // // import React, { useState, useEffect } from "react";
+// // // // import { useForm, Controller } from "react-hook-form";
+// // // // import { useAuth } from "../../../contexts/AuthContext/AuthContext";
+// // // // import { useNavigate, useLocation } from "react-router-dom";
+// // // // import {
+// // // //   Box,
+// // // //   TextField,
+// // // //   Button,
+// // // //   Typography,
+// // // //   Alert,
+// // // //   IconButton,
+// // // //   InputAdornment,
+// // // //   Checkbox,
+// // // //   FormControlLabel,
+// // // //   Link,
+// // // //   Divider,
+// // // //   Container,
+// // // //   Paper,
+// // // //   CircularProgress,
+// // // //   Fade,
+// // // //   Slide,
+// // // // } from "@mui/material";
+// // // // import {
+// // // //   Visibility,
+// // // //   VisibilityOff,
+// // // //   Email,
+// // // //   Lock,
+// // // //   Google,
+// // // //   School,
+// // // //   AccountCircle,
+// // // //   AdminPanelSettings,
+// // // // } from "@mui/icons-material";
+
+// // // // const LoginForm = () => {
+// // // //   const {
+// // // //     control,
+// // // //     handleSubmit,
+// // // //     formState: { errors },
+// // // //   } = useForm();
+// // // //   const { login, loading, error } = useAuth();
+// // // //   const navigate = useNavigate();
+// // // //   const [showPassword, setShowPassword] = useState(false);
+// // // //   const [hoverEffect, setHoverEffect] = useState(false);
+// // // //   const location = useLocation();
+
+// // // //   useEffect(() => {
+// // // //     if (location.state?.registrationSuccess) {
+// // // //       alert(
+// // // //         `Registration successful! Please login with ${location.state.email}`
+// // // //       );
+// // // //     }
+// // // //   }, [location]);
+
+// // // //   const handleClickShowPassword = () => {
+// // // //     setShowPassword(!showPassword);
+// // // //   };
+
+// // // //   const onSubmit = async (data) => {
+// // // //     try {
+// // // //       const response = await login(data);
+
+// // // //       const role = response.user?.role;
+// // // //       let redirectPath = "/";
+// // // //       if (role === "student") {
+// // // //         redirectPath = "/student/dashboard";
+// // // //       } else if (role === "instructor" || role === "teacher") {
+// // // //         redirectPath = "/instructor/dashboard";
+// // // //       } else if (role === "admin") {
+// // // //         redirectPath = "/admin/dashboard";
+// // // //       }
+
+// // // //       navigate(redirectPath, { replace: true });
+// // // //     } catch (error) {
+// // // //       console.log(error);
+// // // //     }
+// // // //   };
+
+// // // //   return (
+// // // //     <Box
+// // // //       sx={{
+// // // //         minHeight: "100vh",
+// // // //         display: "flex",
+// // // //         alignItems: "center",
+// // // //         justifyContent: "center",
+// // // //         background:
+// // // //           "linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)",
+// // // //         backgroundSize: "400% 400%",
+// // // //         animation: "gradient 15s ease infinite",
+// // // //         "@keyframes gradient": {
+// // // //           "0%": {
+// // // //             backgroundPosition: "0% 50%",
+// // // //           },
+// // // //           "50%": {
+// // // //             backgroundPosition: "100% 50%",
+// // // //           },
+// // // //           "100%": {
+// // // //             backgroundPosition: "0% 50%",
+// // // //           },
+// // // //         },
+// // // //       }}
+// // // //     >
+// // // //       <Slide in direction="up" timeout={500}>
+// // // //         <Container maxWidth="sm">
+// // // //           <Paper
+// // // //             elevation={10}
+// // // //             sx={{
+// // // //               p: 4,
+// // // //               borderRadius: 4,
+// // // //               backdropFilter: "blur(8px)",
+// // // //               backgroundColor: "rgba(255, 255, 255, 0.85)",
+// // // //               border: "1px solid rgba(255, 255, 255, 0.3)",
+// // // //               transform: hoverEffect ? "translateY(-5px)" : "none",
+// // // //               transition: "transform 0.3s ease, box-shadow 0.3s ease",
+// // // //               boxShadow: "0 15px 30px rgba(0, 0, 0, 0.2)",
+// // // //               "&:hover": {
+// // // //                 boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)",
+// // // //               },
+// // // //             }}
+// // // //             onMouseEnter={() => setHoverEffect(true)}
+// // // //             onMouseLeave={() => setHoverEffect(false)}
+// // // //           >
+// // // //             <Box
+// // // //               sx={{
+// // // //                 display: "flex",
+// // // //                 flexDirection: "column",
+// // // //                 alignItems: "center",
+// // // //                 mb: 4,
+// // // //               }}
+// // // //             >
+// // // //               <Box
+// // // //                 sx={{
+// // // //                   position: "relative",
+// // // //                   width: 80,
+// // // //                   height: 80,
+// // // //                   mb: 2,
+// // // //                 }}
+// // // //               >
+// // // //                 <Box
+// // // //                   sx={{
+// // // //                     position: "absolute",
+// // // //                     width: "100%",
+// // // //                     height: "100%",
+// // // //                     borderRadius: "50%",
+// // // //                     background: "linear-gradient(45deg, #ff8a00, #e52e71)",
+// // // //                     display: "flex",
+// // // //                     alignItems: "center",
+// // // //                     justifyContent: "center",
+// // // //                     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+// // // //                   }}
+// // // //                 >
+// // // //                   <Lock sx={{ color: "white", fontSize: 40 }} />
+// // // //                 </Box>
+// // // //                 <Box
+// // // //                   sx={{
+// // // //                     position: "absolute",
+// // // //                     top: -5,
+// // // //                     right: -5,
+// // // //                     width: 30,
+// // // //                     height: 30,
+// // // //                     borderRadius: "50%",
+// // // //                     backgroundColor: "#23d5ab",
+// // // //                     display: "flex",
+// // // //                     alignItems: "center",
+// // // //                     justifyContent: "center",
+// // // //                     border: "3px solid white",
+// // // //                   }}
+// // // //                 >
+// // // //                   <School sx={{ color: "white", fontSize: 16 }} />
+// // // //                 </Box>
+// // // //               </Box>
+
+// // // //               <Typography
+// // // //                 variant="h4"
+// // // //                 component="h1"
+// // // //                 fontWeight="800"
+// // // //                 sx={{
+// // // //                   background: "linear-gradient(45deg, #ff8a00, #e52e71)",
+// // // //                   WebkitBackgroundClip: "text",
+// // // //                   WebkitTextFillColor: "transparent",
+// // // //                   mb: 1,
+// // // //                 }}
+// // // //               >
+// // // //                 Welcome Back!
+// // // //               </Typography>
+// // // //               <Typography
+// // // //                 variant="body2"
+// // // //                 color="text.secondary"
+// // // //                 textAlign="center"
+// // // //               >
+// // // //                 Sign in to access your personalized learning dashboard
+// // // //               </Typography>
+// // // //             </Box>
+
+// // // //             {error && (
+// // // //               <Fade in>
+// // // //                 <Alert
+// // // //                   severity="error"
+// // // //                   sx={{
+// // // //                     mb: 3,
+// // // //                     borderRadius: 2,
+// // // //                     borderLeft: "4px solid #ff4757",
+// // // //                   }}
+// // // //                 >
+// // // //                   {error}
+// // // //                 </Alert>
+// // // //               </Fade>
+// // // //             )}
+
+// // // //             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+// // // //               <Controller
+// // // //                 name="email"
+// // // //                 control={control}
+// // // //                 defaultValue=""
+// // // //                 rules={{
+// // // //                   required: "Email is required",
+// // // //                   pattern: {
+// // // //                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+// // // //                     message: "Invalid email address",
+// // // //                   },
+// // // //                 }}
+// // // //                 render={({ field }) => (
+// // // //                   <TextField
+// // // //                     {...field}
+// // // //                     fullWidth
+// // // //                     label="Email Address"
+// // // //                     type="email"
+// // // //                     margin="normal"
+// // // //                     error={!!errors.email}
+// // // //                     helperText={errors.email?.message}
+// // // //                     placeholder="your@email.com"
+// // // //                     sx={{ mb: 2 }}
+// // // //                     InputProps={{
+// // // //                       startAdornment: (
+// // // //                         <InputAdornment position="start">
+// // // //                           <Email sx={{ color: "primary.main" }} />
+// // // //                         </InputAdornment>
+// // // //                       ),
+// // // //                     }}
+// // // //                     variant="filled"
+// // // //                     size="medium"
+// // // //                   />
+// // // //                 )}
+// // // //               />
+
+// // // //               <Controller
+// // // //                 name="password"
+// // // //                 control={control}
+// // // //                 defaultValue=""
+// // // //                 rules={{
+// // // //                   required: "Password is required",
+// // // //                   minLength: {
+// // // //                     value: 6,
+// // // //                     message: "Password must be at least 6 characters",
+// // // //                   },
+// // // //                 }}
+// // // //                 render={({ field }) => (
+// // // //                   <TextField
+// // // //                     {...field}
+// // // //                     fullWidth
+// // // //                     label="Password"
+// // // //                     type={showPassword ? "text" : "password"}
+// // // //                     margin="normal"
+// // // //                     error={!!errors.password}
+// // // //                     helperText={errors.password?.message}
+// // // //                     placeholder="••••••••"
+// // // //                     sx={{ mb: 2 }}
+// // // //                     InputProps={{
+// // // //                       startAdornment: (
+// // // //                         <InputAdornment position="start">
+// // // //                           <Lock sx={{ color: "primary.main" }} />
+// // // //                         </InputAdornment>
+// // // //                       ),
+// // // //                       endAdornment: (
+// // // //                         <InputAdornment position="end">
+// // // //                           <IconButton
+// // // //                             aria-label="toggle password visibility"
+// // // //                             onClick={handleClickShowPassword}
+// // // //                             edge="end"
+// // // //                             sx={{ color: "primary.main" }}
+// // // //                           >
+// // // //                             {showPassword ? <VisibilityOff /> : <Visibility />}
+// // // //                           </IconButton>
+// // // //                         </InputAdornment>
+// // // //                       ),
+// // // //                     }}
+// // // //                     variant="filled"
+// // // //                     size="medium"
+// // // //                   />
+// // // //                 )}
+// // // //               />
+
+// // // //               <Box
+// // // //                 sx={{
+// // // //                   display: "flex",
+// // // //                   justifyContent: "space-between",
+// // // //                   alignItems: "center",
+// // // //                   mb: 3,
+// // // //                 }}
+// // // //               >
+// // // //                 <FormControlLabel
+// // // //                   control={
+// // // //                     <Checkbox
+// // // //                       color="primary"
+// // // //                       size="small"
+// // // //                       sx={{
+// // // //                         "&.Mui-checked": {
+// // // //                           color: "primary.main",
+// // // //                         },
+// // // //                       }}
+// // // //                     />
+// // // //                   }
+// // // //                   label={<Typography variant="body2">Remember me</Typography>}
+// // // //                 />
+// // // //                 <Link
+// // // //                   href="#"
+// // // //                   variant="body2"
+// // // //                   sx={{
+// // // //                     fontWeight: 600,
+// // // //                     textDecoration: "none",
+// // // //                     "&:hover": {
+// // // //                       textDecoration: "underline",
+// // // //                     },
+// // // //                   }}
+// // // //                 >
+// // // //                   Forgot password?
+// // // //                 </Link>
+// // // //               </Box>
+
+// // // //               <Button
+// // // //                 type="submit"
+// // // //                 fullWidth
+// // // //                 variant="contained"
+// // // //                 size="large"
+// // // //                 disabled={loading}
+// // // //                 sx={{
+// // // //                   mb: 2,
+// // // //                   py: 1.5,
+// // // //                   fontWeight: 700,
+// // // //                   textTransform: "none",
+// // // //                   fontSize: "1rem",
+// // // //                   borderRadius: 2,
+// // // //                   background: "linear-gradient(45deg, #ff8a00, #e52e71)",
+// // // //                   boxShadow: "0 4px 15px rgba(255, 138, 0, 0.3)",
+// // // //                   transition: "all 0.3s ease",
+// // // //                   "&:hover": {
+// // // //                     transform: "translateY(-2px)",
+// // // //                     boxShadow: "0 6px 20px rgba(255, 138, 0, 0.4)",
+// // // //                   },
+// // // //                   "&:disabled": {
+// // // //                     background: "linear-gradient(45deg, #cccccc, #999999)",
+// // // //                   },
+// // // //                 }}
+// // // //               >
+// // // //                 {loading ? (
+// // // //                   <Box sx={{ display: "flex", alignItems: "center" }}>
+// // // //                     <CircularProgress
+// // // //                       size={20}
+// // // //                       color="inherit"
+// // // //                       sx={{ mr: 1 }}
+// // // //                     />
+// // // //                     Signing in...
+// // // //                   </Box>
+// // // //                 ) : (
+// // // //                   "Sign In"
+// // // //                 )}
+// // // //               </Button>
+
+// // // //               <Divider sx={{ my: 3 }}>
+// // // //                 <Typography
+// // // //                   variant="body2"
+// // // //                   sx={{
+// // // //                     px: 2,
+// // // //                     background: "rgba(255, 255, 255, 0.85)",
+// // // //                   }}
+// // // //                 >
+// // // //                   or continue with
+// // // //                 </Typography>
+// // // //               </Divider>
+
+// // // //               <Button
+// // // //                 fullWidth
+// // // //                 variant="outlined"
+// // // //                 size="large"
+// // // //                 startIcon={<Google />}
+// // // //                 sx={{
+// // // //                   py: 1.5,
+// // // //                   fontWeight: 600,
+// // // //                   textTransform: "none",
+// // // //                   fontSize: "0.875rem",
+// // // //                   borderRadius: 2,
+// // // //                   borderColor: "divider",
+// // // //                   color: "text.primary",
+// // // //                   transition: "all 0.3s ease",
+// // // //                   "&:hover": {
+// // // //                     backgroundColor: "rgba(66, 133, 244, 0.08)",
+// // // //                     borderColor: "#4285F4",
+// // // //                     color: "#4285F4",
+// // // //                   },
+// // // //                 }}
+// // // //               >
+// // // //                 Google
+// // // //               </Button>
+
+// // // //               <Box
+// // // //                 sx={{
+// // // //                   display: "flex",
+// // // //                   justifyContent: "center",
+// // // //                   mt: 3,
+// // // //                   gap: 2,
+// // // //                 }}
+// // // //               >
+// // // //                 <Button
+// // // //                   startIcon={<AccountCircle />}
+// // // //                   size="small"
+// // // //                   sx={{
+// // // //                     textTransform: "none",
+// // // //                     color: "text.secondary",
+// // // //                     "&:hover": {
+// // // //                       color: "primary.main",
+// // // //                     },
+// // // //                   }}
+// // // //                 >
+// // // //                   Student
+// // // //                 </Button>
+// // // //                 <Button
+// // // //                   startIcon={<School />}
+// // // //                   size="small"
+// // // //                   sx={{
+// // // //                     textTransform: "none",
+// // // //                     color: "text.secondary",
+// // // //                     "&:hover": {
+// // // //                       color: "secondary.main",
+// // // //                     },
+// // // //                   }}
+// // // //                 >
+// // // //                   Instructor
+// // // //                 </Button>
+// // // //                 <Button
+// // // //                   startIcon={<AdminPanelSettings />}
+// // // //                   size="small"
+// // // //                   sx={{
+// // // //                     textTransform: "none",
+// // // //                     color: "text.secondary",
+// // // //                     "&:hover": {
+// // // //                       color: "error.main",
+// // // //                     },
+// // // //                   }}
+// // // //                 >
+// // // //                   Admin
+// // // //                 </Button>
+// // // //               </Box>
+
+// // // //               <Typography
+// // // //                 variant="body2"
+// // // //                 color="text.secondary"
+// // // //                 textAlign="center"
+// // // //                 mt={3}
+// // // //               >
+// // // //                 New to our platform?{" "}
+// // // //                 <Link
+// // // //                   href="/register"
+// // // //                   sx={{
+// // // //                     fontWeight: 700,
+// // // //                     textDecoration: "none",
+// // // //                     "&:hover": {
+// // // //                       textDecoration: "underline",
+// // // //                     },
+// // // //                   }}
+// // // //                 >
+// // // //                   Create an account
+// // // //                 </Link>
+// // // //               </Typography>
+// // // //             </Box>
+// // // //           </Paper>
+// // // //         </Container>
+// // // //       </Slide>
+// // // //     </Box>
+// // // //   );
+// // // // };
+
+// // // // export default LoginForm;
 // // // import React, { useState, useEffect } from "react";
 // // // import { useForm, Controller } from "react-hook-form";
 // // // import { useAuth } from "../../../contexts/AuthContext/AuthContext";
@@ -17,6 +777,11 @@
 // // //   Container,
 // // //   Paper,
 // // //   CircularProgress,
+// // //   Fade,
+// // //   Card,
+// // //   CardContent,
+// // //   useTheme,
+// // //   alpha,
 // // // } from "@mui/material";
 // // // import {
 // // //   Visibility,
@@ -24,6 +789,10 @@
 // // //   Email,
 // // //   Lock,
 // // //   Google,
+// // //   School,
+// // //   TrendingUp,
+// // //   Security,
+// // //   Speed,
 // // // } from "@mui/icons-material";
 
 // // // const LoginForm = () => {
@@ -36,6 +805,7 @@
 // // //   const navigate = useNavigate();
 // // //   const [showPassword, setShowPassword] = useState(false);
 // // //   const location = useLocation();
+// // //   const theme = useTheme();
 
 // // //   useEffect(() => {
 // // //     if (location.state?.registrationSuccess) {
@@ -70,213 +840,412 @@
 // // //   };
 
 // // //   return (
-// // //     <Container
-// // //       maxWidth="sm"
+// // //     <Box
 // // //       sx={{
-// // //         display: "flex",
-// // //         flexDirection: "column",
-// // //         alignItems: "center",
-// // //         justifyContent: "center",
 // // //         minHeight: "100vh",
-// // //         p: 3,
-// // //         backgroundColor: "#f9fafb",
+// // //         display: "flex",
+// // //         background: `linear-gradient(135deg,
+// // //           ${alpha(theme.palette.primary.main, 0.1)} 0%,
+// // //           ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
+// // //         position: "relative",
+// // //         overflow: "hidden",
+// // //         "&::before": {
+// // //           content: '""',
+// // //           position: "absolute",
+// // //           top: 0,
+// // //           left: 0,
+// // //           right: 0,
+// // //           bottom: 0,
+// // //           background: `radial-gradient(circle at 20% 80%, ${alpha(
+// // //             theme.palette.primary.main,
+// // //             0.1
+// // //           )} 0%, transparent 50%),
+// // //           radial-gradient(circle at 80% 20%, ${alpha(
+// // //             theme.palette.secondary.main,
+// // //             0.1
+// // //           )} 0%, transparent 50%)`,
+// // //           zIndex: 0,
+// // //         },
 // // //       }}
 // // //     >
-// // //       <Box sx={{ mb: 4 }}>
-// // //         {/* Replace this with your logo component or image */}
-// // //         <Typography
-// // //           variant="h4"
-// // //           component="h1"
-// // //           fontWeight="bold"
-// // //           color="primary"
-// // //         >
-// // //           LMS
-// // //         </Typography>
-// // //       </Box>
-
-// // //       <Paper
-// // //         elevation={0}
+// // //       <Container
+// // //         maxWidth="lg"
 // // //         sx={{
-// // //           width: "100%",
-// // //           p: 4,
-// // //           backgroundColor: "white",
-// // //           borderRadius: 2,
-// // //           boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+// // //           display: "flex",
+// // //           alignItems: "center",
+// // //           justifyContent: "center",
+// // //           py: 4,
+// // //           position: "relative",
+// // //           zIndex: 1,
 // // //         }}
 // // //       >
-// // //         <Typography
-// // //           variant="h5"
-// // //           component="h2"
-// // //           textAlign="center"
-// // //           mb={3}
-// // //           fontWeight="medium"
+// // //         <Box
+// // //           sx={{
+// // //             display: "flex",
+// // //             width: "100%",
+// // //             maxWidth: 1200,
+// // //             minHeight: 600,
+// // //             borderRadius: 4,
+// // //             overflow: "hidden",
+// // //             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
+// // //           }}
 // // //         >
-// // //           Sign in
-// // //         </Typography>
-
-// // //         {error && (
-// // //           <Alert severity="error" sx={{ mb: 3 }}>
-// // //             {error}
-// // //           </Alert>
-// // //         )}
-
-// // //         <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-// // //           <Controller
-// // //             name="email"
-// // //             control={control}
-// // //             defaultValue=""
-// // //             rules={{
-// // //               required: "Email is required",
-// // //               pattern: {
-// // //                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-// // //                 message: "Invalid email address",
-// // //               },
-// // //             }}
-// // //             render={({ field }) => (
-// // //               <TextField
-// // //                 {...field}
-// // //                 fullWidth
-// // //                 label="Email"
-// // //                 type="email"
-// // //                 margin="normal"
-// // //                 error={!!errors.email}
-// // //                 helperText={errors.email?.message}
-// // //                 placeholder="Enter your email"
-// // //                 sx={{ mb: 2 }}
-// // //                 InputProps={{
-// // //                   startAdornment: (
-// // //                     <InputAdornment position="start">
-// // //                       <Email color="action" />
-// // //                     </InputAdornment>
-// // //                   ),
-// // //                 }}
-// // //               />
-// // //             )}
-// // //           />
-
-// // //           <Controller
-// // //             name="password"
-// // //             control={control}
-// // //             defaultValue=""
-// // //             rules={{
-// // //               required: "Password is required",
-// // //               minLength: {
-// // //                 value: 6,
-// // //                 message: "Password must be at least 6 characters",
-// // //               },
-// // //             }}
-// // //             render={({ field }) => (
-// // //               <TextField
-// // //                 {...field}
-// // //                 fullWidth
-// // //                 label="Password"
-// // //                 type={showPassword ? "text" : "password"}
-// // //                 margin="normal"
-// // //                 error={!!errors.password}
-// // //                 helperText={errors.password?.message}
-// // //                 placeholder="••••••••"
-// // //                 sx={{ mb: 2 }}
-// // //                 InputProps={{
-// // //                   startAdornment: (
-// // //                     <InputAdornment position="start">
-// // //                       <Lock color="action" />
-// // //                     </InputAdornment>
-// // //                   ),
-// // //                   endAdornment: (
-// // //                     <InputAdornment position="end">
-// // //                       <IconButton
-// // //                         aria-label="toggle password visibility"
-// // //                         onClick={handleClickShowPassword}
-// // //                         edge="end"
-// // //                       >
-// // //                         {showPassword ? <VisibilityOff /> : <Visibility />}
-// // //                       </IconButton>
-// // //                     </InputAdornment>
-// // //                   ),
-// // //                 }}
-// // //               />
-// // //             )}
-// // //           />
-
+// // //           {/* Left Panel - Brand & Features */}
 // // //           <Box
 // // //             sx={{
-// // //               display: "flex",
-// // //               justifyContent: "space-between",
-// // //               alignItems: "center",
-// // //               mb: 3,
+// // //               flex: 1,
+// // //               background: `linear-gradient(135deg,
+// // //                 ${theme.palette.primary.main} 0%,
+// // //                 ${theme.palette.primary.dark} 100%)`,
+// // //               color: "white",
+// // //               p: 6,
+// // //               display: { xs: "none", md: "flex" },
+// // //               flexDirection: "column",
+// // //               justifyContent: "center",
+// // //               position: "relative",
+// // //               "&::before": {
+// // //                 content: '""',
+// // //                 position: "absolute",
+// // //                 top: 0,
+// // //                 left: 0,
+// // //                 right: 0,
+// // //                 bottom: 0,
+// // //                 background: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+// // //                 opacity: 0.1,
+// // //               },
 // // //             }}
 // // //           >
-// // //             <FormControlLabel
-// // //               control={<Checkbox color="primary" size="small" />}
-// // //               label="Remember me"
-// // //               sx={{ "& .MuiTypography-root": { fontSize: "0.875rem" } }}
-// // //             />
-// // //             <Link href="#" variant="body2" color="primary">
-// // //               Forgot password?
-// // //             </Link>
+// // //             <Box sx={{ position: "relative", zIndex: 1 }}>
+// // //               <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
+// // //                 <Box
+// // //                   sx={{
+// // //                     width: 60,
+// // //                     height: 60,
+// // //                     borderRadius: 2,
+// // //                     backgroundColor: "rgba(255, 255, 255, 0.2)",
+// // //                     display: "flex",
+// // //                     alignItems: "center",
+// // //                     justifyContent: "center",
+// // //                     mr: 3,
+// // //                   }}
+// // //                 >
+// // //                   <School sx={{ fontSize: 32 }} />
+// // //                 </Box>
+// // //                 <Typography variant="h4" fontWeight="bold">
+// // //                  LearnHub
+// // //                 </Typography>
+// // //               </Box>
+
+// // //               <Typography variant="h3" fontWeight="bold" mb={2}>
+// // //                 Welcome Back!
+// // //               </Typography>
+// // //               <Typography variant="h6" mb={6} sx={{ opacity: 0.9 }}>
+// // //                 Access your personalized learning dashboard and continue your
+// // //                 educational journey.
+// // //               </Typography>
+
+// // //               <Box sx={{ space: 3 }}>
+// // //                 {[
+// // //                   {
+// // //                     icon: <TrendingUp />,
+// // //                     title: "Track Progress",
+// // //                     desc: "Monitor your learning journey",
+// // //                   },
+// // //                   {
+// // //                     icon: <Security />,
+// // //                     title: "Secure Platform",
+// // //                     desc: "Your data is protected",
+// // //                   },
+// // //                   {
+// // //                     icon: <Speed />,
+// // //                     title: "Fast Learning",
+// // //                     desc: "Optimized for efficiency",
+// // //                   },
+// // //                 ].map((feature, index) => (
+// // //                   <Box
+// // //                     key={index}
+// // //                     sx={{
+// // //                       display: "flex",
+// // //                       alignItems: "center",
+// // //                       mb: 3,
+// // //                       "&:last-child": { mb: 0 },
+// // //                     }}
+// // //                   >
+// // //                     <Box
+// // //                       sx={{
+// // //                         width: 48,
+// // //                         height: 48,
+// // //                         borderRadius: 1.5,
+// // //                         backgroundColor: "rgba(255, 255, 255, 0.15)",
+// // //                         display: "flex",
+// // //                         alignItems: "center",
+// // //                         justifyContent: "center",
+// // //                         mr: 3,
+// // //                       }}
+// // //                     >
+// // //                       {feature.icon}
+// // //                     </Box>
+// // //                     <Box>
+// // //                       <Typography variant="subtitle1" fontWeight="600">
+// // //                         {feature.title}
+// // //                       </Typography>
+// // //                       <Typography variant="body2" sx={{ opacity: 0.8 }}>
+// // //                         {feature.desc}
+// // //                       </Typography>
+// // //                     </Box>
+// // //                   </Box>
+// // //                 ))}
+// // //               </Box>
+// // //             </Box>
 // // //           </Box>
 
-// // //           <Button
-// // //             type="submit"
-// // //             fullWidth
-// // //             variant="contained"
-// // //             size="large"
-// // //             disabled={loading}
+// // //           {/* Right Panel - Login Form */}
+// // //           <Box
 // // //             sx={{
-// // //               mb: 2,
-// // //               py: 1,
-// // //               fontWeight: 500,
-// // //               textTransform: "none",
-// // //               fontSize: "0.875rem",
+// // //               flex: 1,
+// // //               backgroundColor: "white",
+// // //               p: 6,
+// // //               display: "flex",
+// // //               flexDirection: "column",
+// // //               justifyContent: "center",
 // // //             }}
 // // //           >
-// // //             {loading ? (
-// // //               <Box sx={{ display: "flex", alignItems: "center" }}>
-// // //                 <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
-// // //                 Signing in...
-// // //               </Box>
-// // //             ) : (
-// // //               "Sign in"
+// // //             <Box sx={{ mb: 4 }}>
+// // //               <Typography variant="h4" fontWeight="bold" mb={1}>
+// // //                 Sign In
+// // //               </Typography>
+// // //               <Typography variant="body1" color="text.secondary">
+// // //                 Enter your credentials to access your account
+// // //               </Typography>
+// // //             </Box>
+
+// // //             {error && (
+// // //               <Fade in>
+// // //                 <Alert
+// // //                   severity="error"
+// // //                   sx={{
+// // //                     mb: 3,
+// // //                     borderRadius: 2,
+// // //                     border: "1px solid",
+// // //                     borderColor: "error.light",
+// // //                   }}
+// // //                 >
+// // //                   {error}
+// // //                 </Alert>
+// // //               </Fade>
 // // //             )}
-// // //           </Button>
 
-// // //           <Divider sx={{ my: 3 }}>
-// // //             <Typography variant="body2" color="text.secondary">
-// // //               or
-// // //             </Typography>
-// // //           </Divider>
+// // //             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+// // //               <Controller
+// // //                 name="email"
+// // //                 control={control}
+// // //                 defaultValue=""
+// // //                 rules={{
+// // //                   required: "Email is required",
+// // //                   pattern: {
+// // //                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+// // //                     message: "Invalid email address",
+// // //                   },
+// // //                 }}
+// // //                 render={({ field }) => (
+// // //                   <TextField
+// // //                     {...field}
+// // //                     fullWidth
+// // //                     label="Email Address"
+// // //                     type="email"
+// // //                     error={!!errors.email}
+// // //                     helperText={errors.email?.message}
+// // //                     placeholder="Enter your email"
+// // //                     sx={{ mb: 3 }}
+// // //                     InputProps={{
+// // //                       startAdornment: (
+// // //                         <InputAdornment position="start">
+// // //                           <Email sx={{ color: "text.secondary" }} />
+// // //                         </InputAdornment>
+// // //                       ),
+// // //                     }}
+// // //                     variant="outlined"
+// // //                     size="large"
+// // //                   />
+// // //                 )}
+// // //               />
 
-// // //           <Button
-// // //             fullWidth
-// // //             variant="outlined"
-// // //             size="large"
-// // //             startIcon={<Google />}
-// // //             sx={{
-// // //               py: 1,
-// // //               fontWeight: 500,
-// // //               textTransform: "none",
-// // //               fontSize: "0.875rem",
-// // //             }}
-// // //           >
-// // //             Sign in with Google
-// // //           </Button>
+// // //               <Controller
+// // //                 name="password"
+// // //                 control={control}
+// // //                 defaultValue=""
+// // //                 rules={{
+// // //                   required: "Password is required",
+// // //                   minLength: {
+// // //                     value: 6,
+// // //                     message: "Password must be at least 6 characters",
+// // //                   },
+// // //                 }}
+// // //                 render={({ field }) => (
+// // //                   <TextField
+// // //                     {...field}
+// // //                     fullWidth
+// // //                     label="Password"
+// // //                     type={showPassword ? "text" : "password"}
+// // //                     error={!!errors.password}
+// // //                     helperText={errors.password?.message}
+// // //                     placeholder="Enter your password"
+// // //                     sx={{ mb: 3 }}
+// // //                     InputProps={{
+// // //                       startAdornment: (
+// // //                         <InputAdornment position="start">
+// // //                           <Lock sx={{ color: "text.secondary" }} />
+// // //                         </InputAdornment>
+// // //                       ),
+// // //                       endAdornment: (
+// // //                         <InputAdornment position="end">
+// // //                           <IconButton
+// // //                             aria-label="toggle password visibility"
+// // //                             onClick={handleClickShowPassword}
+// // //                             edge="end"
+// // //                           >
+// // //                             {showPassword ? <VisibilityOff /> : <Visibility />}
+// // //                           </IconButton>
+// // //                         </InputAdornment>
+// // //                       ),
+// // //                     }}
+// // //                     variant="outlined"
+// // //                     size="large"
+// // //                   />
+// // //                 )}
+// // //               />
 
-// // //           <Box sx={{ textAlign: "center", mt: 3 }}>
-// // //             <Typography variant="body2" color="text.secondary">
-// // //               Don't have an account?{" "}
-// // //               <Link href="/register" color="primary" fontWeight="medium">
-// // //                 Sign up
-// // //               </Link>
-// // //             </Typography>
+// // //               <Box
+// // //                 sx={{
+// // //                   display: "flex",
+// // //                   justifyContent: "space-between",
+// // //                   alignItems: "center",
+// // //                   mb: 4,
+// // //                 }}
+// // //               >
+// // //                 <FormControlLabel
+// // //                   control={
+// // //                     <Checkbox
+// // //                       sx={{
+// // //                         "&.Mui-checked": {
+// // //                           color: "primary.main",
+// // //                         },
+// // //                       }}
+// // //                     />
+// // //                   }
+// // //                   label={
+// // //                     <Typography variant="body2" color="text.secondary">
+// // //                       Remember me
+// // //                     </Typography>
+// // //                   }
+// // //                 />
+// // //                 <Link
+// // //                   href="#"
+// // //                   variant="body2"
+// // //                   color="primary"
+// // //                   sx={{
+// // //                     textDecoration: "none",
+// // //                     fontWeight: 600,
+// // //                     "&:hover": {
+// // //                       textDecoration: "underline",
+// // //                     },
+// // //                   }}
+// // //                 >
+// // //                   Forgot password?
+// // //                 </Link>
+// // //               </Box>
+
+// // //               <Button
+// // //                 type="submit"
+// // //                 fullWidth
+// // //                 variant="contained"
+// // //                 size="large"
+// // //                 disabled={loading}
+// // //                 sx={{
+// // //                   mb: 3,
+// // //                   py: 1.5,
+// // //                   fontWeight: 600,
+// // //                   textTransform: "none",
+// // //                   fontSize: "1rem",
+// // //                   borderRadius: 2,
+// // //                   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+// // //                   "&:hover": {
+// // //                     boxShadow: "0 6px 16px rgba(0, 0, 0, 0.2)",
+// // //                   },
+// // //                 }}
+// // //               >
+// // //                 {loading ? (
+// // //                   <Box sx={{ display: "flex", alignItems: "center" }}>
+// // //                     <CircularProgress
+// // //                       size={20}
+// // //                       color="inherit"
+// // //                       sx={{ mr: 1 }}
+// // //                     />
+// // //                     Signing in...
+// // //                   </Box>
+// // //                 ) : (
+// // //                   "Sign In"
+// // //                 )}
+// // //               </Button>
+
+// // //               <Divider sx={{ mb: 3 }}>
+// // //                 <Typography variant="body2" color="text.secondary">
+// // //                   or continue with
+// // //                 </Typography>
+// // //               </Divider>
+
+// // //               <Button
+// // //                 fullWidth
+// // //                 variant="outlined"
+// // //                 size="large"
+// // //                 startIcon={<Google />}
+// // //                 sx={{
+// // //                   py: 1.5,
+// // //                   fontWeight: 600,
+// // //                   textTransform: "none",
+// // //                   fontSize: "0.875rem",
+// // //                   borderRadius: 2,
+// // //                   borderColor: "divider",
+// // //                   color: "text.primary",
+// // //                   mb: 4,
+// // //                   "&:hover": {
+// // //                     backgroundColor: "rgba(0, 0, 0, 0.04)",
+// // //                     borderColor: "text.primary",
+// // //                   },
+// // //                 }}
+// // //               >
+// // //                 Sign in with Google
+// // //               </Button>
+
+// // //               <Typography
+// // //                 variant="body2"
+// // //                 color="text.secondary"
+// // //                 textAlign="center"
+// // //               >
+// // //                 Don't have an account?{" "}
+// // //                 <Link
+// // //                   href="/register"
+// // //                   color="primary"
+// // //                   sx={{
+// // //                     fontWeight: 600,
+// // //                     textDecoration: "none",
+// // //                     "&:hover": {
+// // //                       textDecoration: "underline",
+// // //                     },
+// // //                   }}
+// // //                 >
+// // //                   Sign up
+// // //                 </Link>
+// // //               </Typography>
+// // //             </Box>
 // // //           </Box>
 // // //         </Box>
-// // //       </Paper>
-// // //     </Container>
+// // //       </Container>
+// // //     </Box>
 // // //   );
 // // // };
 
 // // // export default LoginForm;
-
 // // import React, { useState, useEffect } from "react";
 // // import { useForm, Controller } from "react-hook-form";
 // // import { useAuth } from "../../../contexts/AuthContext/AuthContext";
@@ -297,7 +1266,10 @@
 // //   Paper,
 // //   CircularProgress,
 // //   Fade,
-// //   Slide,
+// //   Card,
+// //   CardContent,
+// //   useTheme,
+// //   alpha,
 // // } from "@mui/material";
 // // import {
 // //   Visibility,
@@ -306,8 +1278,9 @@
 // //   Lock,
 // //   Google,
 // //   School,
-// //   AccountCircle,
-// //   AdminPanelSettings,
+// //   TrendingUp,
+// //   Security,
+// //   Speed,
 // // } from "@mui/icons-material";
 
 // // const LoginForm = () => {
@@ -319,8 +1292,8 @@
 // //   const { login, loading, error } = useAuth();
 // //   const navigate = useNavigate();
 // //   const [showPassword, setShowPassword] = useState(false);
-// //   const [hoverEffect, setHoverEffect] = useState(false);
 // //   const location = useLocation();
+// //   const theme = useTheme();
 
 // //   useEffect(() => {
 // //     if (location.state?.registrationSuccess) {
@@ -359,114 +1332,173 @@
 // //       sx={{
 // //         minHeight: "100vh",
 // //         display: "flex",
-// //         alignItems: "center",
-// //         justifyContent: "center",
-// //         background:
-// //           "linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)",
-// //         backgroundSize: "400% 400%",
-// //         animation: "gradient 15s ease infinite",
-// //         "@keyframes gradient": {
-// //           "0%": {
-// //             backgroundPosition: "0% 50%",
-// //           },
-// //           "50%": {
-// //             backgroundPosition: "100% 50%",
-// //           },
-// //           "100%": {
-// //             backgroundPosition: "0% 50%",
-// //           },
+// //         background: `linear-gradient(135deg,
+// //           #f0f9ff 0%,
+// //           #e0f2fe 50%,
+// //           #f3e5f5 100%)`,
+// //         position: "relative",
+// //         overflow: "hidden",
+// //         "&::before": {
+// //           content: '""',
+// //           position: "absolute",
+// //           top: 0,
+// //           left: 0,
+// //           right: 0,
+// //           bottom: 0,
+// //           background: `radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+// //           radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 50%)`,
+// //           zIndex: 0,
 // //         },
 // //       }}
 // //     >
-// //       <Slide in direction="up" timeout={500}>
-// //         <Container maxWidth="sm">
-// //           <Paper
-// //             elevation={10}
+// //       <Container
+// //         maxWidth="lg"
+// //         sx={{
+// //           display: "flex",
+// //           alignItems: "center",
+// //           justifyContent: "center",
+// //           py: 4,
+// //           position: "relative",
+// //           zIndex: 1,
+// //         }}
+// //       >
+// //         <Box
+// //           sx={{
+// //             display: "flex",
+// //             width: "100%",
+// //             maxWidth: 1200,
+// //             minHeight: 600,
+// //             borderRadius: 4,
+// //             overflow: "hidden",
+// //             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
+// //           }}
+// //         >
+// //           {/* Left Panel - Brand & Features */}
+// //           <Box
 // //             sx={{
-// //               p: 4,
-// //               borderRadius: 4,
-// //               backdropFilter: "blur(8px)",
-// //               backgroundColor: "rgba(255, 255, 255, 0.85)",
-// //               border: "1px solid rgba(255, 255, 255, 0.3)",
-// //               transform: hoverEffect ? "translateY(-5px)" : "none",
-// //               transition: "transform 0.3s ease, box-shadow 0.3s ease",
-// //               boxShadow: "0 15px 30px rgba(0, 0, 0, 0.2)",
-// //               "&:hover": {
-// //                 boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)",
+// //               flex: 1,
+// //               background: `linear-gradient(135deg,
+// //                 #3b82f6 0%,
+// //                 #6366f1 100%)`,
+// //               color: "white",
+// //               p: 6,
+// //               display: { xs: "none", md: "flex" },
+// //               flexDirection: "column",
+// //               justifyContent: "center",
+// //               position: "relative",
+// //               "&::before": {
+// //                 content: '""',
+// //                 position: "absolute",
+// //                 top: 0,
+// //                 left: 0,
+// //                 right: 0,
+// //                 bottom: 0,
+// //                 background: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+// //                 opacity: 0.1,
 // //               },
 // //             }}
-// //             onMouseEnter={() => setHoverEffect(true)}
-// //             onMouseLeave={() => setHoverEffect(false)}
 // //           >
-// //             <Box
-// //               sx={{
-// //                 display: "flex",
-// //                 flexDirection: "column",
-// //                 alignItems: "center",
-// //                 mb: 4,
-// //               }}
-// //             >
-// //               <Box
-// //                 sx={{
-// //                   position: "relative",
-// //                   width: 80,
-// //                   height: 80,
-// //                   mb: 2,
-// //                 }}
-// //               >
+// //             <Box sx={{ position: "relative", zIndex: 1 }}>
+// //               <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
 // //                 <Box
 // //                   sx={{
-// //                     position: "absolute",
-// //                     width: "100%",
-// //                     height: "100%",
-// //                     borderRadius: "50%",
-// //                     background: "linear-gradient(45deg, #ff8a00, #e52e71)",
+// //                     width: 60,
+// //                     height: 60,
+// //                     borderRadius: 2,
+// //                     backgroundColor: "rgba(255, 255, 255, 0.2)",
 // //                     display: "flex",
 // //                     alignItems: "center",
 // //                     justifyContent: "center",
-// //                     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+// //                     mr: 3,
 // //                   }}
 // //                 >
-// //                   <Lock sx={{ color: "white", fontSize: 40 }} />
+// //                   <School sx={{ fontSize: 32 }} />
 // //                 </Box>
-// //                 <Box
-// //                   sx={{
-// //                     position: "absolute",
-// //                     top: -5,
-// //                     right: -5,
-// //                     width: 30,
-// //                     height: 30,
-// //                     borderRadius: "50%",
-// //                     backgroundColor: "#23d5ab",
-// //                     display: "flex",
-// //                     alignItems: "center",
-// //                     justifyContent: "center",
-// //                     border: "3px solid white",
-// //                   }}
-// //                 >
-// //                   <School sx={{ color: "white", fontSize: 16 }} />
-// //                 </Box>
+// //                 <Typography variant="h4" fontWeight="bold">
+// //                   LearnHub
+// //                 </Typography>
 // //               </Box>
 
-// //               <Typography
-// //                 variant="h4"
-// //                 component="h1"
-// //                 fontWeight="800"
-// //                 sx={{
-// //                   background: "linear-gradient(45deg, #ff8a00, #e52e71)",
-// //                   WebkitBackgroundClip: "text",
-// //                   WebkitTextFillColor: "transparent",
-// //                   mb: 1,
-// //                 }}
-// //               >
+// //               <Typography variant="h3" fontWeight="bold" mb={2}>
 // //                 Welcome Back!
 // //               </Typography>
-// //               <Typography
-// //                 variant="body2"
-// //                 color="text.secondary"
-// //                 textAlign="center"
-// //               >
-// //                 Sign in to access your personalized learning dashboard
+// //               <Typography variant="h6" mb={6} sx={{ opacity: 0.9 }}>
+// //                 Access your personalized learning dashboard and continue your
+// //                 educational journey.
+// //               </Typography>
+
+// //               <Box sx={{ space: 3 }}>
+// //                 {[
+// //                   {
+// //                     icon: <TrendingUp />,
+// //                     title: "Track Progress",
+// //                     desc: "Monitor your learning journey",
+// //                   },
+// //                   {
+// //                     icon: <Security />,
+// //                     title: "Secure Platform",
+// //                     desc: "Your data is protected",
+// //                   },
+// //                   {
+// //                     icon: <Speed />,
+// //                     title: "Fast Learning",
+// //                     desc: "Optimized for efficiency",
+// //                   },
+// //                 ].map((feature, index) => (
+// //                   <Box
+// //                     key={index}
+// //                     sx={{
+// //                       display: "flex",
+// //                       alignItems: "center",
+// //                       mb: 3,
+// //                       "&:last-child": { mb: 0 },
+// //                     }}
+// //                   >
+// //                     <Box
+// //                       sx={{
+// //                         width: 48,
+// //                         height: 48,
+// //                         borderRadius: 1.5,
+// //                         backgroundColor: "rgba(255, 255, 255, 0.15)",
+// //                         display: "flex",
+// //                         alignItems: "center",
+// //                         justifyContent: "center",
+// //                         mr: 3,
+// //                       }}
+// //                     >
+// //                       {feature.icon}
+// //                     </Box>
+// //                     <Box>
+// //                       <Typography variant="subtitle1" fontWeight="600">
+// //                         {feature.title}
+// //                       </Typography>
+// //                       <Typography variant="body2" sx={{ opacity: 0.8 }}>
+// //                         {feature.desc}
+// //                       </Typography>
+// //                     </Box>
+// //                   </Box>
+// //                 ))}
+// //               </Box>
+// //             </Box>
+// //           </Box>
+
+// //           {/* Right Panel - Login Form */}
+// //           <Box
+// //             sx={{
+// //               flex: 1,
+// //               backgroundColor: "white",
+// //               p: 6,
+// //               display: "flex",
+// //               flexDirection: "column",
+// //               justifyContent: "center",
+// //             }}
+// //           >
+// //             <Box sx={{ mb: 4 }}>
+// //               <Typography variant="h4" fontWeight="bold" mb={1}>
+// //                 Sign In
+// //               </Typography>
+// //               <Typography variant="body1" color="text.secondary">
+// //                 Enter your credentials to access your account
 // //               </Typography>
 // //             </Box>
 
@@ -477,7 +1509,8 @@
 // //                   sx={{
 // //                     mb: 3,
 // //                     borderRadius: 2,
-// //                     borderLeft: "4px solid #ff4757",
+// //                     border: "1px solid",
+// //                     borderColor: "error.light",
 // //                   }}
 // //                 >
 // //                   {error}
@@ -503,20 +1536,19 @@
 // //                     fullWidth
 // //                     label="Email Address"
 // //                     type="email"
-// //                     margin="normal"
 // //                     error={!!errors.email}
 // //                     helperText={errors.email?.message}
-// //                     placeholder="your@email.com"
-// //                     sx={{ mb: 2 }}
+// //                     placeholder="Enter your email"
+// //                     sx={{ mb: 3 }}
 // //                     InputProps={{
 // //                       startAdornment: (
 // //                         <InputAdornment position="start">
-// //                           <Email sx={{ color: "primary.main" }} />
+// //                           <Email sx={{ color: "text.secondary" }} />
 // //                         </InputAdornment>
 // //                       ),
 // //                     }}
-// //                     variant="filled"
-// //                     size="medium"
+// //                     variant="outlined"
+// //                     size="large"
 // //                   />
 // //                 )}
 // //               />
@@ -538,15 +1570,14 @@
 // //                     fullWidth
 // //                     label="Password"
 // //                     type={showPassword ? "text" : "password"}
-// //                     margin="normal"
 // //                     error={!!errors.password}
 // //                     helperText={errors.password?.message}
-// //                     placeholder="••••••••"
-// //                     sx={{ mb: 2 }}
+// //                     placeholder="Enter your password"
+// //                     sx={{ mb: 3 }}
 // //                     InputProps={{
 // //                       startAdornment: (
 // //                         <InputAdornment position="start">
-// //                           <Lock sx={{ color: "primary.main" }} />
+// //                           <Lock sx={{ color: "text.secondary" }} />
 // //                         </InputAdornment>
 // //                       ),
 // //                       endAdornment: (
@@ -555,15 +1586,14 @@
 // //                             aria-label="toggle password visibility"
 // //                             onClick={handleClickShowPassword}
 // //                             edge="end"
-// //                             sx={{ color: "primary.main" }}
 // //                           >
 // //                             {showPassword ? <VisibilityOff /> : <Visibility />}
 // //                           </IconButton>
 // //                         </InputAdornment>
 // //                       ),
 // //                     }}
-// //                     variant="filled"
-// //                     size="medium"
+// //                     variant="outlined"
+// //                     size="large"
 // //                   />
 // //                 )}
 // //               />
@@ -573,14 +1603,12 @@
 // //                   display: "flex",
 // //                   justifyContent: "space-between",
 // //                   alignItems: "center",
-// //                   mb: 3,
+// //                   mb: 4,
 // //                 }}
 // //               >
 // //                 <FormControlLabel
 // //                   control={
 // //                     <Checkbox
-// //                       color="primary"
-// //                       size="small"
 // //                       sx={{
 // //                         "&.Mui-checked": {
 // //                           color: "primary.main",
@@ -588,14 +1616,19 @@
 // //                       }}
 // //                     />
 // //                   }
-// //                   label={<Typography variant="body2">Remember me</Typography>}
+// //                   label={
+// //                     <Typography variant="body2" color="text.secondary">
+// //                       Remember me
+// //                     </Typography>
+// //                   }
 // //                 />
 // //                 <Link
 // //                   href="#"
 // //                   variant="body2"
+// //                   color="primary"
 // //                   sx={{
-// //                     fontWeight: 600,
 // //                     textDecoration: "none",
+// //                     fontWeight: 600,
 // //                     "&:hover": {
 // //                       textDecoration: "underline",
 // //                     },
@@ -612,21 +1645,15 @@
 // //                 size="large"
 // //                 disabled={loading}
 // //                 sx={{
-// //                   mb: 2,
+// //                   mb: 3,
 // //                   py: 1.5,
-// //                   fontWeight: 700,
+// //                   fontWeight: 600,
 // //                   textTransform: "none",
 // //                   fontSize: "1rem",
 // //                   borderRadius: 2,
-// //                   background: "linear-gradient(45deg, #ff8a00, #e52e71)",
-// //                   boxShadow: "0 4px 15px rgba(255, 138, 0, 0.3)",
-// //                   transition: "all 0.3s ease",
+// //                   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
 // //                   "&:hover": {
-// //                     transform: "translateY(-2px)",
-// //                     boxShadow: "0 6px 20px rgba(255, 138, 0, 0.4)",
-// //                   },
-// //                   "&:disabled": {
-// //                     background: "linear-gradient(45deg, #cccccc, #999999)",
+// //                     boxShadow: "0 6px 16px rgba(0, 0, 0, 0.2)",
 // //                   },
 // //                 }}
 // //               >
@@ -644,14 +1671,8 @@
 // //                 )}
 // //               </Button>
 
-// //               <Divider sx={{ my: 3 }}>
-// //                 <Typography
-// //                   variant="body2"
-// //                   sx={{
-// //                     px: 2,
-// //                     background: "rgba(255, 255, 255, 0.85)",
-// //                   }}
-// //                 >
+// //               <Divider sx={{ mb: 3 }}>
+// //                 <Typography variant="body2" color="text.secondary">
 // //                   or continue with
 // //                 </Typography>
 // //               </Divider>
@@ -669,90 +1690,40 @@
 // //                   borderRadius: 2,
 // //                   borderColor: "divider",
 // //                   color: "text.primary",
-// //                   transition: "all 0.3s ease",
+// //                   mb: 4,
 // //                   "&:hover": {
-// //                     backgroundColor: "rgba(66, 133, 244, 0.08)",
-// //                     borderColor: "#4285F4",
-// //                     color: "#4285F4",
+// //                     backgroundColor: "rgba(0, 0, 0, 0.04)",
+// //                     borderColor: "text.primary",
 // //                   },
 // //                 }}
 // //               >
-// //                 Google
+// //                 Sign in with Google
 // //               </Button>
-
-// //               <Box
-// //                 sx={{
-// //                   display: "flex",
-// //                   justifyContent: "center",
-// //                   mt: 3,
-// //                   gap: 2,
-// //                 }}
-// //               >
-// //                 <Button
-// //                   startIcon={<AccountCircle />}
-// //                   size="small"
-// //                   sx={{
-// //                     textTransform: "none",
-// //                     color: "text.secondary",
-// //                     "&:hover": {
-// //                       color: "primary.main",
-// //                     },
-// //                   }}
-// //                 >
-// //                   Student
-// //                 </Button>
-// //                 <Button
-// //                   startIcon={<School />}
-// //                   size="small"
-// //                   sx={{
-// //                     textTransform: "none",
-// //                     color: "text.secondary",
-// //                     "&:hover": {
-// //                       color: "secondary.main",
-// //                     },
-// //                   }}
-// //                 >
-// //                   Instructor
-// //                 </Button>
-// //                 <Button
-// //                   startIcon={<AdminPanelSettings />}
-// //                   size="small"
-// //                   sx={{
-// //                     textTransform: "none",
-// //                     color: "text.secondary",
-// //                     "&:hover": {
-// //                       color: "error.main",
-// //                     },
-// //                   }}
-// //                 >
-// //                   Admin
-// //                 </Button>
-// //               </Box>
 
 // //               <Typography
 // //                 variant="body2"
 // //                 color="text.secondary"
 // //                 textAlign="center"
-// //                 mt={3}
 // //               >
-// //                 New to our platform?{" "}
+// //                 Don't have an account?{" "}
 // //                 <Link
 // //                   href="/register"
+// //                   color="primary"
 // //                   sx={{
-// //                     fontWeight: 700,
+// //                     fontWeight: 600,
 // //                     textDecoration: "none",
 // //                     "&:hover": {
 // //                       textDecoration: "underline",
 // //                     },
 // //                   }}
 // //                 >
-// //                   Create an account
+// //                   Sign up
 // //                 </Link>
 // //               </Typography>
 // //             </Box>
-// //           </Paper>
-// //         </Container>
-// //       </Slide>
+// //           </Box>
+// //         </Box>
+// //       </Container>
 // //     </Box>
 // //   );
 // // };
@@ -775,13 +1746,9 @@
 //   Link,
 //   Divider,
 //   Container,
-//   Paper,
 //   CircularProgress,
 //   Fade,
-//   Card,
-//   CardContent,
 //   useTheme,
-//   alpha,
 // } from "@mui/material";
 // import {
 //   Visibility,
@@ -789,10 +1756,6 @@
 //   Email,
 //   Lock,
 //   Google,
-//   School,
-//   TrendingUp,
-//   Security,
-//   Speed,
 // } from "@mui/icons-material";
 
 // const LoginForm = () => {
@@ -844,181 +1807,37 @@
 //       sx={{
 //         minHeight: "100vh",
 //         display: "flex",
-//         background: `linear-gradient(135deg,
-//           ${alpha(theme.palette.primary.main, 0.1)} 0%,
-//           ${alpha(theme.palette.secondary.main, 0.05)} 100%)`,
-//         position: "relative",
-//         overflow: "hidden",
-//         "&::before": {
-//           content: '""',
-//           position: "absolute",
-//           top: 0,
-//           left: 0,
-//           right: 0,
-//           bottom: 0,
-//           background: `radial-gradient(circle at 20% 80%, ${alpha(
-//             theme.palette.primary.main,
-//             0.1
-//           )} 0%, transparent 50%),
-//           radial-gradient(circle at 80% 20%, ${alpha(
-//             theme.palette.secondary.main,
-//             0.1
-//           )} 0%, transparent 50%)`,
-//           zIndex: 0,
-//         },
+//         alignItems: "center",
+//         justifyContent: "center",
+//         background: "linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%)",
 //       }}
 //     >
-//       <Container
-//         maxWidth="lg"
-//         sx={{
-//           display: "flex",
-//           alignItems: "center",
-//           justifyContent: "center",
-//           py: 4,
-//           position: "relative",
-//           zIndex: 1,
-//         }}
-//       >
+//       <Container maxWidth="sm">
 //         <Box
 //           sx={{
-//             display: "flex",
-//             width: "100%",
-//             maxWidth: 1200,
-//             minHeight: 600,
+//             backgroundColor: "white",
 //             borderRadius: 4,
+//             boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
 //             overflow: "hidden",
-//             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
 //           }}
 //         >
-//           {/* Left Panel - Brand & Features */}
 //           <Box
 //             sx={{
-//               flex: 1,
-//               background: `linear-gradient(135deg,
-//                 ${theme.palette.primary.main} 0%,
-//                 ${theme.palette.primary.dark} 100%)`,
+//               background: "linear-gradient(135deg, #7b1fa2 0%, #4a148c 100%)",
 //               color: "white",
-//               p: 6,
-//               display: { xs: "none", md: "flex" },
-//               flexDirection: "column",
-//               justifyContent: "center",
-//               position: "relative",
-//               "&::before": {
-//                 content: '""',
-//                 position: "absolute",
-//                 top: 0,
-//                 left: 0,
-//                 right: 0,
-//                 bottom: 0,
-//                 background: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-//                 opacity: 0.1,
-//               },
+//               p: 4,
+//               textAlign: "center",
 //             }}
 //           >
-//             <Box sx={{ position: "relative", zIndex: 1 }}>
-//               <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
-//                 <Box
-//                   sx={{
-//                     width: 60,
-//                     height: 60,
-//                     borderRadius: 2,
-//                     backgroundColor: "rgba(255, 255, 255, 0.2)",
-//                     display: "flex",
-//                     alignItems: "center",
-//                     justifyContent: "center",
-//                     mr: 3,
-//                   }}
-//                 >
-//                   <School sx={{ fontSize: 32 }} />
-//                 </Box>
-//                 <Typography variant="h4" fontWeight="bold">
-//                  LearnHub
-//                 </Typography>
-//               </Box>
-
-//               <Typography variant="h3" fontWeight="bold" mb={2}>
-//                 Welcome Back!
-//               </Typography>
-//               <Typography variant="h6" mb={6} sx={{ opacity: 0.9 }}>
-//                 Access your personalized learning dashboard and continue your
-//                 educational journey.
-//               </Typography>
-
-//               <Box sx={{ space: 3 }}>
-//                 {[
-//                   {
-//                     icon: <TrendingUp />,
-//                     title: "Track Progress",
-//                     desc: "Monitor your learning journey",
-//                   },
-//                   {
-//                     icon: <Security />,
-//                     title: "Secure Platform",
-//                     desc: "Your data is protected",
-//                   },
-//                   {
-//                     icon: <Speed />,
-//                     title: "Fast Learning",
-//                     desc: "Optimized for efficiency",
-//                   },
-//                 ].map((feature, index) => (
-//                   <Box
-//                     key={index}
-//                     sx={{
-//                       display: "flex",
-//                       alignItems: "center",
-//                       mb: 3,
-//                       "&:last-child": { mb: 0 },
-//                     }}
-//                   >
-//                     <Box
-//                       sx={{
-//                         width: 48,
-//                         height: 48,
-//                         borderRadius: 1.5,
-//                         backgroundColor: "rgba(255, 255, 255, 0.15)",
-//                         display: "flex",
-//                         alignItems: "center",
-//                         justifyContent: "center",
-//                         mr: 3,
-//                       }}
-//                     >
-//                       {feature.icon}
-//                     </Box>
-//                     <Box>
-//                       <Typography variant="subtitle1" fontWeight="600">
-//                         {feature.title}
-//                       </Typography>
-//                       <Typography variant="body2" sx={{ opacity: 0.8 }}>
-//                         {feature.desc}
-//                       </Typography>
-//                     </Box>
-//                   </Box>
-//                 ))}
-//               </Box>
-//             </Box>
+//             <Typography variant="h4" fontWeight="bold">
+//               Welcome Back
+//             </Typography>
+//             <Typography variant="body1" sx={{ opacity: 0.9, mt: 1 }}>
+//               Sign in to continue to your account
+//             </Typography>
 //           </Box>
 
-//           {/* Right Panel - Login Form */}
-//           <Box
-//             sx={{
-//               flex: 1,
-//               backgroundColor: "white",
-//               p: 6,
-//               display: "flex",
-//               flexDirection: "column",
-//               justifyContent: "center",
-//             }}
-//           >
-//             <Box sx={{ mb: 4 }}>
-//               <Typography variant="h4" fontWeight="bold" mb={1}>
-//                 Sign In
-//               </Typography>
-//               <Typography variant="body1" color="text.secondary">
-//                 Enter your credentials to access your account
-//               </Typography>
-//             </Box>
-
+//           <Box sx={{ p: 4 }}>
 //             {error && (
 //               <Fade in>
 //                 <Alert
@@ -1090,7 +1909,7 @@
 //                     error={!!errors.password}
 //                     helperText={errors.password?.message}
 //                     placeholder="Enter your password"
-//                     sx={{ mb: 3 }}
+//                     sx={{ mb: 2 }}
 //                     InputProps={{
 //                       startAdornment: (
 //                         <InputAdornment position="start">
@@ -1120,7 +1939,7 @@
 //                   display: "flex",
 //                   justifyContent: "space-between",
 //                   alignItems: "center",
-//                   mb: 4,
+//                   mb: 3,
 //                 }}
 //               >
 //                 <FormControlLabel
@@ -1168,9 +1987,11 @@
 //                   textTransform: "none",
 //                   fontSize: "1rem",
 //                   borderRadius: 2,
-//                   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+//                   background:
+//                     "linear-gradient(135deg, #7b1fa2 0%, #4a148c 100%)",
 //                   "&:hover": {
-//                     boxShadow: "0 6px 16px rgba(0, 0, 0, 0.2)",
+//                     background:
+//                       "linear-gradient(135deg, #6a1b9a 0%, #38006b 100%)",
 //                   },
 //                 }}
 //               >
@@ -1207,7 +2028,7 @@
 //                   borderRadius: 2,
 //                   borderColor: "divider",
 //                   color: "text.primary",
-//                   mb: 4,
+//                   mb: 3,
 //                   "&:hover": {
 //                     backgroundColor: "rgba(0, 0, 0, 0.04)",
 //                     borderColor: "text.primary",
@@ -1333,9 +2154,9 @@ const LoginForm = () => {
         minHeight: "100vh",
         display: "flex",
         background: `linear-gradient(135deg, 
-          #f0f9ff 0%, 
-          #e0f2fe 50%,
-          #f3e5f5 100%)`,
+          #f3e5f5 0%, 
+          #e1bee7 50%,
+          #ce93d8 100%)`,
         position: "relative",
         overflow: "hidden",
         "&::before": {
@@ -1345,8 +2166,8 @@ const LoginForm = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          background: `radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-          radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 50%)`,
+          background: `radial-gradient(circle at 20% 80%, rgba(123, 31, 162, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(74, 20, 140, 0.1) 0%, transparent 50%)`,
           zIndex: 0,
         },
       }}
@@ -1367,7 +2188,7 @@ const LoginForm = () => {
             display: "flex",
             width: "100%",
             maxWidth: 1200,
-            minHeight: 600,
+            minHeight: 700,
             borderRadius: 4,
             overflow: "hidden",
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
@@ -1378,8 +2199,8 @@ const LoginForm = () => {
             sx={{
               flex: 1,
               background: `linear-gradient(135deg, 
-                #3b82f6 0%, 
-                #6366f1 100%)`,
+                #7b1fa2 0%, 
+                #4a148c 100%)`,
               color: "white",
               p: 6,
               display: { xs: "none", md: "flex" },
@@ -1651,9 +2472,11 @@ const LoginForm = () => {
                   textTransform: "none",
                   fontSize: "1rem",
                   borderRadius: 2,
-                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                  background:
+                    "linear-gradient(135deg, #7b1fa2 0%, #4a148c 100%)",
+                  boxShadow: "0 4px 12px rgba(123, 31, 162, 0.3)",
                   "&:hover": {
-                    boxShadow: "0 6px 16px rgba(0, 0, 0, 0.2)",
+                    boxShadow: "0 6px 16px rgba(123, 31, 162, 0.4)",
                   },
                 }}
               >
