@@ -1,1091 +1,905 @@
-// // // // import React, { useState, useEffect } from "react";
+// // // // // // import React, { useState } from "react";
+// // // // // // import {
+// // // // // //   Box,
+// // // // // //   CssBaseline,
+// // // // // //   useTheme,
+// // // // // //   useMediaQuery,
+// // // // // //   Typography,
+// // // // // //   Paper,
+// // // // // //   Grid,
+// // // // // //   Card,
+// // // // // //   CardContent,
+// // // // // //   Button,
+// // // // // //   Chip,
+// // // // // //   Avatar,
+// // // // // //   List,
+// // // // // //   ListItem,
+// // // // // //   ListItemText,
+// // // // // //   ListItemIcon,
+// // // // // //   Divider,
+// // // // // // } from "@mui/material";
+// // // // // // import {
+// // // // // //   Assignment as AssignmentIcon,
+// // // // // //   Quiz as QuizIcon,
+// // // // // //   BarChart as BarChartIcon,
+// // // // // //   People as PeopleIcon,
+// // // // // //   Visibility as VisibilityIcon,
+// // // // // //   TrendingUp as TrendingUpIcon,
+// // // // // //   School as SchoolIcon,
+// // // // // //   CheckCircle as CheckCircleIcon,
+// // // // // //   Add as AddIcon,
+// // // // // //   Book as BookIcon,
+// // // // // // } from "@mui/icons-material";
+
+// // // // // // import InstructorSidebar from "../../components/common/Sidebar/InstructorSidebar";
+// // // // // // import Header from "../../components/common/Sidebar/AdminHeader";
+// // // // // // import InstructorDashboardView from "./InstructorDashboardView";
+// // // // // // import CourseForm from "../instructor/CourseForm";
+// // // // // // import AssignmentsList from "../../components/assignmnet/AssignmentsList"; // Fixed import path
+// // // // // // import StudentEnrollmentDashboardd from "../instructor/EnrollmentStats";
+// // // // // // import QuizPage from "../../components/assignmnet/QuizPage"; // Add your actual import path here
+
+// // // // // // const InstructorDashboard = () => {
+// // // // // //   const theme = useTheme();
+// // // // // //   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+// // // // // //   const drawerWidth = 240;
+// // // // // //   const collapsedWidth = 72;
+
+// // // // // //   // State for managing the current view
+// // // // // //   const [currentView, setCurrentView] = useState("dashboard");
+// // // // // //   const [mobileOpen, setMobileOpen] = useState(false);
+// // // // // //   const [collapsed, setCollapsed] = useState(false);
+
+// // // // // //   // State for course editing
+// // // // // //   const [editingCourse, setEditingCourse] = useState(null);
+
+// // // // // //   const handleDrawerToggle = () => {
+// // // // // //     if (isMobile) {
+// // // // // //       setMobileOpen(!mobileOpen);
+// // // // // //     } else {
+// // // // // //       setCollapsed(!collapsed);
+// // // // // //     }
+// // // // // //   };
+
+// // // // // //   const handleViewChange = (view) => {
+// // // // // //     setCurrentView(view);
+// // // // // //     if (isMobile) {
+// // // // // //       setMobileOpen(false);
+// // // // // //     }
+// // // // // //   };
+
+// // // // // //   // Handle creating a new course
+// // // // // //   const handleCreateCourse = () => {
+// // // // // //     setEditingCourse(null);
+// // // // // //     setCurrentView("create-course");
+// // // // // //   };
+
+// // // // // //   // Handle editing an existing course
+// // // // // //   const handleEditCourse = (course) => {
+// // // // // //     setEditingCourse(course);
+// // // // // //     setCurrentView("create-course");
+// // // // // //   };
+
+// // // // // //   // Handle going back to dashboard after course operations
+// // // // // //   const handleBackToDashboard = () => {
+// // // // // //     setEditingCourse(null);
+// // // // // //     setCurrentView("dashboard");
+// // // // // //   };
+
+// // // // // //   // Clean components without mock data
+// // // // // //   const MyCoursesView = () => (
+// // // // // //     <Box>
+// // // // // //       <Box
+// // // // // //         display="flex"
+// // // // // //         justifyContent="space-between"
+// // // // // //         alignItems="center"
+// // // // // //         mb={4}
+// // // // // //       >
+// // // // // //         <Box>
+// // // // // //           <Typography variant="h4" gutterBottom fontWeight="bold">
+// // // // // //             My Courses
+// // // // // //           </Typography>
+// // // // // //           <Typography variant="body1" color="textSecondary">
+// // // // // //             Manage all your published and draft courses
+// // // // // //           </Typography>
+// // // // // //         </Box>
+// // // // // //         <Button
+// // // // // //           variant="contained"
+// // // // // //           startIcon={<AddIcon />}
+// // // // // //           onClick={handleCreateCourse}
+// // // // // //           sx={{ borderRadius: 2, px: 3 }}
+// // // // // //         >
+// // // // // //           Create New Course
+// // // // // //         </Button>
+// // // // // //       </Box>
+
+// // // // // //       {/* This will be populated with real data from your API */}
+// // // // // //       <Paper sx={{ p: 4, textAlign: "center", borderRadius: 3 }}>
+// // // // // //         <BookIcon sx={{ fontSize: 64, color: "primary.main", mb: 2 }} />
+// // // // // //         <Typography variant="h6" gutterBottom>
+// // // // // //           Your courses will appear here
+// // // // // //         </Typography>
+// // // // // //         <Typography variant="body2" color="textSecondary" mb={3}>
+// // // // // //           Start by creating your first course to see it listed here
+// // // // // //         </Typography>
+// // // // // //         <Button
+// // // // // //           variant="outlined"
+// // // // // //           startIcon={<AddIcon />}
+// // // // // //           onClick={handleCreateCourse}
+// // // // // //           sx={{ borderRadius: 2 }}
+// // // // // //         >
+// // // // // //           Create Your First Course
+// // // // // //         </Button>
+// // // // // //       </Paper>
+// // // // // //     </Box>
+// // // // // //   );
+
+// // // // // //   // Fixed Assignments View
+// // // // // //   const AssignmentsView = () => (
+// // // // // //     <Box>
+// // // // // //       <Box
+// // // // // //         display="flex"
+// // // // // //         justifyContent="space-between"
+// // // // // //         alignItems="center"
+// // // // // //         mb={4}
+// // // // // //       >
+// // // // // //         <Box>
+// // // // // //           <Typography variant="h4" gutterBottom fontWeight="bold">
+// // // // // //             Assignments
+// // // // // //           </Typography>
+// // // // // //           <Typography variant="body1" color="textSecondary">
+// // // // // //             Create and manage course assignments
+// // // // // //           </Typography>
+// // // // // //         </Box>
+// // // // // //         <Button
+// // // // // //           variant="contained"
+// // // // // //           startIcon={<AssignmentIcon />}
+// // // // // //           sx={{ borderRadius: 2, px: 3 }}
+// // // // // //         >
+// // // // // //           Create Assignment
+// // // // // //         </Button>
+// // // // // //       </Box>
+
+// // // // // //       {/* Render the AssignmentsList component */}
+// // // // // //       <AssignmentsList />
+// // // // // //     </Box>
+// // // // // //   );
+
+// // // // // //   const VisualizationView = () => (
+// // // // // //     <Box>
+// // // // // //       <Typography variant="h4" gutterBottom fontWeight="bold">
+// // // // // //         Data Visualization
+// // // // // //       </Typography>
+// // // // // //       <Typography variant="body1" color="textSecondary" mb={4}>
+// // // // // //         Visual insights into your course performance
+// // // // // //       </Typography>
+
+// // // // // //       <Grid container spacing={3}>
+// // // // // //         <Grid item xs={12} md={6}>
+// // // // // //           <Paper sx={{ p: 3, height: 300, borderRadius: 3 }}>
+// // // // // //             <Typography variant="h6" gutterBottom>
+// // // // // //               Student Progress Analytics
+// // // // // //             </Typography>
+// // // // // //             <Box
+// // // // // //               display="flex"
+// // // // // //               alignItems="center"
+// // // // // //               justifyContent="center"
+// // // // // //               height="80%"
+// // // // // //               sx={{
+// // // // // //                 backgroundColor: "grey.50",
+// // // // // //                 borderRadius: 2,
+// // // // // //                 flexDirection: "column",
+// // // // // //                 gap: 2,
+// // // // // //               }}
+// // // // // //             >
+// // // // // //               <VisibilityIcon sx={{ fontSize: 48, color: "primary.main" }} />
+// // // // // //               <Typography variant="body1" color="textSecondary">
+// // // // // //                 Analytics charts will be integrated here
+// // // // // //               </Typography>
+// // // // // //             </Box>
+// // // // // //           </Paper>
+// // // // // //         </Grid>
+
+// // // // // //         <Grid item xs={12} md={6}>
+// // // // // //           <Paper sx={{ p: 3, height: 300, borderRadius: 3 }}>
+// // // // // //             <Typography variant="h6" gutterBottom>
+// // // // // //               Engagement Metrics
+// // // // // //             </Typography>
+// // // // // //             <Box
+// // // // // //               display="flex"
+// // // // // //               alignItems="center"
+// // // // // //               justifyContent="center"
+// // // // // //               height="80%"
+// // // // // //               sx={{
+// // // // // //                 backgroundColor: "grey.50",
+// // // // // //                 borderRadius: 2,
+// // // // // //                 flexDirection: "column",
+// // // // // //                 gap: 2,
+// // // // // //               }}
+// // // // // //             >
+// // // // // //               <BarChartIcon sx={{ fontSize: 48, color: "success.main" }} />
+// // // // // //               <Typography variant="body1" color="textSecondary">
+// // // // // //                 Real-time engagement data will appear here
+// // // // // //               </Typography>
+// // // // // //             </Box>
+// // // // // //           </Paper>
+// // // // // //         </Grid>
+// // // // // //       </Grid>
+// // // // // //     </Box>
+// // // // // //   );
+
+// // // // // //   // Updated QuizzesView to render your QuizPage component
+// // // // // //   const QuizzesView = () => (
+// // // // // //     <Box>
+// // // // // //       <QuizPage />
+// // // // // //     </Box>
+// // // // // //   );
+
+// // // // // //   const SettingsView = () => (
+// // // // // //     <Box>
+// // // // // //       <Typography variant="h4" gutterBottom fontWeight="bold">
+// // // // // //         Settings
+// // // // // //       </Typography>
+// // // // // //       <Typography variant="body1" color="textSecondary" mb={4}>
+// // // // // //         Manage your account and preferences
+// // // // // //       </Typography>
+
+// // // // // //       <Grid container spacing={3}>
+// // // // // //         <Grid item xs={12} md={6}>
+// // // // // //           <Paper sx={{ p: 3, borderRadius: 3 }}>
+// // // // // //             <Typography variant="h6" gutterBottom>
+// // // // // //               Profile Settings
+// // // // // //             </Typography>
+// // // // // //             <Typography variant="body2" color="textSecondary">
+// // // // // //               Update your profile information and preferences
+// // // // // //             </Typography>
+// // // // // //             {/* Add your profile settings form here */}
+// // // // // //           </Paper>
+// // // // // //         </Grid>
+
+// // // // // //         <Grid item xs={12} md={6}>
+// // // // // //           <Paper sx={{ p: 3, borderRadius: 3 }}>
+// // // // // //             <Typography variant="h6" gutterBottom>
+// // // // // //               Notification Settings
+// // // // // //             </Typography>
+// // // // // //             <Typography variant="body2" color="textSecondary">
+// // // // // //               Configure how you want to receive notifications
+// // // // // //             </Typography>
+// // // // // //             {/* Add your notification settings here */}
+// // // // // //           </Paper>
+// // // // // //         </Grid>
+// // // // // //       </Grid>
+// // // // // //     </Box>
+// // // // // //   );
+
+// // // // // //   // Render the appropriate view based on currentView state
+// // // // // //   const renderView = () => {
+// // // // // //     switch (currentView) {
+// // // // // //       case "dashboard":
+// // // // // //         return (
+// // // // // //           <InstructorDashboardView
+// // // // // //             onCreateCourse={handleCreateCourse}
+// // // // // //             onEditCourse={handleEditCourse}
+// // // // // //           />
+// // // // // //         );
+// // // // // //       case "my-courses":
+// // // // // //         return <MyCoursesView />;
+// // // // // //       case "create-course":
+// // // // // //         return (
+// // // // // //           <CourseForm
+// // // // // //             course={editingCourse}
+// // // // // //             onBack={handleBackToDashboard}
+// // // // // //             onSuccess={handleBackToDashboard}
+// // // // // //           />
+// // // // // //         );
+// // // // // //       case "enrollment-stats":
+// // // // // //         return <StudentEnrollmentDashboardd />;
+// // // // // //       case "assignments":
+// // // // // //         return <AssignmentsView />; // Fixed: Now uses the proper AssignmentsView
+// // // // // //       case "visualization":
+// // // // // //         return <VisualizationView />;
+// // // // // //       case "quizzes":
+// // // // // //         return <QuizzesView />; // Now renders your QuizPage component
+// // // // // //       case "settings":
+// // // // // //         return <SettingsView />;
+// // // // // //       default:
+// // // // // //         return (
+// // // // // //           <InstructorDashboardView
+// // // // // //             onCreateCourse={handleCreateCourse}
+// // // // // //             onEditCourse={handleEditCourse}
+// // // // // //           />
+// // // // // //         );
+// // // // // //     }
+// // // // // //   };
+
+// // // // // //   return (
+// // // // // //     <Box sx={{ display: "flex", minHeight: "100vh" }}>
+// // // // // //       <CssBaseline />
+// // // // // //       <Header />
+// // // // // //       <InstructorSidebar
+// // // // // //         mobileOpen={mobileOpen}
+// // // // // //         handleDrawerToggle={handleDrawerToggle}
+// // // // // //         collapsed={collapsed}
+// // // // // //         setCollapsed={setCollapsed}
+// // // // // //         isMobile={isMobile}
+// // // // // //         currentView={currentView}
+// // // // // //         onViewChange={handleViewChange}
+// // // // // //       />
+
+// // // // // //       <Box
+// // // // // //         component="main"
+// // // // // //         sx={{
+// // // // // //           flexGrow: 1,
+// // // // // //           p: 5,
+// // // // // //           pt: 13,
+// // // // // //           width: {
+// // // // // //             sm: `calc(100% - ${collapsed ? collapsedWidth : drawerWidth}px)`,
+// // // // // //           },
+// // // // // //           backgroundColor: theme.palette.background.default,
+// // // // // //           minHeight: "100vh",
+// // // // // //         }}
+// // // // // //       >
+// // // // // //         {renderView()}
+// // // // // //       </Box>
+// // // // // //     </Box>
+// // // // // //   );
+// // // // // // };
+
+// // // // // // export default InstructorDashboard;
+// // // // // import React, { useState } from "react";
+// // // // // import {
+// // // // //   Box,
+// // // // //   CssBaseline,
+// // // // //   useTheme,
+// // // // //   useMediaQuery,
+// // // // //   Typography,
+// // // // //   Paper,
+// // // // //   Grid,
+// // // // //   Card,
+// // // // //   CardContent,
+// // // // //   Button,
+// // // // //   Chip,
+// // // // //   Avatar,
+// // // // //   List,
+// // // // //   ListItem,
+// // // // //   ListItemText,
+// // // // //   ListItemIcon,
+// // // // //   Divider,
+// // // // // } from "@mui/material";
+// // // // // import {
+// // // // //   Assignment as AssignmentIcon,
+// // // // //   Quiz as QuizIcon,
+// // // // //   BarChart as BarChartIcon,
+// // // // //   People as PeopleIcon,
+// // // // //   Visibility as VisibilityIcon,
+// // // // //   TrendingUp as TrendingUpIcon,
+// // // // //   School as SchoolIcon,
+// // // // //   CheckCircle as CheckCircleIcon,
+// // // // //   Add as AddIcon,
+// // // // //   Book as BookIcon,
+// // // // // } from "@mui/icons-material";
+
+// // // // // import InstructorSidebar from "../../components/common/Sidebar/InstructorSidebar";
+// // // // // import Header from "../../components/common/Sidebar/AdminHeader";
+// // // // // import InstructorDashboardView from "./InstructorDashboardView";
+// // // // // import CourseForm from "../instructor/CourseForm";
+// // // // // import AssignmentsList from "../../components/assignmnet/AssignmentsList";
+// // // // // import StudentEnrollmentDashboardd from "../instructor/EnrollmentStats";
+// // // // // import QuizPage from "../../components/assignmnet/QuizPage";
+
+// // // // // const InstructorDashboard = () => {
+// // // // //   const theme = useTheme();
+// // // // //   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+// // // // //   const drawerWidth = 240;
+// // // // //   const collapsedWidth = 72;
+
+// // // // //   // State for managing the current view
+// // // // //   const [currentView, setCurrentView] = useState("dashboard");
+// // // // //   const [mobileOpen, setMobileOpen] = useState(false);
+// // // // //   const [collapsed, setCollapsed] = useState(false);
+
+// // // // //   // State for course editing
+// // // // //   const [editingCourse, setEditingCourse] = useState(null);
+
+// // // // //   const handleDrawerToggle = () => {
+// // // // //     if (isMobile) {
+// // // // //       setMobileOpen(!mobileOpen);
+// // // // //     } else {
+// // // // //       setCollapsed(!collapsed);
+// // // // //     }
+// // // // //   };
+
+// // // // //   const handleViewChange = (view) => {
+// // // // //     setCurrentView(view);
+// // // // //     if (isMobile) {
+// // // // //       setMobileOpen(false);
+// // // // //     }
+// // // // //   };
+
+// // // // //   // Handle creating a new course
+// // // // //   const handleCreateCourse = () => {
+// // // // //     setEditingCourse(null);
+// // // // //     setCurrentView("create-course");
+// // // // //   };
+
+// // // // //   // Handle editing an existing course
+// // // // //   const handleEditCourse = (course) => {
+// // // // //     setEditingCourse(course);
+// // // // //     setCurrentView("create-course");
+// // // // //   };
+
+// // // // //   // Handle going back to dashboard after course operations
+// // // // //   const handleBackToDashboard = () => {
+// // // // //     setEditingCourse(null);
+// // // // //     setCurrentView("dashboard");
+// // // // //   };
+
+// // // // //   // Clean components without mock data
+// // // // //   const MyCoursesView = () => (
+// // // // //     <Box>
+// // // // //       <Box
+// // // // //         display="flex"
+// // // // //         justifyContent="space-between"
+// // // // //         alignItems="center"
+// // // // //         mb={4}
+// // // // //       >
+// // // // //         <Box>
+// // // // //           <Typography variant="h4" gutterBottom fontWeight="bold">
+// // // // //             My Courses
+// // // // //           </Typography>
+// // // // //           <Typography variant="body1" color="textSecondary">
+// // // // //             Manage all your published and draft courses
+// // // // //           </Typography>
+// // // // //         </Box>
+// // // // //         <Button
+// // // // //           variant="contained"
+// // // // //           startIcon={<AddIcon />}
+// // // // //           onClick={handleCreateCourse}
+// // // // //           sx={{ borderRadius: 2, px: 3 }}
+// // // // //         >
+// // // // //           Create New Course
+// // // // //         </Button>
+// // // // //       </Box>
+
+// // // // //       {/* This will be populated with real data from your API */}
+// // // // //       <Paper sx={{ p: 4, textAlign: "center", borderRadius: 3 }}>
+// // // // //         <BookIcon sx={{ fontSize: 64, color: "primary.main", mb: 2 }} />
+// // // // //         <Typography variant="h6" gutterBottom>
+// // // // //           Your courses will appear here
+// // // // //         </Typography>
+// // // // //         <Typography variant="body2" color="textSecondary" mb={3}>
+// // // // //           Start by creating your first course to see it listed here
+// // // // //         </Typography>
+// // // // //         <Button
+// // // // //           variant="outlined"
+// // // // //           startIcon={<AddIcon />}
+// // // // //           onClick={handleCreateCourse}
+// // // // //           sx={{ borderRadius: 2 }}
+// // // // //         >
+// // // // //           Create Your First Course
+// // // // //         </Button>
+// // // // //       </Paper>
+// // // // //     </Box>
+// // // // //   );
+
+// // // // //   // Fixed Assignments View
+// // // // //   const AssignmentsView = () => (
+// // // // //     <Box>
+// // // // //       <Box
+// // // // //         display="flex"
+// // // // //         justifyContent="space-between"
+// // // // //         alignItems="center"
+// // // // //         mb={4}
+// // // // //       >
+// // // // //         <Box>
+// // // // //           <Typography variant="h4" gutterBottom fontWeight="bold">
+// // // // //             Assignments
+// // // // //           </Typography>
+// // // // //           <Typography variant="body1" color="textSecondary">
+// // // // //             Create and manage course assignments
+// // // // //           </Typography>
+// // // // //         </Box>
+// // // // //         <Button
+// // // // //           variant="contained"
+// // // // //           startIcon={<AssignmentIcon />}
+// // // // //           sx={{ borderRadius: 2, px: 3 }}
+// // // // //         >
+// // // // //           Create Assignment
+// // // // //         </Button>
+// // // // //       </Box>
+
+// // // // //       {/* Render the AssignmentsList component */}
+// // // // //       <AssignmentsList />
+// // // // //     </Box>
+// // // // //   );
+
+// // // // //   // const student = () => (
+// // // // //   //   <Box>
+// // // // //   //     <StudentEnrollmentDashboardd />
+// // // // //   //   </Box>
+// // // // //   // );
+// // // // //     const VisualizationView = () => (
+// // // // //     <Box>
+// // // // //       <StudentEnrollmentDashboardd />
+// // // // //     </Box>
+// // // // //   );
+
+// // // // //   // Updated QuizzesView to render your QuizPage component
+// // // // //   const QuizzesView = () => (
+// // // // //     <Box>
+// // // // //       <QuizPage />
+// // // // //     </Box>
+// // // // //   );
+
+// // // // //   const SettingsView = () => (
+// // // // //     <Box>
+// // // // //       <Typography variant="h4" gutterBottom fontWeight="bold">
+// // // // //         Settings
+// // // // //       </Typography>
+// // // // //       <Typography variant="body1" color="textSecondary" mb={4}>
+// // // // //         Manage your account and preferences
+// // // // //       </Typography>
+
+// // // // //       <Grid container spacing={3}>
+// // // // //         <Grid item xs={12} md={6}>
+// // // // //           <Paper sx={{ p: 3, borderRadius: 3 }}>
+// // // // //             <Typography variant="h6" gutterBottom>
+// // // // //               Profile Settings
+// // // // //             </Typography>
+// // // // //             <Typography variant="body2" color="textSecondary">
+// // // // //               Update your profile information and preferences
+// // // // //             </Typography>
+// // // // //             {/* Add your profile settings form here */}
+// // // // //           </Paper>
+// // // // //         </Grid>
+
+// // // // //         <Grid item xs={12} md={6}>
+// // // // //           <Paper sx={{ p: 3, borderRadius: 3 }}>
+// // // // //             <Typography variant="h6" gutterBottom>
+// // // // //               Notification Settings
+// // // // //             </Typography>
+// // // // //             <Typography variant="body2" color="textSecondary">
+// // // // //               Configure how you want to receive notifications
+// // // // //             </Typography>
+// // // // //             {/* Add your notification settings here */}
+// // // // //           </Paper>
+// // // // //         </Grid>
+// // // // //       </Grid>
+// // // // //     </Box>
+// // // // //   );
+
+// // // // //   // Render the appropriate view based on currentView state
+// // // // //   const renderView = () => {
+// // // // //     switch (currentView) {
+// // // // //       case "dashboard":
+// // // // //         return (
+// // // // //           <InstructorDashboardView
+// // // // //             onCreateCourse={handleCreateCourse}
+// // // // //             onEditCourse={handleEditCourse}
+// // // // //           />
+// // // // //         );
+// // // // //       case "my-courses":
+// // // // //         return <MyCoursesView />;
+// // // // //       case "create-course":
+// // // // //         return (
+// // // // //           <CourseForm
+// // // // //             course={editingCourse}
+// // // // //             onBack={handleBackToDashboard}
+// // // // //             onSuccess={handleBackToDashboard}
+// // // // //           />
+// // // // //         );
+// // // // //       case "enrollment-stats":
+// // // // //         return <StudentEnrollmentDashboardd />;
+// // // // //       case "assignments":
+// // // // //         return <AssignmentsView />;
+// // // // //       case "visualization":
+// // // // //         return <VisualizationView />;
+// // // // //       case "quizzes":
+// // // // //         return <QuizzesView />;
+// // // // //       case "settings":
+// // // // //         return <SettingsView />;
+// // // // //       default:
+// // // // //         return (
+// // // // //           <InstructorDashboardView
+// // // // //             onCreateCourse={handleCreateCourse}
+// // // // //             onEditCourse={handleEditCourse}
+// // // // //           />
+// // // // //         );
+// // // // //     }
+// // // // //   };
+
+// // // // //   return (
+// // // // //     <Box sx={{ display: "flex", minHeight: "100vh" }}>
+// // // // //       <CssBaseline />
+// // // // //       <Header />
+// // // // //       <InstructorSidebar
+// // // // //         mobileOpen={mobileOpen}
+// // // // //         handleDrawerToggle={handleDrawerToggle}
+// // // // //         collapsed={collapsed}
+// // // // //         setCollapsed={setCollapsed}
+// // // // //         isMobile={isMobile}
+// // // // //         currentView={currentView}
+// // // // //         onViewChange={handleViewChange}
+// // // // //       />
+
+// // // // //       <Box
+// // // // //         component="main"
+// // // // //         sx={{
+// // // // //           flexGrow: 1,
+// // // // //           p: 5,
+// // // // //           pt: 13,
+// // // // //           width: {
+// // // // //             sm: `calc(100% - ${collapsed ? collapsedWidth : drawerWidth}px)`,
+// // // // //           },
+// // // // //           backgroundColor: theme.palette.background.default,
+// // // // //           minHeight: "100vh",
+// // // // //         }}
+// // // // //       >
+// // // // //         {renderView()}
+// // // // //       </Box>
+// // // // //     </Box>
+// // // // //   );
+// // // // // };
+
+// // // // // export default InstructorDashboard;
+// // // // import React, { useState } from "react";
 // // // // import {
 // // // //   Box,
+// // // //   CssBaseline,
+// // // //   useTheme,
+// // // //   useMediaQuery,
 // // // //   Typography,
 // // // //   Paper,
 // // // //   Grid,
-// // // //   styled,
+// // // //   Card,
+// // // //   CardContent,
+// // // //   Button,
+// // // //   Chip,
 // // // //   Avatar,
-// // // //   Divider,
 // // // //   List,
 // // // //   ListItem,
-// // // //   ListItemIcon,
 // // // //   ListItemText,
-// // // //   Button,
-// // // //   CircularProgress,
-// // // //   Dialog,
-// // // //   DialogTitle,
-// // // //   DialogContent,
-// // // //   DialogActions,
-// // // //   IconButton,
-// // // //   Accordion,
-// // // //   AccordionSummary,
-// // // //   AccordionDetails,
-// // // //   Tooltip,
-// // // //   Chip,
-// // // //   Snackbar,
-// // // //   InputAdornment,
-// // // //   TextField,
-// // // //   Stepper,
-// // // //   Step,
-// // // //   StepLabel,
-// // // //   FormControl,
-// // // //   InputLabel,
-// // // //   Select,
-// // // //   MenuItem,
+// // // //   ListItemIcon,
+// // // //   Divider,
 // // // // } from "@mui/material";
 // // // // import {
-// // // //   Dashboard as DashboardIcon,
-// // // //   School as CoursesIcon,
-// // // //   People as StudentsIcon,
-// // // //   BarChart as AnalyticsIcon,
-// // // //   Message as MessagesIcon,
-// // // //   Settings as SettingsIcon,
-// // // //   School as SchoolIcon,
-// // // //   VideoLibrary as VideoLibraryIcon,
-// // // //   Article as ArticleIcon,
-// // // //   Add as AddIcon,
-// // // //   Search as SearchIcon,
-// // // //   Edit as EditIcon,
-// // // //   Delete as DeleteIcon,
-// // // //   Close as CloseIcon,
-// // // //   ExpandMore as ExpandMoreIcon,
-// // // //   Visibility as VisibilityIcon,
-// // // //   Schedule as ScheduleIcon,
-// // // //   CheckCircle as CheckCircleIcon,
 // // // //   Assignment as AssignmentIcon,
+// // // //   Quiz as QuizIcon,
+// // // //   BarChart as BarChartIcon,
+// // // //   People as PeopleIcon,
+// // // //   Visibility as VisibilityIcon,
+// // // //   TrendingUp as TrendingUpIcon,
+// // // //   School as SchoolIcon,
+// // // //   CheckCircle as CheckCircleIcon,
+// // // //   Add as AddIcon,
+// // // //   Book as BookIcon,
 // // // // } from "@mui/icons-material";
-// // // // import { useTheme } from "@mui/material/styles";
-// // // // import PeopleIcon from "@mui/icons-material/People";
-// // // // import { Link, useLocation, useNavigate } from "react-router-dom";
-// // // // import InstructorService from "../../services/instructorService";
-// // // // import StatusChip from "../../pages/instructor/StatusChip";
-// // // // import StudentEnrollmentDashboard from "../../pages/instructor/EnrollmentStats";
 
-// // // // const DashboardContainer = styled(Box)(() => ({
-// // // //   display: "flex",
-// // // //   minHeight: "100vh",
-// // // //   backgroundColor: "#f5f7fa",
-// // // // }));
-
-// // // // const Sidebar = styled(Paper)(({ theme }) => ({
-// // // //   width: 280,
-// // // //   padding: theme.spacing(2),
-// // // //   borderRadius: 0,
-// // // //   boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-// // // //   backgroundColor: "#ffffff",
-// // // // }));
-
-// // // // const MainContent = styled(Box)(({ theme }) => ({
-// // // //   flexGrow: 1,
-// // // //   padding: theme.spacing(4),
-// // // //   backgroundColor: "#f5f7fa",
-// // // // }));
-
-// // // // const StatsCard = styled(Paper)(({ theme }) => ({
-// // // //   padding: theme.spacing(3),
-// // // //   borderRadius: 12,
-// // // //   boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-// // // //   transition: "transform 0.3s ease, box-shadow 0.3s ease",
-// // // //   "&:hover": {
-// // // //     transform: "translateY(-5px)",
-// // // //     boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-// // // //   },
-// // // // }));
-
-// // // // const CourseCard = styled(Paper)(({ theme }) => ({
-// // // //   padding: theme.spacing(3),
-// // // //   marginBottom: theme.spacing(2),
-// // // //   borderRadius: 12,
-// // // //   boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-// // // //   transition: "transform 0.3s ease, box-shadow 0.3s ease",
-// // // //   "&:hover": {
-// // // //     transform: "translateY(-5px)",
-// // // //     boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-// // // //   },
-// // // // }));
-
-// // // // const steps = [
-// // // //   "Select Course",
-// // // //   "Select Module",
-// // // //   "Select Lesson",
-// // // //   "Assignment Details",
-// // // // ];
-
-// // // // const CreateAssignmentDialog = ({ open, onClose, onAssignmentCreated }) => {
-// // // //   const [activeStep, setActiveStep] = useState(0);
-// // // //   const [courses, setCourses] = useState([]);
-// // // //   const [loading, setLoading] = useState(false);
-// // // //   const [error, setError] = useState(null);
-
-// // // //   const [selectedCourse, setSelectedCourse] = useState("");
-// // // //   const [selectedModule, setSelectedModule] = useState("");
-// // // //   const [selectedLesson, setSelectedLesson] = useState("");
-// // // //   const [assignmentData, setAssignmentData] = useState({
-// // // //     title: "",
-// // // //     description: "",
-// // // //     max_score: 100,
-// // // //   });
-
-// // // //   useEffect(() => {
-// // // //     if (open) {
-// // // //       fetchCoursesHierarchy();
-// // // //     }
-// // // //   }, [open]);
-
-// // // //   const fetchCoursesHierarchy = async () => {
-// // // //     setLoading(true);
-// // // //     setError(null);
-// // // //     try {
-// // // //       const data = await InstructorService.getCoursesHierarchy();
-
-// // // //       // ⚠️ فلترة الكورسات: فقط اللي فيها modules وفيها lessons داخل modules
-// // // //       const filteredCourses = data.filter(
-// // // //         (course) =>
-// // // //           Array.isArray(course.modules) &&
-// // // //           course.modules.length > 0 &&
-// // // //           course.modules.some(
-// // // //             (module) =>
-// // // //               Array.isArray(module.lessons) && module.lessons.length > 0
-// // // //           )
-// // // //       );
-
-// // // //       setCourses(filteredCourses);
-// // // //     } catch (err) {
-// // // //       setError("Failed to load courses. Please try again.");
-// // // //       console.error(err);
-// // // //     } finally {
-// // // //       setLoading(false);
-// // // //     }
-// // // //   };
-
-// // // //   const handleNext = () => {
-// // // //     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-// // // //   };
-
-// // // //   const handleBack = () => {
-// // // //     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-// // // //   };
-
-// // // //   const handleCourseChange = (event) => {
-// // // //     const selected = event.target.value; // ✅ لازم تعريف المتغير
-// // // //     console.log("Course selected:", selected);
-// // // //     setSelectedCourse(selected);
-// // // //     setSelectedModule("");
-// // // //     setSelectedLesson("");
-// // // //   };
-
-// // // //   const handleModuleChange = (event) => {
-// // // //     const selected = String(event.target.value);
-
-// // // //     console.log("Module selected:", selected); // ✅ لازم يطبع
-
-// // // //     setSelectedModule(event.target.value);
-// // // //     setSelectedLesson("");
-// // // //   };
-
-// // // //   const handleLessonChange = (event) => {
-// // // //     setSelectedLesson(String(event.target.value));
-// // // //   };
-
-// // // //   const handleInputChange = (event) => {
-// // // //     const { name, value } = event.target;
-// // // //     setAssignmentData((prev) => ({
-// // // //       ...prev,
-// // // //       [name]: value,
-// // // //     }));
-// // // //   };
-
-// // // //   const handleSubmit = async () => {
-// // // //     try {
-// // // //       const assignment = {
-// // // //         lesson_id: selectedLesson,
-// // // //         ...assignmentData,
-// // // //       };
-// // // //       const createdAssignment = await InstructorService.createAssignment(
-// // // //         assignment
-// // // //       );
-// // // //       onAssignmentCreated(createdAssignment);
-// // // //       onClose();
-// // // //     } catch (err) {
-// // // //       setError("Failed to create assignment. Please try again.");
-// // // //       console.error(err);
-// // // //     }
-// // // //   };
-// // // //   useEffect(() => {
-// // // //     const fetchCoursesWithModulesAndLessons = async () => {
-// // // //       try {
-// // // //         const fetchedCourses = await InstructorService.getInstructorCourses();
-
-// // // //         // نجيب الموديولات والدروس لكل كورس
-// // // //         const coursesWithModules = await Promise.all(
-// // // //           fetchedCourses.map(async (course) => {
-// // // //             const modules = await InstructorService.getModulesByCourse(
-// // // //               course.id
-// // // //             );
-// // // //             // نجيب الدروس لكل موديل
-// // // //             const modulesWithLessons = await Promise.all(
-// // // //               modules.map(async (mod) => {
-// // // //                 const lessons = await InstructorService.getLessonsByModule(
-// // // //                   mod.id
-// // // //                 );
-// // // //                 return { ...mod, lessons };
-// // // //               })
-// // // //             );
-// // // //             return { ...course, modules: modulesWithLessons };
-// // // //           })
-// // // //         );
-
-// // // //         setCourses(coursesWithModules);
-// // // //       } catch (err) {
-// // // //         console.error("Error loading courses with modules and lessons", err);
-// // // //       }
-// // // //     };
-
-// // // //     fetchCoursesWithModulesAndLessons();
-// // // //   }, []);
-// // // //   const getSelectedCourse = () =>
-// // // //     courses.find((c) => String(c.id || c._id) === String(selectedCourse));
-// // // //   const getSelectedModule = () => {
-// // // //     const course = getSelectedCourse();
-// // // //     if (!course) return null;
-// // // //     return course.modules.find(
-// // // //       (m) => String(m.id || m._id) === String(selectedModule)
-// // // //     );
-// // // //   };
-
-// // // //   return (
-// // // //     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-// // // //       <DialogTitle>
-// // // //         <Box display="flex" justifyContent="space-between" alignItems="center">
-// // // //           <Typography variant="h6">Create New Assignment</Typography>
-// // // //           <IconButton onClick={onClose}>
-// // // //             <CloseIcon />
-// // // //           </IconButton>
-// // // //         </Box>
-// // // //         <Stepper activeStep={activeStep} alternativeLabel sx={{ mt: 2 }}>
-// // // //           {steps.map((label) => (
-// // // //             <Step key={label}>
-// // // //               <StepLabel>{label}</StepLabel>
-// // // //             </Step>
-// // // //           ))}
-// // // //         </Stepper>
-// // // //       </DialogTitle>
-
-// // // //       <DialogContent dividers>
-// // // //         {loading ? (
-// // // //           <Box display="flex" justifyContent="center" p={4}>
-// // // //             <CircularProgress />
-// // // //           </Box>
-// // // //         ) : error ? (
-// // // //           <Paper elevation={0} sx={{ p: 2, bgcolor: "error.light" }}>
-// // // //             <Typography color="error">{error}</Typography>
-// // // //             <Button onClick={fetchCoursesHierarchy} sx={{ mt: 1 }}>
-// // // //               Retry
-// // // //             </Button>
-// // // //           </Paper>
-// // // //         ) : (
-// // // //           <>
-// // // //             {activeStep === 0 && (
-// // // //               <Box sx={{ mt: 2 }}>
-// // // //                 <FormControl fullWidth>
-// // // //                   <InputLabel>Select Course</InputLabel>
-// // // //                   <Select
-// // // //                     value={selectedCourse}
-// // // //                     onChange={handleCourseChange}
-// // // //                     label="Select Course"
-// // // //                   >
-// // // //                     {courses.map((course) => (
-// // // //                       <MenuItem
-// // // //                         key={course._id}
-// // // //                         value={String(course.id || course._id)} // ✅ حل أي نوع
-// // // //                       >
-// // // //                         {course.title}
-// // // //                       </MenuItem>
-// // // //                     ))}
-// // // //                   </Select>
-// // // //                 </FormControl>
-// // // //                 {selectedCourse && (
-// // // //                   <Box sx={{ mt: 2 }}>
-// // // //                     <Typography variant="subtitle2">
-// // // //                       Course Description:
-// // // //                     </Typography>
-// // // //                     <Typography variant="body2" color="text.secondary">
-// // // //                       {getSelectedCourse()?.description ||
-// // // //                         "No description available"}
-// // // //                     </Typography>
-// // // //                   </Box>
-// // // //                 )}
-// // // //               </Box>
-// // // //             )}
-
-// // // //             {activeStep === 1 && (
-// // // //               <Box sx={{ mt: 2 }}>
-// // // //                 {console.log("✅ selectedCourse:", selectedCourse)}
-// // // //                 {console.log("✅ getSelectedCourse():", getSelectedCourse())}
-// // // //                 {console.log(
-// // // //                   "✅ Modules inside selected course:",
-// // // //                   getSelectedCourse()?.modules
-// // // //                 )}
-
-// // // //                 <FormControl fullWidth>
-// // // //                   <InputLabel>Select Module</InputLabel>
-// // // //                   <Select
-// // // //                     value={selectedModule}
-// // // //                     onChange={handleModuleChange}
-// // // //                     label="Select Module"
-// // // //                     disabled={!selectedCourse}
-// // // //                   >
-// // // //                     <MenuItem value="">
-// // // //                       <em>اختر وحدة</em>
-// // // //                     </MenuItem>
-// // // //                     {getSelectedCourse()?.modules?.map((module) => (
-// // // //                       <MenuItem
-// // // //                         key={module.id || module._id}
-// // // //                         value={String(module.id || module._id)}
-// // // //                       >
-// // // //                         {module.title}
-// // // //                       </MenuItem>
-// // // //                     ))}
-// // // //                   </Select>
-// // // //                 </FormControl>
-
-// // // //                 {selectedModule && (
-// // // //                   <Box sx={{ mt: 2 }}>
-// // // //                     <Typography variant="subtitle2">Module Details:</Typography>
-// // // //                     <Typography variant="body2" color="text.secondary">
-// // // //                       {getSelectedModule()?.description ||
-// // // //                         "No description available"}
-// // // //                     </Typography>
-// // // //                     <Typography
-// // // //                       variant="caption"
-// // // //                       display="block"
-// // // //                       sx={{ mt: 1 }}
-// // // //                     >
-// // // //                       {getSelectedModule()?.lessons?.length || 0} lessons in
-// // // //                       this module
-// // // //                     </Typography>
-// // // //                   </Box>
-// // // //                 )}
-// // // //               </Box>
-// // // //             )}
-
-// // // //             {activeStep === 2 && (
-// // // //               <Box sx={{ mt: 2 }}>
-// // // //                 <FormControl fullWidth>
-// // // //                   <InputLabel>Select Lesson</InputLabel>
-// // // //                   <Select
-// // // //                     value={selectedLesson}
-// // // //                     onChange={handleLessonChange}
-// // // //                     label="Select Lesson"
-// // // //                     disabled={!selectedModule}
-// // // //                   >
-// // // //                     {getSelectedModule()?.lessons?.map((lesson) => (
-// // // //                       <MenuItem
-// // // //                         key={lesson.id || lesson._id}
-// // // //                         value={String(lesson.id || lesson._id)}
-// // // //                       >
-// // // //                         {lesson.title}
-// // // //                       </MenuItem>
-// // // //                     ))}
-// // // //                   </Select>
-// // // //                 </FormControl>
-// // // //                 {selectedLesson && (
-// // // //                   <Box sx={{ mt: 2 }}>
-// // // //                     <Typography variant="subtitle2">Lesson Details:</Typography>
-// // // //                     <Typography variant="body2" color="text.secondary">
-// // // //                       {getSelectedModule()?.lessons?.find(
-// // // //                         (l) => String(l.id || l._id) === selectedLesson
-// // // //                       )?.description || "No description available"}
-// // // //                     </Typography>
-// // // //                   </Box>
-// // // //                 )}
-// // // //               </Box>
-// // // //             )}
-
-// // // //             {activeStep === 3 && (
-// // // //               <Box sx={{ mt: 2 }}>
-// // // //                 <TextField
-// // // //                   fullWidth
-// // // //                   label="Assignment Title"
-// // // //                   name="title"
-// // // //                   value={assignmentData.title}
-// // // //                   onChange={handleInputChange}
-// // // //                   sx={{ mb: 2 }}
-// // // //                   InputProps={{
-// // // //                     startAdornment: (
-// // // //                       <InputAdornment position="start">
-// // // //                         <AssignmentIcon color="action" />
-// // // //                       </InputAdornment>
-// // // //                     ),
-// // // //                   }}
-// // // //                 />
-// // // //                 <TextField
-// // // //                   fullWidth
-// // // //                   label="Description"
-// // // //                   name="description"
-// // // //                   value={assignmentData.description}
-// // // //                   onChange={handleInputChange}
-// // // //                   multiline
-// // // //                   rows={4}
-// // // //                   sx={{ mb: 2 }}
-// // // //                 />
-// // // //                 <TextField
-// // // //                   fullWidth
-// // // //                   label="Maximum Score"
-// // // //                   name="max_score"
-// // // //                   type="number"
-// // // //                   value={assignmentData.max_score}
-// // // //                   onChange={handleInputChange}
-// // // //                   inputProps={{ min: 1 }}
-// // // //                   InputProps={{
-// // // //                     startAdornment: (
-// // // //                       <InputAdornment position="start">
-// // // //                         <CheckCircleIcon color="action" />
-// // // //                       </InputAdornment>
-// // // //                     ),
-// // // //                   }}
-// // // //                 />
-// // // //               </Box>
-// // // //             )}
-// // // //           </>
-// // // //         )}
-// // // //       </DialogContent>
-
-// // // //       <DialogActions>
-// // // //         <Button onClick={handleBack} disabled={activeStep === 0}>
-// // // //           Back
-// // // //         </Button>
-// // // //         {activeStep === steps.length - 1 ? (
-// // // //           <Button
-// // // //             onClick={handleSubmit}
-// // // //             variant="contained"
-// // // //             disabled={!selectedLesson || !assignmentData.title}
-// // // //             startIcon={<AssignmentIcon />}
-// // // //           >
-// // // //             Create Assignment
-// // // //           </Button>
-// // // //         ) : (
-// // // //           <Button
-// // // //             onClick={handleNext}
-// // // //             variant="contained"
-// // // //             disabled={
-// // // //               activeStep === 0 &&
-// // // //               (!selectedCourse || getSelectedCourse()?.modules?.length === 0)
-// // // //             }
-// // // //           >
-// // // //             Next
-// // // //           </Button>
-// // // //         )}
-// // // //       </DialogActions>
-// // // //     </Dialog>
-// // // //   );
-// // // // };
+// // // // import InstructorSidebar from "../../components/common/Sidebar/InstructorSidebar";
+// // // // import Header from "../../components/common/Sidebar/AdminHeader";
+// // // // import InstructorDashboardView from "./InstructorDashboardView";
+// // // // import CourseForm from "../instructor/CourseForm";
+// // // // import AssignmentsList from "../../components/assignmnet/AssignmentsList";
+// // // // import StudentEnrollmentDashboardd from "../instructor/EnrollmentStats";
+// // // // import QuizPage from "../../components/assignmnet/QuizPage";
+// // // // import Settings from "../../components/common/Settings/Settings"; // Import the Settings component
 
 // // // // const InstructorDashboard = () => {
 // // // //   const theme = useTheme();
-// // // //   const location = useLocation();
-// // // //   const navigate = useNavigate();
-// // // //   const [courses, setCourses] = useState([]);
-// // // //   const [loading, setLoading] = useState(true);
-// // // //   const [searchTerm, setSearchTerm] = useState("");
-// // // //   const [stats, setStats] = useState({
-// // // //     totalCourses: 0,
-// // // //     approvedCourses: 0,
-// // // //     pendingCourses: 0,
-// // // //     rejectedCourses: 0,
-// // // //   });
-// // // //   const [selectedCourse, setSelectedCourse] = useState(null);
-// // // //   const [modules, setModules] = useState([]);
-// // // //   const [dialogOpen, setDialogOpen] = useState(false);
-// // // //   const [loadingDetails, setLoadingDetails] = useState(false);
-// // // //   const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
-// // // //   const [snackbarOpen, setSnackbarOpen] = useState(false);
-// // // //   const [recentlyCreatedAssignment, setRecentlyCreatedAssignment] =
-// // // //     useState(null);
+// // // //   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+// // // //   const drawerWidth = 240;
+// // // //   const collapsedWidth = 72;
 
-// // // //   useEffect(() => {
-// // // //     const fetchCourses = async () => {
-// // // //       try {
-// // // //         setLoading(true);
-// // // //         const data = await InstructorService.getCourses();
-// // // //         setCourses(data);
+// // // //   // State for managing the current view
+// // // //   const [currentView, setCurrentView] = useState("dashboard");
+// // // //   const [mobileOpen, setMobileOpen] = useState(false);
+// // // //   const [collapsed, setCollapsed] = useState(false);
 
-// // // //         const approved = data.filter((c) => c.status === "approved").length;
-// // // //         const pending = data.filter((c) => c.status === "pending").length;
-// // // //         const rejected = data.filter((c) => c.status === "rejected").length;
+// // // //   // State for course editing
+// // // //   const [editingCourse, setEditingCourse] = useState(null);
 
-// // // //         setStats({
-// // // //           totalCourses: data.length,
-// // // //           approvedCourses: approved,
-// // // //           pendingCourses: pending,
-// // // //           rejectedCourses: rejected,
-// // // //         });
-// // // //       } catch (error) {
-// // // //         console.error("Failed to fetch courses:", error);
-// // // //       } finally {
-// // // //         setLoading(false);
-// // // //       }
-// // // //     };
-
-// // // //     fetchCourses();
-// // // //   }, []);
-
-// // // //   const handleDeleteCourse = async (courseId) => {
-// // // //     try {
-// // // //       await InstructorService.deleteCourse(courseId);
-// // // //       setCourses(courses.filter((course) => course.id !== courseId));
-// // // //       setStats((prev) => ({
-// // // //         ...prev,
-// // // //         totalCourses: prev.totalCourses - 1,
-// // // //         approvedCourses: courses.filter(
-// // // //           (c) => c.id !== courseId && c.status === "approved"
-// // // //         ).length,
-// // // //         pendingCourses: courses.filter(
-// // // //           (c) => c.id !== courseId && c.status === "pending"
-// // // //         ).length,
-// // // //         rejectedCourses: courses.filter(
-// // // //           (c) => c.id !== courseId && c.status === "rejected"
-// // // //         ).length,
-// // // //       }));
-// // // //     } catch (error) {
-// // // //       console.error("Failed to delete course:", error);
+// // // //   const handleDrawerToggle = () => {
+// // // //     if (isMobile) {
+// // // //       setMobileOpen(!mobileOpen);
+// // // //     } else {
+// // // //       setCollapsed(!collapsed);
 // // // //     }
 // // // //   };
 
-// // // //   const handleViewCourse = async (course) => {
-// // // //     try {
-// // // //       setSelectedCourse(course);
-// // // //       setLoadingDetails(true);
-// // // //       setDialogOpen(true);
-
-// // // //       const modulesData = await InstructorService.getModulesByCourse(
-// // // //         course._id || course.id
-// // // //       );
-// // // //       setModules(modulesData);
-// // // //     } catch (error) {
-// // // //       console.error("Error fetching course modules:", error);
-// // // //     } finally {
-// // // //       setLoadingDetails(false);
+// // // //   const handleViewChange = (view) => {
+// // // //     setCurrentView(view);
+// // // //     if (isMobile) {
+// // // //       setMobileOpen(false);
 // // // //     }
 // // // //   };
 
-// // // //   const handleCloseDialog = () => {
-// // // //     setDialogOpen(false);
-// // // //     setSelectedCourse(null);
-// // // //     setModules([]);
+// // // //   // Handle creating a new course
+// // // //   const handleCreateCourse = () => {
+// // // //     setEditingCourse(null);
+// // // //     setCurrentView("create-course");
 // // // //   };
 
-// // // //   const filteredCourses = courses.filter(
-// // // //     (course) =>
-// // // //       course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-// // // //       course.description.toLowerCase().includes(searchTerm.toLowerCase())
-// // // //   );
+// // // //   // Handle editing an existing course
+// // // //   const handleEditCourse = (course) => {
+// // // //     setEditingCourse(course);
+// // // //     setCurrentView("create-course");
+// // // //   };
 
-// // // //   return (
-// // // //     <DashboardContainer>
-// // // //       <Sidebar>
-// // // //         <Box display="flex" alignItems="center" mb={4}>
-// // // //           <Avatar
-// // // //             alt="Instructor"
-// // // //             src="/path/to/instructor-avatar.jpg"
-// // // //             sx={{ width: 56, height: 56, mr: 2 }}
-// // // //           />
-// // // //           <Box>
-// // // //             <Typography variant="h6">Dr. Sarah Johnson</Typography>
-// // // //             <Typography variant="body2" color="textSecondary">
-// // // //               Computer Science Instructor
-// // // //             </Typography>
-// // // //           </Box>
-// // // //         </Box>
-// // // //         <Divider sx={{ my: 2 }} />
-// // // //         <List>
-// // // //           {[
-// // // //             {
-// // // //               text: "Dashboard",
-// // // //               icon: <DashboardIcon />,
-// // // //               path: "/instructor/dashboard",
-// // // //             },
-// // // //             {
-// // // //               text: "My Courses",
-// // // //               icon: <CoursesIcon />,
-// // // //               path: "/instructor/courses",
-// // // //             },
-// // // //             {
-// // // //               text: "Create Course",
-// // // //               icon: <AddIcon />,
-// // // //               path: "/instructor/courses/create",
-// // // //             },
-// // // //             {
-// // // //               text: "Enrollment Stats",
-// // // //               icon: <PeopleIcon />,
-// // // //               path: "/instructor/enrollments",
-// // // //             },
-// // // //             {
-// // // //               text: "Assignment",
-// // // //               icon: <StudentsIcon />,
-// // // //               path: "/instructor/assignments",
-// // // //             },
-// // // //             {
-// // // //               text: "Visualization",
-// // // //               icon: <AnalyticsIcon />,
-// // // //               path: "/instructor/Visualization",
-// // // //             },
-// // // //             {
-// // // //               text: "Messages",
-// // // //               icon: <MessagesIcon />,
-// // // //               path: "/instructor/messages",
-// // // //             },
-// // // //             {
-// // // //               text: "Quizzez",
-// // // //               icon: <SettingsIcon />,
-// // // //               path: "/instructor/Quizze",
-// // // //             },
-// // // //           ].map((item) => (
-// // // //             <ListItem
-// // // //               button
-// // // //               key={item.text}
-// // // //               component={Link}
-// // // //               to={item.path}
-// // // //               sx={{
-// // // //                 borderRadius: 2,
-// // // //                 mb: 0.5,
-// // // //                 backgroundColor:
-// // // //                   location.pathname === item.path
-// // // //                     ? theme.palette.action.selected
-// // // //                     : "transparent",
-// // // //                 "&:hover": {
-// // // //                   backgroundColor: theme.palette.action.hover,
-// // // //                 },
-// // // //               }}
-// // // //             >
-// // // //               <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
-// // // //               <ListItemText primary={item.text} />
-// // // //             </ListItem>
-// // // //           ))}
-// // // //         </List>
-// // // //       </Sidebar>
+// // // //   // Handle going back to dashboard after course operations
+// // // //   const handleBackToDashboard = () => {
+// // // //     setEditingCourse(null);
+// // // //     setCurrentView("dashboard");
+// // // //   };
 
-// // // //       <MainContent>
-// // // //         <Box mb={4}>
-// // // //           <Typography variant="h4" fontWeight="bold" gutterBottom>
-// // // //             Instructor Dashboard
+// // // //   // Clean components without mock data
+// // // //   const MyCoursesView = () => (
+// // // //     <Box>
+// // // //       <Box
+// // // //         display="flex"
+// // // //         justifyContent="space-between"
+// // // //         alignItems="center"
+// // // //         mb={4}
+// // // //       >
+// // // //         <Box>
+// // // //           <Typography variant="h4" gutterBottom fontWeight="bold">
+// // // //             My Courses
 // // // //           </Typography>
 // // // //           <Typography variant="body1" color="textSecondary">
-// // // //             Welcome back! Here's what's happening with your courses today.
+// // // //             Manage all your published and draft courses
 // // // //           </Typography>
 // // // //         </Box>
-
-// // // //         <Grid container spacing={3} mb={4}>
-// // // //           {[
-// // // //             {
-// // // //               title: "Total Courses",
-// // // //               value: stats.totalCourses,
-// // // //               icon: <CoursesIcon fontSize="large" color="primary" />,
-// // // //             },
-// // // //             {
-// // // //               title: "Approved Courses",
-// // // //               value: stats.approvedCourses,
-// // // //               icon: <SchoolIcon fontSize="large" color="success" />,
-// // // //             },
-// // // //             {
-// // // //               title: "Pending Approval",
-// // // //               value: stats.pendingCourses,
-// // // //               icon: <ScheduleIcon fontSize="large" color="warning" />,
-// // // //             },
-// // // //             {
-// // // //               title: "Rejected Courses",
-// // // //               value: stats.rejectedCourses,
-// // // //               icon: <DeleteIcon fontSize="large" color="error" />,
-// // // //             },
-// // // //           ].map((stat) => (
-// // // //             <Grid item xs={12} sm={6} md={3} key={stat.title}>
-// // // //               <StatsCard>
-// // // //                 <Box
-// // // //                   display="flex"
-// // // //                   justifyContent="space-between"
-// // // //                   alignItems="center"
-// // // //                 >
-// // // //                   <Box>
-// // // //                     <Typography
-// // // //                       variant="body2"
-// // // //                       color="textSecondary"
-// // // //                       gutterBottom
-// // // //                     >
-// // // //                       {stat.title}
-// // // //                     </Typography>
-// // // //                     <Typography variant="h4" fontWeight="bold">
-// // // //                       {stat.value}
-// // // //                     </Typography>
-// // // //                   </Box>
-// // // //                   <Box>{stat.icon}</Box>
-// // // //                 </Box>
-// // // //               </StatsCard>
-// // // //             </Grid>
-// // // //           ))}
-// // // //         </Grid>
-
-// // // //         <Box mb={4}>
-// // // //           <Box
-// // // //             display="flex"
-// // // //             justifyContent="space-between"
-// // // //             alignItems="center"
-// // // //             mb={2}
-// // // //           >
-// // // //             <Typography variant="h5" fontWeight="bold">
-// // // //               My Courses
-// // // //             </Typography>
-// // // //             <Box display="flex" gap={2}>
-// // // //               <Button
-// // // //                 component={Link}
-// // // //                 to="/instructor/courses/create"
-// // // //                 variant="contained"
-// // // //                 startIcon={<AddIcon />}
-// // // //               >
-// // // //                 Create Course
-// // // //               </Button>
-// // // //               <Button
-// // // //                 variant="outlined"
-// // // //                 startIcon={<AssignmentIcon />}
-// // // //                 onClick={() => setAssignmentDialogOpen(true)}
-// // // //               >
-// // // //                 Create Assignment
-// // // //               </Button>
-// // // //             </Box>
-// // // //           </Box>
-
-// // // //           <Box mb={3}>
-// // // //             <Paper
-// // // //               component="form"
-// // // //               sx={{
-// // // //                 p: "2px 4px",
-// // // //                 display: "flex",
-// // // //                 alignItems: "center",
-// // // //                 width: "100%",
-// // // //                 maxWidth: 500,
-// // // //               }}
-// // // //             >
-// // // //               <SearchIcon sx={{ ml: 1, mr: 1 }} />
-// // // //               <input
-// // // //                 type="text"
-// // // //                 placeholder="Search courses..."
-// // // //                 style={{
-// // // //                   border: "none",
-// // // //                   outline: "none",
-// // // //                   flex: 1,
-// // // //                   padding: "8px",
-// // // //                   fontSize: "14px",
-// // // //                 }}
-// // // //                 value={searchTerm}
-// // // //                 onChange={(e) => setSearchTerm(e.target.value)}
-// // // //               />
-// // // //             </Paper>
-// // // //           </Box>
-
-// // // //           {loading ? (
-// // // //             <Box display="flex" justifyContent="center" my={4}>
-// // // //               <CircularProgress />
-// // // //             </Box>
-// // // //           ) : filteredCourses.length === 0 ? (
-// // // //             <Paper sx={{ p: 3, textAlign: "center" }}>
-// // // //               <Typography variant="body1">
-// // // //                 {searchTerm
-// // // //                   ? "No courses match your search"
-// // // //                   : "You haven't created any courses yet"}
-// // // //               </Typography>
-// // // //               <Button
-// // // //                 component={Link}
-// // // //                 to="/instructor/courses/create"
-// // // //                 variant="contained"
-// // // //                 startIcon={<AddIcon />}
-// // // //                 sx={{ mt: 2 }}
-// // // //               >
-// // // //                 Create Your First Course
-// // // //               </Button>
-// // // //             </Paper>
-// // // //           ) : (
-// // // //             <Grid container spacing={3}>
-// // // //               {filteredCourses.map((course) => (
-// // // //                 <Grid item xs={12} md={6} lg={4} key={course._id || course.id}>
-// // // //                   <CourseCard>
-// // // //                     <Box
-// // // //                       display="flex"
-// // // //                       justifyContent="space-between"
-// // // //                       alignItems="flex-start"
-// // // //                       mb={2}
-// // // //                     >
-// // // //                       <Typography variant="h6" fontWeight="bold">
-// // // //                         {course.title}
-// // // //                       </Typography>
-// // // //                       <StatusChip status={course.status} />
-// // // //                     </Box>
-// // // //                     <Typography variant="body2" color="textSecondary" mb={2}>
-// // // //                       {course.description.length > 100
-// // // //                         ? `${course.description.substring(0, 100)}...`
-// // // //                         : course.description}
-// // // //                     </Typography>
-// // // //                     <Box
-// // // //                       display="flex"
-// // // //                       justifyContent="space-between"
-// // // //                       alignItems="center"
-// // // //                       mb={2}
-// // // //                     >
-// // // //                       <Box>
-// // // //                         <Typography variant="caption" color="textSecondary">
-// // // //                           {course.modules?.length || 0} Modules
-// // // //                         </Typography>
-
-// // // //                         <Typography
-// // // //                           variant="caption"
-// // // //                           color="textSecondary"
-// // // //                           sx={{ ml: 1 }}
-// // // //                         >
-// // // //                           •{" "}
-// // // //                           {course.modules?.reduce(
-// // // //                             (total, mod) => total + (mod.lessons?.length || 0),
-// // // //                             0
-// // // //                           )}{" "}
-// // // //                           Lessons
-// // // //                         </Typography>
-// // // //                       </Box>
-
-// // // //                       <Box>
-// // // //                         <Tooltip title="View Course">
-// // // //                           <IconButton
-// // // //                             size="small"
-// // // //                             onClick={() => handleViewCourse(course)}
-// // // //                             sx={{ mr: 1 }}
-// // // //                           >
-// // // //                             <VisibilityIcon fontSize="small" />
-// // // //                           </IconButton>
-// // // //                         </Tooltip>
-// // // //                         <Tooltip title="Edit Course">
-// // // //                           <IconButton
-// // // //                             size="small"
-// // // //                             onClick={() =>
-// // // //                               navigate(
-// // // //                                 `/instructor/courses/edit/${
-// // // //                                   course._id || course.id
-// // // //                                 }`
-// // // //                               )
-// // // //                             }
-// // // //                             sx={{ mr: 1 }}
-// // // //                           >
-// // // //                             <EditIcon fontSize="small" />
-// // // //                           </IconButton>
-// // // //                         </Tooltip>
-// // // //                         <Tooltip title="Delete Course">
-// // // //                           <IconButton
-// // // //                             size="small"
-// // // //                             color="error"
-// // // //                             onClick={() => handleDeleteCourse(course.id)}
-// // // //                           >
-// // // //                             <DeleteIcon fontSize="small" />
-// // // //                           </IconButton>
-// // // //                         </Tooltip>
-// // // //                       </Box>
-// // // //                     </Box>
-// // // //                   </CourseCard>
-// // // //                 </Grid>
-// // // //               ))}
-// // // //             </Grid>
-// // // //           )}
-// // // //         </Box>
-
-// // // //         <Dialog
-// // // //           open={dialogOpen}
-// // // //           onClose={handleCloseDialog}
-// // // //           fullWidth
-// // // //           maxWidth="md"
-// // // //           PaperProps={{
-// // // //             sx: {
-// // // //               borderRadius: 3,
-// // // //               minHeight: "70vh",
-// // // //             },
-// // // //           }}
+// // // //         <Button
+// // // //           variant="contained"
+// // // //           startIcon={<AddIcon />}
+// // // //           onClick={handleCreateCourse}
+// // // //           sx={{ borderRadius: 2, px: 3 }}
 // // // //         >
-// // // //           <DialogTitle>
-// // // //             <Box
-// // // //               display="flex"
-// // // //               justifyContent="space-between"
-// // // //               alignItems="center"
-// // // //             >
-// // // //               <Typography variant="h5" fontWeight="bold">
-// // // //                 {selectedCourse?.title || "Course Details"}
-// // // //               </Typography>
-// // // //               <IconButton onClick={handleCloseDialog}>
-// // // //                 <CloseIcon />
-// // // //               </IconButton>
-// // // //             </Box>
-// // // //             <Box mt={1} display="flex" alignItems="center">
-// // // //               <StatusChip status={selectedCourse?.status} />
-// // // //               <Typography variant="body2" color="textSecondary" ml={1}>
-// // // //                 {modules.length} Modules
-// // // //               </Typography>
-// // // //             </Box>
-// // // //           </DialogTitle>
-// // // //           <DialogContent dividers>
-// // // //             {loadingDetails ? (
-// // // //               <Box
-// // // //                 display="flex"
-// // // //                 justifyContent="center"
-// // // //                 alignItems="center"
-// // // //                 minHeight="200px"
-// // // //               >
-// // // //                 <CircularProgress />
-// // // //               </Box>
-// // // //             ) : (
-// // // //               <>
-// // // //                 <Box mb={3}>
-// // // //                   <Typography variant="body1" paragraph>
-// // // //                     {selectedCourse?.description || "No description available"}
-// // // //                   </Typography>
-// // // //                 </Box>
+// // // //           Create New Course
+// // // //         </Button>
+// // // //       </Box>
 
-// // // //                 <Box mb={2}>
-// // // //                   <Typography variant="h6" fontWeight="bold" gutterBottom>
-// // // //                     Course Content
-// // // //                   </Typography>
-// // // //                   {modules.length === 0 ? (
-// // // //                     <Paper sx={{ p: 2, textAlign: "center" }}>
-// // // //                       <Typography variant="body2" color="textSecondary">
-// // // //                         No modules added yet
-// // // //                       </Typography>
-// // // //                       <Button
-// // // //                         variant="outlined"
-// // // //                         startIcon={<AddIcon />}
-// // // //                         sx={{ mt: 2 }}
-// // // //                         onClick={() => {
-// // // //                           handleCloseDialog();
-// // // //                           navigate(
-// // // //                             `/instructor/courses/edit/${
-// // // //                               selectedCourse._id || selectedCourse.id
-// // // //                             }`
-// // // //                           );
-// // // //                         }}
-// // // //                       >
-// // // //                         Add Modules
-// // // //                       </Button>
-// // // //                     </Paper>
-// // // //                   ) : (
-// // // //                     modules.map((module) => (
-// // // //                       <Accordion
-// // // //                         key={module._id || module.id}
-// // // //                         sx={{ mb: 1, borderRadius: 2 }}
-// // // //                       >
-// // // //                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-// // // //                           <Box display="flex" alignItems="center" width="100%">
-// // // //                             <VideoLibraryIcon color="primary" sx={{ mr: 2 }} />
-// // // //                             <Box flexGrow={1}>
-// // // //                               <Typography fontWeight="bold">
-// // // //                                 {module.title}
-// // // //                               </Typography>
-// // // //                               <Typography
-// // // //                                 variant="caption"
-// // // //                                 color="textSecondary"
-// // // //                               >
-// // // //                                 {module.lessons?.length || 0} Lessons
-// // // //                               </Typography>
-// // // //                             </Box>
-// // // //                           </Box>
-// // // //                         </AccordionSummary>
-// // // //                         <AccordionDetails>
-// // // //                           {module.lessons?.length > 0 ? (
-// // // //                             module.lessons.map((lesson) => (
-// // // //                               <Box
-// // // //                                 key={lesson._id || lesson.id}
-// // // //                                 sx={{
-// // // //                                   display: "flex",
-// // // //                                   alignItems: "center",
-// // // //                                   p: 1.5,
-// // // //                                   mb: 1,
-// // // //                                   borderRadius: 1,
-// // // //                                   bgcolor: "grey.100",
-// // // //                                   "&:hover": { bgcolor: "grey.200" },
-// // // //                                 }}
-// // // //                               >
-// // // //                                 <ArticleIcon color="secondary" sx={{ mr: 2 }} />
-// // // //                                 <Box flexGrow={1}>
-// // // //                                   <Typography>{lesson.title}</Typography>
-// // // //                                   <Typography
-// // // //                                     variant="caption"
-// // // //                                     color="textSecondary"
-// // // //                                   >
-// // // //                                     {lesson.duration || "No duration set"}
-// // // //                                   </Typography>
-// // // //                                 </Box>
-// // // //                                 <IconButton size="small">
-// // // //                                   <EditIcon fontSize="small" />
-// // // //                                 </IconButton>
-// // // //                               </Box>
-// // // //                             ))
-// // // //                           ) : (
-// // // //                             <Typography variant="body2" color="textSecondary">
-// // // //                               No lessons in this module
-// // // //                             </Typography>
-// // // //                           )}
-// // // //                         </AccordionDetails>
-// // // //                       </Accordion>
-// // // //                     ))
-// // // //                   )}
-// // // //                 </Box>
-// // // //               </>
-// // // //             )}
-// // // //           </DialogContent>
-// // // //           <DialogActions sx={{ p: 2 }}>
-// // // //             <Button
-// // // //               variant="outlined"
-// // // //               onClick={handleCloseDialog}
-// // // //               sx={{ mr: 1 }}
-// // // //             >
-// // // //               Close
-// // // //             </Button>
-// // // //             <Button
-// // // //               variant="contained"
-// // // //               onClick={() => {
-// // // //                 handleCloseDialog();
-// // // //                 navigate(
-// // // //                   `/instructor/courses/edit/${
-// // // //                     selectedCourse._id || selectedCourse.id
-// // // //                   }`
-// // // //                 );
-// // // //               }}
-// // // //             >
-// // // //               Edit Course
-// // // //             </Button>
-// // // //           </DialogActions>
-// // // //         </Dialog>
+// // // //       {/* This will be populated with real data from your API */}
+// // // //       <Paper sx={{ p: 4, textAlign: "center", borderRadius: 3 }}>
+// // // //         <BookIcon sx={{ fontSize: 64, color: "primary.main", mb: 2 }} />
+// // // //         <Typography variant="h6" gutterBottom>
+// // // //           Your courses will appear here
+// // // //         </Typography>
+// // // //         <Typography variant="body2" color="textSecondary" mb={3}>
+// // // //           Start by creating your first course to see it listed here
+// // // //         </Typography>
+// // // //         <Button
+// // // //           variant="outlined"
+// // // //           startIcon={<AddIcon />}
+// // // //           onClick={handleCreateCourse}
+// // // //           sx={{ borderRadius: 2 }}
+// // // //         >
+// // // //           Create Your First Course
+// // // //         </Button>
+// // // //       </Paper>
+// // // //     </Box>
+// // // //   );
 
-// // // //         <CreateAssignmentDialog
-// // // //           open={assignmentDialogOpen}
-// // // //           onClose={() => setAssignmentDialogOpen(false)}
-// // // //           onAssignmentCreated={(assignment) => {
-// // // //             setRecentlyCreatedAssignment(assignment);
-// // // //             setSnackbarOpen(true);
-// // // //           }}
-// // // //         />
+// // // //   // Fixed Assignments View
+// // // //   const AssignmentsView = () => (
+// // // //     <Box>
+// // // //       <Box
+// // // //         display="flex"
+// // // //         justifyContent="space-between"
+// // // //         alignItems="center"
+// // // //         mb={4}
+// // // //       >
+// // // //         <Box>
+// // // //           <Typography variant="h4" gutterBottom fontWeight="bold">
+// // // //             Assignments
+// // // //           </Typography>
+// // // //           <Typography variant="body1" color="textSecondary">
+// // // //             Create and manage course assignments
+// // // //           </Typography>
+// // // //         </Box>
+// // // //         <Button
+// // // //           variant="contained"
+// // // //           startIcon={<AssignmentIcon />}
+// // // //           sx={{ borderRadius: 2, px: 3 }}
+// // // //         >
+// // // //           Create Assignment
+// // // //         </Button>
+// // // //       </Box>
 
-// // // //         <Snackbar
-// // // //           open={snackbarOpen}
-// // // //           autoHideDuration={6000}
-// // // //           onClose={() => setSnackbarOpen(false)}
-// // // //           message="Assignment created successfully!"
-// // // //           action={
-// // // //             <Button
-// // // //               color="secondary"
-// // // //               size="small"
-// // // //               onClick={() => {
-// // // //                 navigate(`/assignments/${recentlyCreatedAssignment?.id}`);
-// // // //                 setSnackbarOpen(false);
-// // // //               }}
-// // // //               startIcon={<VisibilityIcon />}
-// // // //             >
-// // // //               View
-// // // //             </Button>
-// // // //           }
-// // // //         />
-// // // //       </MainContent>
-// // // //     </DashboardContainer>
+// // // //       {/* Render the AssignmentsList component */}
+// // // //       <AssignmentsList />
+// // // //     </Box>
+// // // //   );
+
+// // // //   const VisualizationView = () => (
+// // // //     <Box>
+// // // //       <StudentEnrollmentDashboardd />
+// // // //     </Box>
+// // // //   );
+
+// // // //   // Updated QuizzesView to render your QuizPage component
+// // // //   const QuizzesView = () => (
+// // // //     <Box>
+// // // //       <QuizPage />
+// // // //     </Box>
+// // // //   );
+
+// // // //   // Settings View - Now using your imported Settings component
+// // // //   const SettingsView = () => (
+// // // //     <Box>
+// // // //       <Settings />
+// // // //     </Box>
+// // // //   );
+
+// // // //   // Render the appropriate view based on currentView state
+// // // //   const renderView = () => {
+// // // //     switch (currentView) {
+// // // //       case "dashboard":
+// // // //         return (
+// // // //           <InstructorDashboardView
+// // // //             onCreateCourse={handleCreateCourse}
+// // // //             onEditCourse={handleEditCourse}
+// // // //           />
+// // // //         );
+// // // //       case "my-courses":
+// // // //         return <MyCoursesView />;
+// // // //       case "create-course":
+// // // //         return (
+// // // //           <CourseForm
+// // // //             course={editingCourse}
+// // // //             onBack={handleBackToDashboard}
+// // // //             onSuccess={handleBackToDashboard}
+// // // //           />
+// // // //         );
+// // // //       case "enrollment-stats":
+// // // //         return <StudentEnrollmentDashboardd />;
+// // // //       case "assignments":
+// // // //         return <AssignmentsView />;
+// // // //       case "visualization":
+// // // //         return <VisualizationView />;
+// // // //       case "quizzes":
+// // // //         return <QuizzesView />;
+// // // //       case "settings":
+// // // //         return <SettingsView />;
+// // // //       default:
+// // // //         return (
+// // // //           <InstructorDashboardView
+// // // //             onCreateCourse={handleCreateCourse}
+// // // //             onEditCourse={handleEditCourse}
+// // // //           />
+// // // //         );
+// // // //     }
+// // // //   };
+
+// // // //   return (
+// // // //     <Box sx={{ display: "flex", minHeight: "100vh" }}>
+// // // //       <CssBaseline />
+// // // //       <Header />
+// // // //       <InstructorSidebar
+// // // //         mobileOpen={mobileOpen}
+// // // //         handleDrawerToggle={handleDrawerToggle}
+// // // //         collapsed={collapsed}
+// // // //         setCollapsed={setCollapsed}
+// // // //         isMobile={isMobile}
+// // // //         currentView={currentView}
+// // // //         onViewChange={handleViewChange}
+// // // //       />
+
+// // // //       <Box
+// // // //         component="main"
+// // // //         sx={{
+// // // //           flexGrow: 1,
+// // // //           p: 5,
+// // // //           pt: 13,
+// // // //           width: {
+// // // //             sm: `calc(100% - ${collapsed ? collapsedWidth : drawerWidth}px)`,
+// // // //           },
+// // // //           backgroundColor: theme.palette.background.default,
+// // // //           minHeight: "100vh",
+// // // //         }}
+// // // //       >
+// // // //         {renderView()}
+// // // //       </Box>
+// // // //     </Box>
 // // // //   );
 // // // // };
 
@@ -1093,1323 +907,1623 @@
 // // // import React, { useState, useEffect } from "react";
 // // // import {
 // // //   Box,
+// // //   CssBaseline,
+// // //   useTheme,
+// // //   useMediaQuery,
 // // //   Typography,
 // // //   Paper,
 // // //   Grid,
-// // //   styled,
+// // //   Card,
+// // //   CardContent,
+// // //   Button,
+// // //   Chip,
 // // //   Avatar,
-// // //   Divider,
 // // //   List,
 // // //   ListItem,
-// // //   ListItemIcon,
 // // //   ListItemText,
-// // //   Button,
+// // //   ListItemIcon,
+// // //   Divider,
 // // //   CircularProgress,
-// // //   Dialog,
-// // //   DialogTitle,
-// // //   DialogContent,
-// // //   DialogActions,
-// // //   IconButton,
-// // //   Accordion,
-// // //   AccordionSummary,
-// // //   AccordionDetails,
-// // //   Tooltip,
-// // //   Chip,
-// // //   Snackbar,
-// // //   InputAdornment,
-// // //   TextField,
-// // //   Stepper,
-// // //   Step,
-// // //   StepLabel,
-// // //   FormControl,
-// // //   InputLabel,
-// // //   Select,
-// // //   MenuItem,
 // // // } from "@mui/material";
 // // // import {
-// // //   Dashboard as DashboardIcon,
-// // //   School as CoursesIcon,
-// // //   People as StudentsIcon,
-// // //   BarChart as AnalyticsIcon,
-// // //   Message as MessagesIcon,
-// // //   Settings as SettingsIcon,
+// // //   Assignment as AssignmentIcon,
+// // //   Quiz as QuizIcon,
+// // //   BarChart as BarChartIcon,
+// // //   People as PeopleIcon,
+// // //   Visibility as VisibilityIcon,
+// // //   TrendingUp as TrendingUpIcon,
 // // //   School as SchoolIcon,
-// // //   VideoLibrary as VideoLibraryIcon,
-// // //   Article as ArticleIcon,
+// // //   CheckCircle as CheckCircleIcon,
 // // //   Add as AddIcon,
-// // //   Search as SearchIcon,
+// // //   Book as BookIcon,
 // // //   Edit as EditIcon,
 // // //   Delete as DeleteIcon,
-// // //   Close as CloseIcon,
-// // //   ExpandMore as ExpandMoreIcon,
-// // //   Visibility as VisibilityIcon,
-// // //   Schedule as ScheduleIcon,
-// // //   CheckCircle as CheckCircleIcon,
-// // //   Assignment as AssignmentIcon,
 // // // } from "@mui/icons-material";
-// // // import { useTheme } from "@mui/material/styles";
-// // // import PeopleIcon from "@mui/icons-material/People";
-// // // import { Link, useLocation, useNavigate } from "react-router-dom";
+
+// // // import InstructorSidebar from "../../components/common/Sidebar/InstructorSidebar";
+// // // import Header from "../../components/common/Sidebar/AdminHeader";
+// // // import InstructorDashboardView from "./InstructorDashboardView";
+// // // import CourseForm from "../instructor/CourseForm";
+// // // import AssignmentsList from "../../components/assignmnet/AssignmentsList";
+// // // import StudentEnrollmentDashboardd from "../instructor/EnrollmentStats";
+// // // import QuizPage from "../../components/assignmnet/QuizPage";
+// // // import Settings from "../../components/common/Settings/Settings";
 // // // import InstructorService from "../../services/instructorService";
-// // // import StatusChip from "../../pages/instructor/StatusChip";
-// // // import StudentEnrollmentDashboard from "../../pages/instructor/EnrollmentStats";
+// // // import { useNavigate } from "react-router-dom";
 
-// // // const DashboardContainer = styled(Box)(() => ({
-// // //   display: "flex",
-// // //   minHeight: "100vh",
-// // //   backgroundColor: "#f5f7fa",
-// // // }));
+// // // const InstructorDashboard = () => {
+// // //   const theme = useTheme();
+// // //   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+// // //   const drawerWidth = 240;
+// // //   const collapsedWidth = 72;
+// // //   const navigate = useNavigate();
 
-// // // const Sidebar = styled(Paper)(({ theme }) => ({
-// // //   width: 280,
-// // //   padding: theme.spacing(2),
-// // //   borderRadius: 0,
-// // //   boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-// // //   backgroundColor: "#ffffff",
-// // // }));
-
-// // // const MainContent = styled(Box)(({ theme }) => ({
-// // //   flexGrow: 1,
-// // //   padding: theme.spacing(4),
-// // //   backgroundColor: "#f5f7fa",
-// // // }));
-
-// // // const StatsCard = styled(Paper)(({ theme }) => ({
-// // //   padding: theme.spacing(3),
-// // //   borderRadius: 12,
-// // //   boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-// // //   transition: "transform 0.3s ease, box-shadow 0.3s ease",
-// // //   "&:hover": {
-// // //     transform: "translateY(-5px)",
-// // //     boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-// // //   },
-// // // }));
-
-// // // const CourseCard = styled(Paper)(({ theme }) => ({
-// // //   padding: theme.spacing(3),
-// // //   marginBottom: theme.spacing(2),
-// // //   borderRadius: 12,
-// // //   boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-// // //   transition: "transform 0.3s ease, box-shadow 0.3s ease",
-// // //   "&:hover": {
-// // //     transform: "translateY(-5px)",
-// // //     boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-// // //   },
-// // // }));
-
-// // // const steps = [
-// // //   "Select Course",
-// // //   "Select Module",
-// // //   "Select Lesson",
-// // //   "Assignment Details",
-// // // ];
-
-// // // const CreateAssignmentDialog = ({ open, onClose, onAssignmentCreated }) => {
-// // //   const [activeStep, setActiveStep] = useState(0);
+// // //   // State for managing the current view
+// // //   const [currentView, setCurrentView] = useState("dashboard");
+// // //   const [mobileOpen, setMobileOpen] = useState(false);
+// // //   const [collapsed, setCollapsed] = useState(false);
+// // //   const [editingCourse, setEditingCourse] = useState(null);
 // // //   const [courses, setCourses] = useState([]);
-// // //   const [loading, setLoading] = useState(false);
-// // //   const [error, setError] = useState(null);
-
-// // //   const [selectedCourse, setSelectedCourse] = useState("");
-// // //   const [selectedModule, setSelectedModule] = useState("");
-// // //   const [selectedLesson, setSelectedLesson] = useState("");
-// // //   const [assignmentData, setAssignmentData] = useState({
-// // //     title: "",
-// // //     description: "",
-// // //     max_score: 100,
-// // //   });
+// // //   const [loading, setLoading] = useState(true);
 
 // // //   useEffect(() => {
-// // //     if (open) {
-// // //       fetchCoursesHierarchy();
+// // //     if (currentView === "my-courses") {
+// // //       fetchCourses();
 // // //     }
-// // //   }, [open]);
+// // //   }, [currentView]);
 
-// // //   const fetchCoursesHierarchy = async () => {
-// // //     setLoading(true);
-// // //     setError(null);
+// // //   const fetchCourses = async () => {
 // // //     try {
-// // //       const data = await InstructorService.getCoursesHierarchy();
-// // //       const filteredCourses = data.filter(
-// // //         (course) =>
-// // //           Array.isArray(course.modules) &&
-// // //           course.modules.length > 0 &&
-// // //           course.modules.some(
-// // //             (module) =>
-// // //               Array.isArray(module.lessons) && module.lessons.length > 0
-// // //           )
-// // //       );
-// // //       setCourses(filteredCourses);
-// // //     } catch (err) {
-// // //       setError("Failed to load courses. Please try again.");
-// // //       console.error(err);
+// // //       setLoading(true);
+// // //       const data = await InstructorService.getInstructorCourses();
+// // //       setCourses(data);
+// // //     } catch (error) {
+// // //       console.error("Failed to fetch courses:", error);
 // // //     } finally {
 // // //       setLoading(false);
 // // //     }
 // // //   };
 
-// // //   const handleNext = () => {
-// // //     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-// // //   };
-
-// // //   const handleBack = () => {
-// // //     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-// // //   };
-
-// // //   const handleCourseChange = (event) => {
-// // //     const selected = event.target.value;
-// // //     console.log("Course selected:", selected);
-// // //     setSelectedCourse(selected);
-// // //     setSelectedModule("");
-// // //     setSelectedLesson("");
-// // //   };
-
-// // //   const handleModuleChange = (event) => {
-// // //     const selected = String(event.target.value);
-// // //     console.log("Module selected:", selected);
-// // //     setSelectedModule(event.target.value);
-// // //     setSelectedLesson("");
-// // //   };
-
-// // //   const handleLessonChange = (event) => {
-// // //     setSelectedLesson(String(event.target.value));
-// // //   };
-
-// // //   const handleInputChange = (event) => {
-// // //     const { name, value } = event.target;
-// // //     setAssignmentData((prev) => ({
-// // //       ...prev,
-// // //       [name]: value,
-// // //     }));
-// // //   };
-
-// // //   const handleSubmit = async () => {
-// // //     try {
-// // //       const assignment = {
-// // //         lesson_id: selectedLesson,
-// // //         ...assignmentData,
-// // //       };
-// // //       const createdAssignment = await InstructorService.createAssignment(
-// // //         assignment
-// // //       );
-// // //       onAssignmentCreated(createdAssignment);
-// // //       onClose();
-// // //     } catch (err) {
-// // //       setError("Failed to create assignment. Please try again.");
-// // //       console.error(err);
+// // //   const handleDrawerToggle = () => {
+// // //     if (isMobile) {
+// // //       setMobileOpen(!mobileOpen);
+// // //     } else {
+// // //       setCollapsed(!collapsed);
 // // //     }
 // // //   };
 
-// // //   useEffect(() => {
-// // //     const fetchCoursesWithModulesAndLessons = async () => {
-// // //       try {
-// // //         const fetchedCourses = await InstructorService.getInstructorCourses();
-// // //         const coursesWithModules = await Promise.all(
-// // //           fetchedCourses.map(async (course) => {
-// // //             const modules = await InstructorService.getModulesByCourse(
-// // //               course.id
-// // //             );
-// // //             const modulesWithLessons = await Promise.all(
-// // //               modules.map(async (mod) => {
-// // //                 const lessons = await InstructorService.getLessonsByModule(
-// // //                   mod.id
-// // //                 );
-// // //                 return { ...mod, lessons };
-// // //               })
-// // //             );
-// // //             return { ...course, modules: modulesWithLessons };
-// // //           })
-// // //         );
-// // //         setCourses(coursesWithModules);
-// // //       } catch (err) {
-// // //         console.error("Error loading courses with modules and lessons", err);
-// // //       }
-// // //     };
-// // //     fetchCoursesWithModulesAndLessons();
-// // //   }, []);
-
-// // //   const getSelectedCourse = () =>
-// // //     courses.find((c) => String(c.id || c._id) === String(selectedCourse));
-
-// // //   const getSelectedModule = () => {
-// // //     const course = getSelectedCourse();
-// // //     if (!course) return null;
-// // //     return course.modules.find(
-// // //       (m) => String(m.id || m._id) === String(selectedModule)
-// // //     );
-// // //   };
-
-// // //   return (
-// // //     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-// // //       <DialogTitle>
-// // //         <Box display="flex" justifyContent="space-between" alignItems="center">
-// // //           <Typography variant="h6">Create New Assignment</Typography>
-// // //           <IconButton onClick={onClose}>
-// // //             <CloseIcon />
-// // //           </IconButton>
-// // //         </Box>
-// // //         <Stepper activeStep={activeStep} alternativeLabel sx={{ mt: 2 }}>
-// // //           {steps.map((label) => (
-// // //             <Step key={label}>
-// // //               <StepLabel>{label}</StepLabel>
-// // //             </Step>
-// // //           ))}
-// // //         </Stepper>
-// // //       </DialogTitle>
-
-// // //       <DialogContent dividers>
-// // //         {loading ? (
-// // //           <Box display="flex" justifyContent="center" p={4}>
-// // //             <CircularProgress />
-// // //           </Box>
-// // //         ) : error ? (
-// // //           <Paper elevation={0} sx={{ p: 2, bgcolor: "error.light" }}>
-// // //             <Typography color="error">{error}</Typography>
-// // //             <Button onClick={fetchCoursesHierarchy} sx={{ mt: 1 }}>
-// // //               Retry
-// // //             </Button>
-// // //           </Paper>
-// // //         ) : (
-// // //           <>
-// // //             {activeStep === 0 && (
-// // //               <Box sx={{ mt: 2 }}>
-// // //                 <FormControl fullWidth>
-// // //                   <InputLabel>Select Course</InputLabel>
-// // //                   <Select
-// // //                     value={selectedCourse}
-// // //                     onChange={handleCourseChange}
-// // //                     label="Select Course"
-// // //                   >
-// // //                     {courses.map((course) => (
-// // //                       <MenuItem
-// // //                         key={course._id}
-// // //                         value={String(course.id || course._id)}
-// // //                       >
-// // //                         {course.title}
-// // //                       </MenuItem>
-// // //                     ))}
-// // //                   </Select>
-// // //                 </FormControl>
-// // //                 {selectedCourse && (
-// // //                   <Box sx={{ mt: 2 }}>
-// // //                     <Typography variant="subtitle2">
-// // //                       Course Description:
-// // //                     </Typography>
-// // //                     <Typography variant="body2" color="text.secondary">
-// // //                       {getSelectedCourse()?.description ||
-// // //                         "No description available"}
-// // //                     </Typography>
-// // //                   </Box>
-// // //                 )}
-// // //               </Box>
-// // //             )}
-
-// // //             {activeStep === 1 && (
-// // //               <Box sx={{ mt: 2 }}>
-// // //                 <FormControl fullWidth>
-// // //                   <InputLabel>Select Module</InputLabel>
-// // //                   <Select
-// // //                     value={selectedModule}
-// // //                     onChange={handleModuleChange}
-// // //                     label="Select Module"
-// // //                     disabled={!selectedCourse}
-// // //                   >
-// // //                     <MenuItem value="">
-// // //                       <em>Select Module</em>
-// // //                     </MenuItem>
-// // //                     {getSelectedCourse()?.modules?.map((module) => (
-// // //                       <MenuItem
-// // //                         key={module.id || module._id}
-// // //                         value={String(module.id || module._id)}
-// // //                       >
-// // //                         {module.title}
-// // //                       </MenuItem>
-// // //                     ))}
-// // //                   </Select>
-// // //                 </FormControl>
-
-// // //                 {selectedModule && (
-// // //                   <Box sx={{ mt: 2 }}>
-// // //                     <Typography variant="subtitle2">Module Details:</Typography>
-// // //                     <Typography variant="body2" color="text.secondary">
-// // //                       {getSelectedModule()?.description ||
-// // //                         "No description available"}
-// // //                     </Typography>
-// // //                   </Box>
-// // //                 )}
-// // //               </Box>
-// // //             )}
-
-// // //             {activeStep === 2 && (
-// // //               <Box sx={{ mt: 2 }}>
-// // //                 <FormControl fullWidth>
-// // //                   <InputLabel>Select Lesson</InputLabel>
-// // //                   <Select
-// // //                     value={selectedLesson}
-// // //                     onChange={handleLessonChange}
-// // //                     label="Select Lesson"
-// // //                     disabled={!selectedModule}
-// // //                   >
-// // //                     {getSelectedModule()?.lessons?.map((lesson) => (
-// // //                       <MenuItem
-// // //                         key={lesson.id || lesson._id}
-// // //                         value={String(lesson.id || lesson._id)}
-// // //                       >
-// // //                         {lesson.title}
-// // //                       </MenuItem>
-// // //                     ))}
-// // //                   </Select>
-// // //                 </FormControl>
-// // //                 {selectedLesson && (
-// // //                   <Box sx={{ mt: 2 }}>
-// // //                     <Typography variant="subtitle2">Lesson Details:</Typography>
-// // //                     <Typography variant="body2" color="text.secondary">
-// // //                       {getSelectedModule()?.lessons?.find(
-// // //                         (l) => String(l.id || l._id) === selectedLesson
-// // //                       )?.description || "No description available"}
-// // //                     </Typography>
-// // //                   </Box>
-// // //                 )}
-// // //               </Box>
-// // //             )}
-
-// // //             {activeStep === 3 && (
-// // //               <Box sx={{ mt: 2 }}>
-// // //                 <TextField
-// // //                   fullWidth
-// // //                   label="Assignment Title"
-// // //                   name="title"
-// // //                   value={assignmentData.title}
-// // //                   onChange={handleInputChange}
-// // //                   sx={{ mb: 2 }}
-// // //                   InputProps={{
-// // //                     startAdornment: (
-// // //                       <InputAdornment position="start">
-// // //                         <AssignmentIcon color="action" />
-// // //                       </InputAdornment>
-// // //                     ),
-// // //                   }}
-// // //                 />
-// // //                 <TextField
-// // //                   fullWidth
-// // //                   label="Description"
-// // //                   name="description"
-// // //                   value={assignmentData.description}
-// // //                   onChange={handleInputChange}
-// // //                   multiline
-// // //                   rows={4}
-// // //                   sx={{ mb: 2 }}
-// // //                 />
-// // //                 <TextField
-// // //                   fullWidth
-// // //                   label="Maximum Score"
-// // //                   name="max_score"
-// // //                   type="number"
-// // //                   value={assignmentData.max_score}
-// // //                   onChange={handleInputChange}
-// // //                   inputProps={{ min: 1 }}
-// // //                   InputProps={{
-// // //                     startAdornment: (
-// // //                       <InputAdornment position="start">
-// // //                         <CheckCircleIcon color="action" />
-// // //                       </InputAdornment>
-// // //                     ),
-// // //                   }}
-// // //                 />
-// // //               </Box>
-// // //             )}
-// // //           </>
-// // //         )}
-// // //       </DialogContent>
-
-// // //       <DialogActions>
-// // //         <Button onClick={handleBack} disabled={activeStep === 0}>
-// // //           Back
-// // //         </Button>
-// // //         {activeStep === steps.length - 1 ? (
-// // //           <Button
-// // //             onClick={handleSubmit}
-// // //             variant="contained"
-// // //             disabled={!selectedLesson || !assignmentData.title}
-// // //             startIcon={<AssignmentIcon />}
-// // //           >
-// // //             Create Assignment
-// // //           </Button>
-// // //         ) : (
-// // //           <Button
-// // //             onClick={handleNext}
-// // //             variant="contained"
-// // //             disabled={
-// // //               activeStep === 0 &&
-// // //               (!selectedCourse || getSelectedCourse()?.modules?.length === 0)
-// // //             }
-// // //           >
-// // //             Next
-// // //           </Button>
-// // //         )}
-// // //       </DialogActions>
-// // //     </Dialog>
-// // //   );
-// // // };
-
-// // // const InstructorDashboard = () => {
-// // //   const theme = useTheme();
-// // //   const location = useLocation();
-// // //   const navigate = useNavigate();
-// // //   const [courses, setCourses] = useState([]);
-// // //   const [loading, setLoading] = useState(true);
-// // //   const [searchTerm, setSearchTerm] = useState("");
-// // //   const [stats, setStats] = useState({
-// // //     totalCourses: 0,
-// // //     approvedCourses: 0,
-// // //     pendingCourses: 0,
-// // //     rejectedCourses: 0,
-// // //   });
-// // //   const [selectedCourse, setSelectedCourse] = useState(null);
-// // //   const [modules, setModules] = useState([]);
-// // //   const [dialogOpen, setDialogOpen] = useState(false);
-// // //   const [loadingDetails, setLoadingDetails] = useState(false);
-// // //   const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
-// // //   const [snackbarOpen, setSnackbarOpen] = useState(false);
-// // //   const [recentlyCreatedAssignment, setRecentlyCreatedAssignment] =
-// // //     useState(null);
-
-// // //   useEffect(() => {
-// // //     const fetchCourses = async () => {
-// // //       try {
-// // //         setLoading(true);
-// // //         const data = await InstructorService.getCourses();
-// // //         setCourses(data);
-
-// // //         const approved = data.filter((c) => c.status === "approved").length;
-// // //         const pending = data.filter((c) => c.status === "pending").length;
-// // //         const rejected = data.filter((c) => c.status === "rejected").length;
-
-// // //         setStats({
-// // //           totalCourses: data.length,
-// // //           approvedCourses: approved,
-// // //           pendingCourses: pending,
-// // //           rejectedCourses: rejected,
-// // //         });
-// // //       } catch (error) {
-// // //         console.error("Failed to fetch courses:", error);
-// // //       } finally {
-// // //         setLoading(false);
-// // //       }
-// // //     };
-
-// // //     fetchCourses();
-// // //   }, []);
-
-// // //   const handleDeleteCourse = async (courseId) => {
-// // //     try {
-// // //       await InstructorService.deleteCourse(courseId);
-// // //       setCourses(courses.filter((course) => course.id !== courseId));
-// // //       setStats((prev) => ({
-// // //         ...prev,
-// // //         totalCourses: prev.totalCourses - 1,
-// // //         approvedCourses: courses.filter(
-// // //           (c) => c.id !== courseId && c.status === "approved"
-// // //         ).length,
-// // //         pendingCourses: courses.filter(
-// // //           (c) => c.id !== courseId && c.status === "pending"
-// // //         ).length,
-// // //         rejectedCourses: courses.filter(
-// // //           (c) => c.id !== courseId && c.status === "rejected"
-// // //         ).length,
-// // //       }));
-// // //     } catch (error) {
-// // //       console.error("Failed to delete course:", error);
+// // //   const handleViewChange = (view) => {
+// // //     setCurrentView(view);
+// // //     if (isMobile) {
+// // //       setMobileOpen(false);
 // // //     }
 // // //   };
 
-// // //   const handleViewCourse = async (course) => {
-// // //     try {
-// // //       setSelectedCourse(course);
-// // //       setLoadingDetails(true);
-// // //       setDialogOpen(true);
+// // //   const handleCreateCourse = () => {
+// // //     setEditingCourse(null);
+// // //     setCurrentView("create-course");
+// // //   };
 
-// // //       const modulesData = await InstructorService.getModulesByCourse(
-// // //         course._id || course.id
-// // //       );
-// // //       setModules(modulesData);
-// // //     } catch (error) {
-// // //       console.error("Error fetching course modules:", error);
-// // //     } finally {
-// // //       setLoadingDetails(false);
+// // //   const handleEditCourse = (course) => {
+// // //     setEditingCourse(course);
+// // //     setCurrentView("create-course");
+// // //   };
+
+// // //   const handleBackToDashboard = () => {
+// // //     setEditingCourse(null);
+// // //     setCurrentView("dashboard");
+// // //   };
+
+// // //   const handleViewCourseDetails = (courseId) => {
+// // //     navigate(`/instructor/courses/${courseId}`);
+// // //   };
+
+// // //   const getStatusColor = (status) => {
+// // //     switch (status.toLowerCase()) {
+// // //       case "published":
+// // //         return "success";
+// // //       case "draft":
+// // //         return "warning";
+// // //       case "pending":
+// // //         return "info";
+// // //       case "rejected":
+// // //         return "error";
+// // //       default:
+// // //         return "default";
 // // //     }
 // // //   };
 
-// // //   const handleCloseDialog = () => {
-// // //     setDialogOpen(false);
-// // //     setSelectedCourse(null);
-// // //     setModules([]);
-// // //   };
-
-// // //   const filteredCourses = courses.filter(
-// // //     (course) =>
-// // //       course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-// // //       course.description.toLowerCase().includes(searchTerm.toLowerCase())
-// // //   );
-
-// // //   return (
-// // //     <DashboardContainer>
-// // //       <Sidebar>
-// // //         <Box display="flex" alignItems="center" mb={4}>
-// // //           <Avatar
-// // //             alt="Instructor"
-// // //             src="/path/to/instructor-avatar.jpg"
-// // //             sx={{ width: 56, height: 56, mr: 2 }}
-// // //           />
-// // //           <Box>
-// // //             <Typography variant="h6">Dr. Sarah Johnson</Typography>
-// // //             <Typography variant="body2" color="textSecondary">
-// // //               Computer Science Instructor
-// // //             </Typography>
-// // //           </Box>
-// // //         </Box>
-// // //         <Divider sx={{ my: 2 }} />
-// // //         <List>
-// // //           {[
-// // //             {
-// // //               text: "Dashboard",
-// // //               icon: <DashboardIcon />,
-// // //               path: "/instructor/dashboard",
-// // //             },
-// // //             {
-// // //               text: "My Courses",
-// // //               icon: <CoursesIcon />,
-// // //               path: "/instructor/courses",
-// // //             },
-// // //             {
-// // //               text: "Create Course",
-// // //               icon: <AddIcon />,
-// // //               path: "/instructor/courses/create",
-// // //             },
-// // //             {
-// // //               text: "Enrollment Stats",
-// // //               icon: <PeopleIcon />,
-// // //               path: "/instructor/enrollments",
-// // //             },
-// // //             {
-// // //               text: "Assignment",
-// // //               icon: <StudentsIcon />,
-// // //               path: "/instructor/assignments",
-// // //             },
-// // //             {
-// // //               text: "Visualization",
-// // //               icon: <AnalyticsIcon />,
-// // //               path: "/instructor/Visualization",
-// // //             },
-// // //             {
-// // //               text: "Messages",
-// // //               icon: <MessagesIcon />,
-// // //               path: "/instructor/messages",
-// // //             },
-// // //             {
-// // //               text: "Quizzez",
-// // //               icon: <SettingsIcon />,
-// // //               path: "/instructor/Quizze",
-// // //             },
-// // //           ].map((item) => (
-// // //             <ListItem
-// // //               button
-// // //               key={item.text}
-// // //               component={Link}
-// // //               to={item.path}
-// // //               sx={{
-// // //                 borderRadius: 2,
-// // //                 mb: 0.5,
-// // //                 backgroundColor:
-// // //                   location.pathname === item.path
-// // //                     ? theme.palette.action.selected
-// // //                     : "transparent",
-// // //                 "&:hover": {
-// // //                   backgroundColor: theme.palette.action.hover,
-// // //                 },
-// // //               }}
-// // //             >
-// // //               <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
-// // //               <ListItemText primary={item.text} />
-// // //             </ListItem>
-// // //           ))}
-// // //         </List>
-// // //       </Sidebar>
-
-// // //       <MainContent>
-// // //         <Box mb={4}>
-// // //           <Typography variant="h4" fontWeight="bold" gutterBottom>
-// // //             Instructor Dashboard
+// // //   const MyCoursesView = () => (
+// // //     <Box>
+// // //       <Box
+// // //         display="flex"
+// // //         justifyContent="space-between"
+// // //         alignItems="center"
+// // //         mb={4}
+// // //       >
+// // //         <Box>
+// // //           <Typography variant="h4" gutterBottom fontWeight="bold">
+// // //             My Courses
 // // //           </Typography>
 // // //           <Typography variant="body1" color="textSecondary">
-// // //             Welcome back! Here's what's happening with your courses today.
+// // //             Manage all your published and draft courses
 // // //           </Typography>
 // // //         </Box>
+// // //         <Button
+// // //           variant="contained"
+// // //           startIcon={<AddIcon />}
+// // //           onClick={handleCreateCourse}
+// // //           sx={{ borderRadius: 2, px: 3 }}
+// // //         >
+// // //           Create New Course
+// // //         </Button>
+// // //       </Box>
 
-// // //         <Grid container spacing={3} mb={4}>
-// // //           {[
-// // //             {
-// // //               title: "Total Courses",
-// // //               value: stats.totalCourses,
-// // //               icon: <CoursesIcon fontSize="large" color="primary" />,
-// // //             },
-// // //             {
-// // //               title: "Approved Courses",
-// // //               value: stats.approvedCourses,
-// // //               icon: <SchoolIcon fontSize="large" color="success" />,
-// // //             },
-// // //             {
-// // //               title: "Pending Approval",
-// // //               value: stats.pendingCourses,
-// // //               icon: <ScheduleIcon fontSize="large" color="warning" />,
-// // //             },
-// // //             {
-// // //               title: "Rejected Courses",
-// // //               value: stats.rejectedCourses,
-// // //               icon: <DeleteIcon fontSize="large" color="error" />,
-// // //             },
-// // //           ].map((stat) => (
-// // //             <Grid item xs={12} sm={6} md={3} key={stat.title}>
-// // //               <StatsCard>
-// // //                 <Box
-// // //                   display="flex"
-// // //                   justifyContent="space-between"
-// // //                   alignItems="center"
-// // //                 >
-// // //                   <Box>
+// // //       {loading ? (
+// // //         <Box display="flex" justifyContent="center" my={4}>
+// // //           <CircularProgress />
+// // //         </Box>
+// // //       ) : courses.length === 0 ? (
+// // //         <Paper sx={{ p: 4, textAlign: "center", borderRadius: 3 }}>
+// // //           <BookIcon sx={{ fontSize: 64, color: "primary.main", mb: 2 }} />
+// // //           <Typography variant="h6" gutterBottom>
+// // //             You don't have any courses yet
+// // //           </Typography>
+// // //           <Typography variant="body2" color="textSecondary" mb={3}>
+// // //             Start by creating your first course to see it listed here
+// // //           </Typography>
+// // //           <Button
+// // //             variant="outlined"
+// // //             startIcon={<AddIcon />}
+// // //             onClick={handleCreateCourse}
+// // //             sx={{ borderRadius: 2 }}
+// // //           >
+// // //             Create Your First Course
+// // //           </Button>
+// // //         </Paper>
+// // //       ) : (
+// // //         <Grid container spacing={3}>
+// // //           {courses.map((course) => (
+// // //             <Grid item xs={12} sm={6} md={4} key={course._id}>
+// // //               <Card
+// // //                 sx={{
+// // //                   height: "100%",
+// // //                   display: "flex",
+// // //                   flexDirection: "column",
+// // //                   transition: "transform 0.3s, box-shadow 0.3s",
+// // //                   "&:hover": {
+// // //                     transform: "translateY(-5px)",
+// // //                     boxShadow: 3,
+// // //                   },
+// // //                 }}
+// // //               >
+// // //                 {course.thumbnail_url && (
+// // //                   <Box
+// // //                     sx={{
+// // //                       height: 140,
+// // //                       backgroundImage: `url(${course.thumbnail_url})`,
+// // //                       backgroundSize: "cover",
+// // //                       backgroundPosition: "center",
+// // //                     }}
+// // //                   />
+// // //                 )}
+// // //                 <CardContent sx={{ flexGrow: 1 }}>
+// // //                   <Box
+// // //                     display="flex"
+// // //                     justifyContent="space-between"
+// // //                     alignItems="flex-start"
+// // //                     mb={1}
+// // //                   >
 // // //                     <Typography
-// // //                       variant="body2"
-// // //                       color="textSecondary"
-// // //                       gutterBottom
+// // //                       variant="h6"
+// // //                       component="h3"
+// // //                       sx={{ fontWeight: 600 }}
 // // //                     >
-// // //                       {stat.title}
+// // //                       {course.title}
 // // //                     </Typography>
-// // //                     <Typography variant="h4" fontWeight="bold">
-// // //                       {stat.value}
+// // //                     <Chip
+// // //                       label={course.status}
+// // //                       size="small"
+// // //                       color={getStatusColor(course.status)}
+// // //                       sx={{ textTransform: "capitalize" }}
+// // //                     />
+// // //                   </Box>
+// // //                   <Typography
+// // //                     variant="body2"
+// // //                     color="text.secondary"
+// // //                     sx={{ mb: 2 }}
+// // //                   >
+// // //                     {course.description.length > 100
+// // //                       ? `${course.description.substring(0, 100)}...`
+// // //                       : course.description}
+// // //                   </Typography>
+// // //                   <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
+// // //                     <PeopleIcon
+// // //                       fontSize="small"
+// // //                       sx={{ mr: 1, color: "text.secondary" }}
+// // //                     />
+// // //                     <Typography variant="body2" color="text.secondary">
+// // //                       {course.enrolledStudents || 0} students
 // // //                     </Typography>
 // // //                   </Box>
-// // //                   <Box>{stat.icon}</Box>
+// // //                 </CardContent>
+// // //                 <Box
+// // //                   sx={{
+// // //                     p: 2,
+// // //                     display: "flex",
+// // //                     justifyContent: "space-between",
+// // //                   }}
+// // //                 >
+// // //                   <Button
+// // //                     size="small"
+// // //                     onClick={() => handleViewCourseDetails(course._id)}
+// // //                     sx={{ mr: 1 }}
+// // //                   >
+// // //                     View Details
+// // //                   </Button>
+// // //                   <Box>
+// // //                     <IconButton
+// // //                       size="small"
+// // //                       onClick={() => handleEditCourse(course)}
+// // //                       sx={{ mr: 1 }}
+// // //                     >
+// // //                       <EditIcon fontSize="small" />
+// // //                     </IconButton>
+// // //                   </Box>
 // // //                 </Box>
-// // //               </StatsCard>
+// // //               </Card>
 // // //             </Grid>
 // // //           ))}
 // // //         </Grid>
+// // //       )}
+// // //     </Box>
+// // //   );
 
-// // //         <Box mb={4}>
-// // //           <Box
-// // //             display="flex"
-// // //             justifyContent="space-between"
-// // //             alignItems="center"
-// // //             mb={2}
-// // //           >
-// // //             <Typography variant="h5" fontWeight="bold">
-// // //               My Courses
-// // //             </Typography>
-// // //             <Box display="flex" gap={2}>
-// // //               <Button
-// // //                 component={Link}
-// // //                 to="/instructor/courses/create"
-// // //                 variant="contained"
-// // //                 startIcon={<AddIcon />}
-// // //               >
-// // //                 Create Course
-// // //               </Button>
-// // //               <Button
-// // //                 variant="outlined"
-// // //                 startIcon={<AssignmentIcon />}
-// // //                 onClick={() => setAssignmentDialogOpen(true)}
-// // //               >
-// // //                 Create Assignment
-// // //               </Button>
-// // //             </Box>
-// // //           </Box>
-
-// // //           <Box mb={3}>
-// // //             <Paper
-// // //               component="form"
-// // //               sx={{
-// // //                 p: "2px 4px",
-// // //                 display: "flex",
-// // //                 alignItems: "center",
-// // //                 width: "100%",
-// // //                 maxWidth: 500,
-// // //               }}
-// // //             >
-// // //               <SearchIcon sx={{ ml: 1, mr: 1 }} />
-// // //               <input
-// // //                 type="text"
-// // //                 placeholder="Search courses..."
-// // //                 style={{
-// // //                   border: "none",
-// // //                   outline: "none",
-// // //                   flex: 1,
-// // //                   padding: "8px",
-// // //                   fontSize: "14px",
-// // //                 }}
-// // //                 value={searchTerm}
-// // //                 onChange={(e) => setSearchTerm(e.target.value)}
-// // //               />
-// // //             </Paper>
-// // //           </Box>
-
-// // //           {loading ? (
-// // //             <Box display="flex" justifyContent="center" my={4}>
-// // //               <CircularProgress />
-// // //             </Box>
-// // //           ) : filteredCourses.length === 0 ? (
-// // //             <Paper sx={{ p: 3, textAlign: "center" }}>
-// // //               <Typography variant="body1">
-// // //                 {searchTerm
-// // //                   ? "No courses match your search"
-// // //                   : "You haven't created any courses yet"}
-// // //               </Typography>
-// // //               <Button
-// // //                 component={Link}
-// // //                 to="/instructor/courses/create"
-// // //                 variant="contained"
-// // //                 startIcon={<AddIcon />}
-// // //                 sx={{ mt: 2 }}
-// // //               >
-// // //                 Create Your First Course
-// // //               </Button>
-// // //             </Paper>
-// // //           ) : (
-// // //             <Grid container spacing={3}>
-// // //               {filteredCourses.map((course) => (
-// // //                 <Grid item xs={12} md={6} lg={4} key={course._id || course.id}>
-// // //                   <CourseCard>
-// // //                     <Box
-// // //                       display="flex"
-// // //                       justifyContent="space-between"
-// // //                       alignItems="flex-start"
-// // //                       mb={2}
-// // //                     >
-// // //                       <Typography variant="h6" fontWeight="bold">
-// // //                         {course.title}
-// // //                       </Typography>
-// // //                       <StatusChip status={course.status} />
-// // //                     </Box>
-// // //                     <Typography variant="body2" color="textSecondary" mb={2}>
-// // //                       {course.description.length > 100
-// // //                         ? `${course.description.substring(0, 100)}...`
-// // //                         : course.description}
-// // //                     </Typography>
-// // //                     <Box display="flex" justifyContent="flex-end" mb={2}>
-// // //                       <Tooltip title="View Course">
-// // //                         <IconButton
-// // //                           size="small"
-// // //                           onClick={() => handleViewCourse(course)}
-// // //                           sx={{ mr: 1 }}
-// // //                         >
-// // //                           <VisibilityIcon fontSize="small" />
-// // //                         </IconButton>
-// // //                       </Tooltip>
-// // //                       <Tooltip title="Edit Course">
-// // //                         <IconButton
-// // //                           size="small"
-// // //                           onClick={() =>
-// // //                             navigate(
-// // //                               `/instructor/courses/edit/${
-// // //                                 course._id || course.id
-// // //                               }`
-// // //                             )
-// // //                           }
-// // //                           sx={{ mr: 1 }}
-// // //                         >
-// // //                           <EditIcon fontSize="small" />
-// // //                         </IconButton>
-// // //                       </Tooltip>
-// // //                       <Tooltip title="Delete Course">
-// // //                         <IconButton
-// // //                           size="small"
-// // //                           color="error"
-// // //                           onClick={() => handleDeleteCourse(course.id)}
-// // //                         >
-// // //                           <DeleteIcon fontSize="small" />
-// // //                         </IconButton>
-// // //                       </Tooltip>
-// // //                     </Box>
-// // //                   </CourseCard>
-// // //                 </Grid>
-// // //               ))}
-// // //             </Grid>
-// // //           )}
+// // //   const AssignmentsView = () => (
+// // //     <Box>
+// // //       <Box
+// // //         display="flex"
+// // //         justifyContent="space-between"
+// // //         alignItems="center"
+// // //         mb={4}
+// // //       >
+// // //         <Box>
+// // //           <Typography variant="h4" gutterBottom fontWeight="bold">
+// // //             Assignments
+// // //           </Typography>
+// // //           <Typography variant="body1" color="textSecondary">
+// // //             Create and manage course assignments
+// // //           </Typography>
 // // //         </Box>
-
-// // //         <Dialog
-// // //           open={dialogOpen}
-// // //           onClose={handleCloseDialog}
-// // //           fullWidth
-// // //           maxWidth="md"
-// // //           PaperProps={{
-// // //             sx: {
-// // //               borderRadius: 3,
-// // //               minHeight: "70vh",
-// // //             },
-// // //           }}
+// // //         <Button
+// // //           variant="contained"
+// // //           startIcon={<AssignmentIcon />}
+// // //           sx={{ borderRadius: 2, px: 3 }}
 // // //         >
-// // //           <DialogTitle>
-// // //             <Box
-// // //               display="flex"
-// // //               justifyContent="space-between"
-// // //               alignItems="center"
-// // //             >
-// // //               <Typography variant="h5" fontWeight="bold">
-// // //                 {selectedCourse?.title || "Course Details"}
-// // //               </Typography>
-// // //               <IconButton onClick={handleCloseDialog}>
-// // //                 <CloseIcon />
-// // //               </IconButton>
-// // //             </Box>
-// // //             <Box mt={1} display="flex" alignItems="center">
-// // //               <StatusChip status={selectedCourse?.status} />
-// // //             </Box>
-// // //           </DialogTitle>
-// // //           <DialogContent dividers>
-// // //             {loadingDetails ? (
-// // //               <Box
-// // //                 display="flex"
-// // //                 justifyContent="center"
-// // //                 alignItems="center"
-// // //                 minHeight="200px"
-// // //               >
-// // //                 <CircularProgress />
-// // //               </Box>
-// // //             ) : (
-// // //               <>
-// // //                 <Box mb={3}>
-// // //                   <Typography variant="body1" paragraph>
-// // //                     {selectedCourse?.description || "No description available"}
-// // //                   </Typography>
-// // //                 </Box>
+// // //           Create Assignment
+// // //         </Button>
+// // //       </Box>
+// // //       <AssignmentsList />
+// // //     </Box>
+// // //   );
 
-// // //                 <Box mb={2}>
-// // //                   <Typography variant="h6" fontWeight="bold" gutterBottom>
-// // //                     Course Content
-// // //                   </Typography>
-// // //                   {modules.length === 0 ? (
-// // //                     <Paper sx={{ p: 2, textAlign: "center" }}>
-// // //                       <Typography variant="body2" color="textSecondary">
-// // //                         No modules added yet
-// // //                       </Typography>
-// // //                       <Button
-// // //                         variant="outlined"
-// // //                         startIcon={<AddIcon />}
-// // //                         sx={{ mt: 2 }}
-// // //                         onClick={() => {
-// // //                           handleCloseDialog();
-// // //                           navigate(
-// // //                             `/instructor/courses/edit/${
-// // //                               selectedCourse._id || selectedCourse.id
-// // //                             }`
-// // //                           );
-// // //                         }}
-// // //                       >
-// // //                         Add Modules
-// // //                       </Button>
-// // //                     </Paper>
-// // //                   ) : (
-// // //                     modules.map((module) => (
-// // //                       <Accordion
-// // //                         key={module._id || module.id}
-// // //                         sx={{ mb: 1, borderRadius: 2 }}
-// // //                       >
-// // //                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-// // //                           <Box display="flex" alignItems="center" width="100%">
-// // //                             <VideoLibraryIcon color="primary" sx={{ mr: 2 }} />
-// // //                             <Box flexGrow={1}>
-// // //                               <Typography fontWeight="bold">
-// // //                                 {module.title}
-// // //                               </Typography>
-// // //                             </Box>
-// // //                           </Box>
-// // //                         </AccordionSummary>
-// // //                         <AccordionDetails>
-// // //                           {module.lessons?.length > 0 ? (
-// // //                             module.lessons.map((lesson) => (
-// // //                               <Box
-// // //                                 key={lesson._id || lesson.id}
-// // //                                 sx={{
-// // //                                   display: "flex",
-// // //                                   alignItems: "center",
-// // //                                   p: 1.5,
-// // //                                   mb: 1,
-// // //                                   borderRadius: 1,
-// // //                                   bgcolor: "grey.100",
-// // //                                   "&:hover": { bgcolor: "grey.200" },
-// // //                                 }}
-// // //                               >
-// // //                                 <ArticleIcon color="secondary" sx={{ mr: 2 }} />
-// // //                                 <Box flexGrow={1}>
-// // //                                   <Typography>{lesson.title}</Typography>
-// // //                                   <Typography
-// // //                                     variant="caption"
-// // //                                     color="textSecondary"
-// // //                                   >
-// // //                                     {lesson.duration || "No duration set"}
-// // //                                   </Typography>
-// // //                                 </Box>
-// // //                                 <IconButton size="small">
-// // //                                   <EditIcon fontSize="small" />
-// // //                                 </IconButton>
-// // //                               </Box>
-// // //                             ))
-// // //                           ) : (
-// // //                             <Typography variant="body2" color="textSecondary">
-// // //                               No lessons in this module
-// // //                             </Typography>
-// // //                           )}
-// // //                         </AccordionDetails>
-// // //                       </Accordion>
-// // //                     ))
-// // //                   )}
-// // //                 </Box>
-// // //               </>
-// // //             )}
-// // //           </DialogContent>
-// // //           <DialogActions sx={{ p: 2 }}>
-// // //             <Button
-// // //               variant="outlined"
-// // //               onClick={handleCloseDialog}
-// // //               sx={{ mr: 1 }}
-// // //             >
-// // //               Close
-// // //             </Button>
-// // //             <Button
-// // //               variant="contained"
-// // //               onClick={() => {
-// // //                 handleCloseDialog();
-// // //                 navigate(
-// // //                   `/instructor/courses/edit/${
-// // //                     selectedCourse._id || selectedCourse.id
-// // //                   }`
-// // //                 );
-// // //               }}
-// // //             >
-// // //               Edit Course
-// // //             </Button>
-// // //           </DialogActions>
-// // //         </Dialog>
+// // //   const VisualizationView = () => (
+// // //     <Box>
+// // //       <StudentEnrollmentDashboardd />
+// // //     </Box>
+// // //   );
 
-// // //         <CreateAssignmentDialog
-// // //           open={assignmentDialogOpen}
-// // //           onClose={() => setAssignmentDialogOpen(false)}
-// // //           onAssignmentCreated={(assignment) => {
-// // //             setRecentlyCreatedAssignment(assignment);
-// // //             setSnackbarOpen(true);
-// // //           }}
-// // //         />
+// // //   const QuizzesView = () => (
+// // //     <Box>
+// // //       <QuizPage />
+// // //     </Box>
+// // //   );
 
-// // //         <Snackbar
-// // //           open={snackbarOpen}
-// // //           autoHideDuration={6000}
-// // //           onClose={() => setSnackbarOpen(false)}
-// // //           message="Assignment created successfully!"
-// // //           action={
-// // //             <Button
-// // //               color="secondary"
-// // //               size="small"
-// // //               onClick={() => {
-// // //                 navigate(`/assignments/${recentlyCreatedAssignment?.id}`);
-// // //                 setSnackbarOpen(false);
-// // //               }}
-// // //               startIcon={<VisibilityIcon />}
-// // //             >
-// // //               View
-// // //             </Button>
-// // //           }
-// // //         />
-// // //       </MainContent>
-// // //     </DashboardContainer>
+// // //   const SettingsView = () => (
+// // //     <Box>
+// // //       <Settings />
+// // //     </Box>
+// // //   );
+
+// // //   const renderView = () => {
+// // //     switch (currentView) {
+// // //       case "dashboard":
+// // //         return (
+// // //           <InstructorDashboardView
+// // //             onCreateCourse={handleCreateCourse}
+// // //             onEditCourse={handleEditCourse}
+// // //           />
+// // //         );
+// // //       case "my-courses":
+// // //         return <MyCoursesView />;
+// // //       case "create-course":
+// // //         return (
+// // //           <CourseForm
+// // //             course={editingCourse}
+// // //             onBack={handleBackToDashboard}
+// // //             onSuccess={handleBackToDashboard}
+// // //           />
+// // //         );
+// // //       case "enrollment-stats":
+// // //         return <StudentEnrollmentDashboardd />;
+// // //       case "assignments":
+// // //         return <AssignmentsView />;
+// // //       case "visualization":
+// // //         return <VisualizationView />;
+// // //       case "quizzes":
+// // //         return <QuizzesView />;
+// // //       case "settings":
+// // //         return <SettingsView />;
+// // //       default:
+// // //         return (
+// // //           <InstructorDashboardView
+// // //             onCreateCourse={handleCreateCourse}
+// // //             onEditCourse={handleEditCourse}
+// // //           />
+// // //         );
+// // //     }
+// // //   };
+
+// // //   return (
+// // //     <Box sx={{ display: "flex", minHeight: "100vh" }}>
+// // //       <CssBaseline />
+// // //       <Header />
+// // //       <InstructorSidebar
+// // //         mobileOpen={mobileOpen}
+// // //         handleDrawerToggle={handleDrawerToggle}
+// // //         collapsed={collapsed}
+// // //         setCollapsed={setCollapsed}
+// // //         isMobile={isMobile}
+// // //         currentView={currentView}
+// // //         onViewChange={handleViewChange}
+// // //       />
+
+// // //       <Box
+// // //         component="main"
+// // //         sx={{
+// // //           flexGrow: 1,
+// // //           p: 5,
+// // //           pt: 13,
+// // //           width: {
+// // //             sm: `calc(100% - ${collapsed ? collapsedWidth : drawerWidth}px)`,
+// // //           },
+// // //           backgroundColor: theme.palette.background.default,
+// // //           minHeight: "100vh",
+// // //         }}
+// // //       >
+// // //         {renderView()}
+// // //       </Box>
+// // //     </Box>
 // // //   );
 // // // };
+
+// // // export default InstructorDashboard;
+// // import React, { useState, useEffect } from "react";
+// // import {
+// //   Box,
+// //   CssBaseline,
+// //   useTheme,
+// //   useMediaQuery,
+// //   Typography,
+// //   Paper,
+// //   Grid,
+// //   Card,
+// //   CardContent,
+// //   Button,
+// //   Chip,
+// //   Avatar,
+// //   CircularProgress,
+// // } from "@mui/material";
+// // import {
+// //   Assignment as AssignmentIcon,
+// //   Quiz as QuizIcon,
+// //   BarChart as BarChartIcon,
+// //   People as PeopleIcon,
+// //   Add as AddIcon,
+// //   Book as BookIcon,
+// //   Edit as EditIcon,
+// //   Refresh as RefreshIcon,
+// // } from "@mui/icons-material";
+
+// // import InstructorSidebar from "../../components/common/Sidebar/InstructorSidebar";
+// // import Header from "../../components/common/Header/Header";
+// // import InstructorDashboardView from "./InstructorDashboardView";
+// // import CourseForm from "../instructor/CourseForm";
+// // import AssignmentsList from "../../components/assignmnet/AssignmentsList";
+// // import StudentEnrollmentDashboardd from "../instructor/EnrollmentStats";
+// // import QuizPage from "../../components/assignmnet/QuizPage";
+// // import Settings from "../../components/common/Settings/Settings";
+// // import InstructorService from "../../services/instructorService";
+// // import { useNavigate } from "react-router-dom";
+// // import VisualizationView from "../instructor/StudantEnrollment";
+
+// // const InstructorDashboard = () => {
+// //   const theme = useTheme();
+// //   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+// //   const drawerWidth = 240;
+// //   const collapsedWidth = 72;
+// //   const navigate = useNavigate();
+
+// //   // State management
+// //   const [currentView, setCurrentView] = useState("dashboard");
+// //   const [mobileOpen, setMobileOpen] = useState(false);
+// //   const [collapsed, setCollapsed] = useState(false);
+// //   const [editingCourse, setEditingCourse] = useState(null);
+// //   const [courses, setCourses] = useState([]);
+// //   const [loading, setLoading] = useState(true);
+// //   const [error, setError] = useState(null);
+
+// //   // Fetch courses when My Courses view is selected
+// //   useEffect(() => {
+// //     if (currentView === "my-courses") {
+// //       fetchCourses();
+// //     }
+// //   }, [currentView]);
+
+// //   const fetchCourses = async () => {
+// //     try {
+// //       setLoading(true);
+// //       setError(null);
+// //       const response = await InstructorService.getInstructorCourses();
+
+// //       // Handle different response structures
+// //       const coursesData = Array.isArray(response)
+// //         ? response
+// //         : Array.isArray(response?.data)
+// //         ? response.data
+// //         : [];
+
+// //       setCourses(coursesData);
+// //     } catch (err) {
+// //       console.error("Failed to fetch courses:", err);
+// //       setError("Failed to load courses. Please try again.");
+// //       setCourses([]);
+// //     } finally {
+// //       setLoading(false);
+// //     }
+// //   };
+
+// //   const handleDrawerToggle = () => {
+// //     if (isMobile) {
+// //       setMobileOpen(!mobileOpen);
+// //     } else {
+// //       setCollapsed(!collapsed);
+// //     }
+// //   };
+
+// //   const handleViewChange = (view) => {
+// //     setCurrentView(view);
+// //     if (isMobile) {
+// //       setMobileOpen(false);
+// //     }
+// //   };
+
+// //   const handleCreateCourse = () => {
+// //     setEditingCourse(null);
+// //     setCurrentView("create-course");
+// //   };
+
+// //   const handleEditCourse = (course) => {
+// //     setEditingCourse(course);
+// //     setCurrentView("create-course");
+// //   };
+
+// //   const handleBackToDashboard = () => {
+// //     setEditingCourse(null);
+// //     setCurrentView("dashboard");
+// //   };
+
+// //   const handleViewCourseDetails = (courseId) => {
+// //     navigate(`/instructor/courses/${courseId}`);
+// //   };
+
+// //   const getStatusColor = (status) => {
+// //     if (!status) return "default";
+// //     switch (status.toLowerCase()) {
+// //       case "published":
+// //         return "success";
+// //       case "draft":
+// //         return "warning";
+// //       case "pending":
+// //         return "info";
+// //       case "rejected":
+// //         return "error";
+// //       default:
+// //         return "default";
+// //     }
+// //   };
+
+// //   const MyCoursesView = () => (
+// //     <Box>
+// //       <Box
+// //         display="flex"
+// //         justifyContent="space-between"
+// //         alignItems="center"
+// //         mb={4}
+// //       >
+// //         <Box>
+// //           <Typography variant="h4" gutterBottom fontWeight="bold">
+// //             My Courses
+// //           </Typography>
+// //           <Typography variant="body1" color="textSecondary">
+// //             Manage all your published and draft courses
+// //           </Typography>
+// //         </Box>
+// //         <Button
+// //           variant="contained"
+// //           startIcon={<AddIcon />}
+// //           onClick={handleCreateCourse}
+// //           sx={{ borderRadius: 2, px: 3 }}
+// //         >
+// //           Create New Course
+// //         </Button>
+// //       </Box>
+
+// //       {error ? (
+// //         <Paper sx={{ p: 4, textAlign: "center", borderRadius: 3 }}>
+// //           <BookIcon sx={{ fontSize: 64, color: "error.main", mb: 2 }} />
+// //           <Typography variant="h6" gutterBottom color="error">
+// //             {error}
+// //           </Typography>
+// //           <Button
+// //             variant="outlined"
+// //             startIcon={<RefreshIcon />}
+// //             onClick={fetchCourses}
+// //             sx={{ borderRadius: 2 }}
+// //           >
+// //             Retry
+// //           </Button>
+// //         </Paper>
+// //       ) : loading ? (
+// //         <Box display="flex" justifyContent="center" my={4}>
+// //           <CircularProgress size={60} />
+// //         </Box>
+// //       ) : courses.length === 0 ? (
+// //         <Paper sx={{ p: 4, textAlign: "center", borderRadius: 3 }}>
+// //           <BookIcon sx={{ fontSize: 64, color: "primary.main", mb: 2 }} />
+// //           <Typography variant="h6" gutterBottom>
+// //             You don't have any courses yet
+// //           </Typography>
+// //           <Typography variant="body2" color="textSecondary" mb={3}>
+// //             Start by creating your first course to see it listed here
+// //           </Typography>
+// //           <Button
+// //             variant="outlined"
+// //             startIcon={<AddIcon />}
+// //             onClick={handleCreateCourse}
+// //             sx={{ borderRadius: 2 }}
+// //           >
+// //             Create Your First Course
+// //           </Button>
+// //         </Paper>
+// //       ) : (
+// //         <Grid container spacing={3}>
+// //           {courses.map((course) => (
+// //             <Grid item xs={12} sm={6} md={4} key={course._id || course.id}>
+// //               <Card
+// //                 sx={{
+// //                   height: "100%",
+// //                   display: "flex",
+// //                   flexDirection: "column",
+// //                   transition: "transform 0.3s, box-shadow 0.3s",
+// //                   "&:hover": {
+// //                     transform: "translateY(-5px)",
+// //                     boxShadow: 3,
+// //                   },
+// //                 }}
+// //               >
+// //                 {course.thumbnail_url && (
+// //                   <Box
+// //                     sx={{
+// //                       height: 160,
+// //                       backgroundImage: `url(${course.thumbnail_url})`,
+// //                       backgroundSize: "cover",
+// //                       backgroundPosition: "center",
+// //                     }}
+// //                   />
+// //                 )}
+// //                 <CardContent sx={{ flexGrow: 1 }}>
+// //                   <Box
+// //                     display="flex"
+// //                     justifyContent="space-between"
+// //                     alignItems="flex-start"
+// //                   >
+// //                     <Typography
+// //                       variant="h6"
+// //                       component="h3"
+// //                       sx={{ fontWeight: 600, mb: 1 }}
+// //                     >
+// //                       {course.title || "Untitled Course"}
+// //                     </Typography>
+// //                     <Chip
+// //                       label={course.status || "unknown"}
+// //                       size="small"
+// //                       color={getStatusColor(course.status)}
+// //                       sx={{ textTransform: "capitalize" }}
+// //                     />
+// //                   </Box>
+// //                   <Typography
+// //                     variant="body2"
+// //                     color="text.secondary"
+// //                     sx={{ mb: 2 }}
+// //                   >
+// //                     {course.description
+// //                       ? course.description.length > 100
+// //                         ? `${course.description.substring(0, 100)}...`
+// //                         : course.description
+// //                       : "No description available"}
+// //                   </Typography>
+// //                   <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
+// //                     <PeopleIcon
+// //                       fontSize="small"
+// //                       sx={{ mr: 1, color: "text.secondary" }}
+// //                     />
+// //                     <Typography variant="body2" color="text.secondary">
+// //                       {course.enrolledStudents || 0} students
+// //                     </Typography>
+// //                   </Box>
+// //                 </CardContent>
+// //                 <Box
+// //                   sx={{
+// //                     p: 2,
+// //                     display: "flex",
+// //                     justifyContent: "space-between",
+// //                   }}
+// //                 >
+// //                   <Button
+// //                     size="small"
+// //                     onClick={() =>
+// //                       handleViewCourseDetails(course._id || course.id)
+// //                     }
+// //                   >
+// //                     View Details
+// //                   </Button>
+// //                   <Button
+// //                     size="small"
+// //                     startIcon={<EditIcon fontSize="small" />}
+// //                     onClick={() => handleEditCourse(course)}
+// //                   >
+// //                     Edit
+// //                   </Button>
+// //                 </Box>
+// //               </Card>
+// //             </Grid>
+// //           ))}
+// //         </Grid>
+// //       )}
+// //     </Box>
+// //   );
+
+// //   const AssignmentsView = () => (
+// //     <Box>
+// //       <Box
+// //         display="flex"
+// //         justifyContent="space-between"
+// //         alignItems="center"
+// //         mb={4}
+// //       >
+// //         <Box>
+// //           <Typography variant="h4" gutterBottom fontWeight="bold">
+// //             Assignments
+// //           </Typography>
+// //           <Typography variant="body1" color="textSecondary">
+// //             Create and manage course assignments
+// //           </Typography>
+// //         </Box>
+// //         <Button
+// //           variant="contained"
+// //           startIcon={<AssignmentIcon />}
+// //           sx={{ borderRadius: 2, px: 3 }}
+// //         >
+// //           Create Assignment
+// //         </Button>
+// //       </Box>
+// //       <AssignmentsList />
+// //     </Box>
+// //   );
+
+// //   // const VisualizationView = () => (
+// //   //   <Box>
+// //   //     <VisualizationView />
+// //   //   </Box>
+// //   // );
+
+// //   const QuizzesView = () => (
+// //     <Box>
+// //       <QuizPage />
+// //     </Box>
+// //   );
+
+// //   const SettingsView = () => (
+// //     <Box>
+// //       <Settings />
+// //     </Box>
+// //   );
+
+// //   const renderView = () => {
+// //     switch (currentView) {
+// //       case "dashboard":
+// //         return (
+// //           <InstructorDashboardView
+// //             onCreateCourse={handleCreateCourse}
+// //             onEditCourse={handleEditCourse}
+// //           />
+// //         );
+// //       case "my-courses":
+// //         return <MyCoursesView />;
+// //       case "create-course":
+// //         return (
+// //           <CourseForm
+// //             course={editingCourse}
+// //             onBack={handleBackToDashboard}
+// //             onSuccess={() => {
+// //               handleBackToDashboard();
+// //               fetchCourses();
+// //             }}
+// //           />
+// //         );
+// //       case "enrollment-stats":
+// //         return <StudentEnrollmentDashboardd />;
+// //       case "assignments":
+// //         return <AssignmentsView />;
+// //       case "visualization":
+// //         return <VisualizationView />;
+// //       case "quizzes":
+// //         return <QuizzesView />;
+// //       case "settings":
+// //         return <SettingsView />;
+// //       default:
+// //         return (
+// //           <InstructorDashboardView
+// //             onCreateCourse={handleCreateCourse}
+// //             onEditCourse={handleEditCourse}
+// //           />
+// //         );
+// //     }
+// //   };
+
+// //   return (
+// //     <Box sx={{ display: "flex", minHeight: "100vh" }}>
+// //       <CssBaseline />
+// //       <Header />
+// //       <InstructorSidebar
+// //         mobileOpen={mobileOpen}
+// //         handleDrawerToggle={handleDrawerToggle}
+// //         collapsed={collapsed}
+// //         setCollapsed={setCollapsed}
+// //         isMobile={isMobile}
+// //         currentView={currentView}
+// //         onViewChange={handleViewChange}
+// //       />
+
+// //       <Box
+// //         component="main"
+// //         sx={{
+// //           flexGrow: 1,
+// //           p: 5,
+// //           pt: 13,
+// //           width: {
+// //             sm: `calc(100% - ${collapsed ? collapsedWidth : drawerWidth}px)`,
+// //           },
+// //           backgroundColor: theme.palette.background.default,
+// //           minHeight: "100vh",
+// //         }}
+// //       >
+// //         {renderView()}
+// //       </Box>
+// //     </Box>
+// //   );
+// // };
+
+// // export default InstructorDashboard;
+// import React, { useState, useEffect } from "react";
+// import {
+//   Box,
+//   CssBaseline,
+//   useTheme,
+//   useMediaQuery,
+//   Typography,
+//   Paper,
+//   Grid,
+//   Card,
+//   CardContent,
+//   Button,
+//   Chip,
+//   Avatar,
+//   CircularProgress,
+//   Container,
+//   Stack,
+//   IconButton,
+//   Fade,
+//   Grow,
+// } from "@mui/material";
+// import {
+//   Assignment as AssignmentIcon,
+//   Quiz as QuizIcon,
+//   BarChart as BarChartIcon,
+//   People as PeopleIcon,
+//   Add as AddIcon,
+//   Book as BookIcon,
+//   Edit as EditIcon,
+//   Refresh as RefreshIcon,
+//   TrendingUp as TrendingUpIcon,
+//   School as SchoolIcon,
+//   Timeline as TimelineIcon,
+//   AutoStories as AutoStoriesIcon,
+// } from "@mui/icons-material";
+
+// import InstructorSidebar from "../../components/common/Sidebar/InstructorSidebar";
+// import Header from "../../components/common/Header/Header";
+// import InstructorDashboardView from "./InstructorDashboardView";
+// import CourseForm from "../instructor/CourseForm";
+// import AssignmentsList from "../../components/assignmnet/AssignmentsList";
+// import StudentEnrollmentDashboardd from "../instructor/EnrollmentStats";
+// import QuizPage from "../../components/assignmnet/QuizPage";
+// import Settings from "../../components/common/Settings/Settings";
+// import InstructorService from "../../services/instructorService";
+// import { useNavigate } from "react-router-dom";
+// import VisualizationView from "../instructor/StudantEnrollment";
+
+// const InstructorDashboard = () => {
+//   const theme = useTheme();
+//   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+//   const drawerWidth = 240;
+//   const collapsedWidth = 72;
+//   const navigate = useNavigate();
+
+//   // State management
+//   const [currentView, setCurrentView] = useState("dashboard");
+//   const [mobileOpen, setMobileOpen] = useState(false);
+//   const [collapsed, setCollapsed] = useState(false);
+//   const [editingCourse, setEditingCourse] = useState(null);
+//   const [courses, setCourses] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+
+//   // Fetch courses when My Courses view is selected
+//   useEffect(() => {
+//     if (currentView === "my-courses") {
+//       fetchCourses();
+//     }
+//   }, [currentView]);
+
+//   const fetchCourses = async () => {
+//     try {
+//       setLoading(true);
+//       setError(null);
+//       const response = await InstructorService.getInstructorCourses();
+
+//       // Handle different response structures
+//       const coursesData = Array.isArray(response)
+//         ? response
+//         : Array.isArray(response?.data)
+//         ? response.data
+//         : [];
+
+//       setCourses(coursesData);
+//     } catch (err) {
+//       console.error("Failed to fetch courses:", err);
+//       setError("Failed to load courses. Please try again.");
+//       setCourses([]);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleDrawerToggle = () => {
+//     if (isMobile) {
+//       setMobileOpen(!mobileOpen);
+//     } else {
+//       setCollapsed(!collapsed);
+//     }
+//   };
+
+//   const handleViewChange = (view) => {
+//     setCurrentView(view);
+//     if (isMobile) {
+//       setMobileOpen(false);
+//     }
+//   };
+
+//   const handleCreateCourse = () => {
+//     setEditingCourse(null);
+//     setCurrentView("create-course");
+//   };
+
+//   const handleEditCourse = (course) => {
+//     setEditingCourse(course);
+//     setCurrentView("create-course");
+//   };
+
+//   const handleBackToDashboard = () => {
+//     setEditingCourse(null);
+//     setCurrentView("dashboard");
+//   };
+
+//   const handleViewCourseDetails = (courseId) => {
+//     navigate(`/instructor/courses/${courseId}`);
+//   };
+
+//   const getStatusColor = (status) => {
+//     if (!status) return "default";
+//     switch (status.toLowerCase()) {
+//       case "published":
+//         return "success";
+//       case "draft":
+//         return "warning";
+//       case "pending":
+//         return "info";
+//       case "rejected":
+//         return "error";
+//       default:
+//         return "default";
+//     }
+//   };
+
+//   // Modern styled components
+//   const ModernCard = ({ children, delay = 0, ...props }) => (
+//     <Grow in timeout={1000 + delay}>
+//       <Card
+//         sx={{
+//           background:
+//             "linear-gradient(145deg, #ffffff 0%, #f8faff 40%, #f1f5ff 100%)",
+//           borderRadius: 4,
+//           border: "1px solid rgba(99, 102, 241, 0.12)",
+//           boxShadow:
+//             "0 8px 32px rgba(99, 102, 241, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8)",
+//           backdropFilter: "blur(20px)",
+//           position: "relative",
+//           overflow: "hidden",
+//           transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+//           "&::before": {
+//             content: '""',
+//             position: "absolute",
+//             top: 0,
+//             left: 0,
+//             right: 0,
+//             bottom: 0,
+//             background:
+//               "radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.03) 0%, transparent 50%)",
+//             pointerEvents: "none",
+//           },
+//           "&:hover": {
+//             transform: "translateY(-8px) scale(1.02)",
+//             boxShadow:
+//               "0 16px 48px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
+//             borderColor: "rgba(99, 102, 241, 0.2)",
+//           },
+//           ...props.sx,
+//         }}
+//         {...props}
+//       >
+//         {children}
+//       </Card>
+//     </Grow>
+//   );
+
+//   const ModernButton = ({
+//     children,
+//     variant = "contained",
+//     color = "#6366f1",
+//     ...props
+//   }) => (
+//     <Button
+//       variant={variant}
+//       sx={{
+//         borderRadius: 3,
+//         px: 4,
+//         py: 1.5,
+//         fontWeight: 700,
+//         textTransform: "none",
+//         fontSize: "0.95rem",
+//         letterSpacing: "0.02em",
+//         background:
+//           variant === "contained"
+//             ? `linear-gradient(135deg, ${color} 0%, ${color}dd 100%)`
+//             : "transparent",
+//         border: variant === "outlined" ? `2px solid ${color}40` : "none",
+//         color: variant === "contained" ? "#ffffff" : color,
+//         boxShadow:
+//           variant === "contained"
+//             ? `0 4px 16px ${color}30, inset 0 1px 0 rgba(255, 255, 255, 0.2)`
+//             : "none",
+//         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+//         "&:hover": {
+//           transform: "translateY(-2px) scale(1.05)",
+//           boxShadow:
+//             variant === "contained"
+//               ? `0 8px 24px ${color}40, inset 0 1px 0 rgba(255, 255, 255, 0.3)`
+//               : `0 4px 16px ${color}20`,
+//           background:
+//             variant === "contained"
+//               ? `linear-gradient(135deg, ${color}ee 0%, ${color}cc 100%)`
+//               : `${color}08`,
+//         },
+//         ...props.sx,
+//       }}
+//       {...props}
+//     >
+//       {children}
+//     </Button>
+//   );
+
+//   const MyCoursesView = () => (
+//     <Container maxWidth="xl" sx={{ py: 4 }}>
+//       <Fade in timeout={800}>
+//         <Box>
+//           {/* Header Section */}
+//           <Box
+//             sx={{
+//               background:
+//                 "linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 50%, rgba(236, 72, 153, 0.05) 100%)",
+//               borderRadius: 4,
+//               p: 4,
+//               mb: 4,
+//               border: "1px solid rgba(99, 102, 241, 0.12)",
+//               position: "relative",
+//               overflow: "hidden",
+//               "&::before": {
+//                 content: '""',
+//                 position: "absolute",
+//                 top: 0,
+//                 left: 0,
+//                 right: 0,
+//                 height: "4px",
+//                 background:
+//                   "linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)",
+//               },
+//             }}
+//           >
+//             <Stack
+//               direction={{ xs: "column", md: "row" }}
+//               justifyContent="space-between"
+//               alignItems={{ xs: "flex-start", md: "center" }}
+//               spacing={3}
+//             >
+//               <Box>
+//                 <Typography
+//                   variant="h3"
+//                   sx={{
+//                     fontWeight: 800,
+//                     background:
+//                       "linear-gradient(135deg, #6366f1 0%, #8b5cf6 70%, #ec4899 100%)",
+//                     backgroundClip: "text",
+//                     WebkitBackgroundClip: "text",
+//                     WebkitTextFillColor: "transparent",
+//                     mb: 1,
+//                     fontSize: { xs: "2rem", md: "3rem" },
+//                   }}
+//                 >
+//                   My Courses
+//                 </Typography>
+//                 <Typography
+//                   variant="h6"
+//                   sx={{
+//                     color: "#64748b",
+//                     fontWeight: 500,
+//                     fontSize: "1.1rem",
+//                   }}
+//                 >
+//                   Manage all your published and draft courses
+//                 </Typography>
+//               </Box>
+//               <ModernButton
+//                 startIcon={<AddIcon />}
+//                 onClick={handleCreateCourse}
+//                 sx={{ minWidth: 200 }}
+//               >
+//                 Create New Course
+//               </ModernButton>
+//             </Stack>
+//           </Box>
+
+//           {/* Content Section */}
+//           {error ? (
+//             <ModernCard>
+//               <CardContent sx={{ textAlign: "center", py: 6 }}>
+//                 <BookIcon
+//                   sx={{ fontSize: 80, color: "#ef4444", mb: 3, opacity: 0.8 }}
+//                 />
+//                 <Typography
+//                   variant="h5"
+//                   gutterBottom
+//                   sx={{ color: "#ef4444", fontWeight: 700 }}
+//                 >
+//                   {error}
+//                 </Typography>
+//                 <ModernButton
+//                   variant="outlined"
+//                   startIcon={<RefreshIcon />}
+//                   onClick={fetchCourses}
+//                   color="#ef4444"
+//                   sx={{ mt: 2 }}
+//                 >
+//                   Retry
+//                 </ModernButton>
+//               </CardContent>
+//             </ModernCard>
+//           ) : loading ? (
+//             <Box display="flex" justifyContent="center" py={8}>
+//               <CircularProgress
+//                 size={80}
+//                 sx={{
+//                   color: "#6366f1",
+//                   filter: "drop-shadow(0 4px 8px rgba(99, 102, 241, 0.3))",
+//                 }}
+//               />
+//             </Box>
+//           ) : courses.length === 0 ? (
+//             <ModernCard>
+//               <CardContent sx={{ textAlign: "center", py: 8 }}>
+//                 <AutoStoriesIcon
+//                   sx={{ fontSize: 100, color: "#6366f1", mb: 3, opacity: 0.8 }}
+//                 />
+//                 <Typography
+//                   variant="h4"
+//                   gutterBottom
+//                   sx={{
+//                     fontWeight: 700,
+//                     color: "#1e293b",
+//                     mb: 2,
+//                   }}
+//                 >
+//                   No courses yet
+//                 </Typography>
+//                 <Typography
+//                   variant="h6"
+//                   sx={{
+//                     color: "#64748b",
+//                     mb: 4,
+//                     maxWidth: 500,
+//                     mx: "auto",
+//                   }}
+//                 >
+//                   Start your teaching journey by creating your first course
+//                 </Typography>
+//                 <ModernButton
+//                   startIcon={<AddIcon />}
+//                   onClick={handleCreateCourse}
+//                   sx={{ py: 2, px: 6 }}
+//                 >
+//                   Create Your First Course
+//                 </ModernButton>
+//               </CardContent>
+//             </ModernCard>
+//           ) : (
+//             <Grid container spacing={4}>
+//               {courses.map((course, index) => (
+//                 <Grid
+//                   item
+//                   size={{ xs: 12, md: 4 }}
+//                   key={course._id || course.id}
+//                 >
+//                   <ModernCard delay={index * 100}>
+//                     {course.thumbnail_url && (
+//                       <Box
+//                         sx={{
+//                           height: 200,
+//                           backgroundImage: `url(${course.thumbnail_url})`,
+//                           backgroundSize: "cover",
+//                           backgroundPosition: "center",
+//                           position: "relative",
+//                           "&::after": {
+//                             content: '""',
+//                             position: "absolute",
+//                             bottom: 0,
+//                             left: 0,
+//                             right: 0,
+//                             height: "50%",
+//                             background:
+//                               "linear-gradient(transparent, rgba(0,0,0,0.3))",
+//                           },
+//                         }}
+//                       />
+//                     )}
+//                     <CardContent sx={{ p: 3 }}>
+//                       <Stack
+//                         direction="row"
+//                         justifyContent="space-between"
+//                         alignItems="flex-start"
+//                         mb={2}
+//                       >
+//                         <Typography
+//                           variant="h5"
+//                           sx={{
+//                             fontWeight: 700,
+//                             color: "#1e293b",
+//                             lineHeight: 1.3,
+//                           }}
+//                         >
+//                           {course.title || "Untitled Course"}
+//                         </Typography>
+//                         <Chip
+//                           label={course.status || "unknown"}
+//                           size="medium"
+//                           color={getStatusColor(course.status)}
+//                           sx={{
+//                             textTransform: "capitalize",
+//                             fontWeight: 600,
+//                             borderRadius: 2,
+//                           }}
+//                         />
+//                       </Stack>
+
+//                       <Typography
+//                         variant="body1"
+//                         sx={{
+//                           color: "#64748b",
+//                           mb: 3,
+//                           lineHeight: 1.6,
+//                         }}
+//                       >
+//                         {course.description
+//                           ? course.description.length > 120
+//                             ? `${course.description.substring(0, 120)}...`
+//                             : course.description
+//                           : "No description available"}
+//                       </Typography>
+
+//                       <Stack
+//                         direction="row"
+//                         alignItems="center"
+//                         spacing={1}
+//                         mb={3}
+//                       >
+//                         <PeopleIcon sx={{ color: "#6366f1", fontSize: 20 }} />
+//                         <Typography
+//                           variant="body1"
+//                           sx={{ color: "#475569", fontWeight: 600 }}
+//                         >
+//                           {course.enrolledStudents || 0} students enrolled
+//                         </Typography>
+//                       </Stack>
+//                     </CardContent>
+
+//                     <Box sx={{ p: 3, pt: 0 }}>
+//                       <Stack direction="row" spacing={2}>
+//                         <Button
+//                           variant="outlined"
+//                           onClick={() =>
+//                             handleViewCourseDetails(course._id || course.id)
+//                           }
+//                           sx={{
+//                             flex: 1,
+//                             borderRadius: 2,
+//                             border: "2px solid rgba(99, 102, 241, 0.3)",
+//                             color: "#6366f1",
+//                             fontWeight: 600,
+//                             "&:hover": {
+//                               borderColor: "#6366f1",
+//                               background: "rgba(99, 102, 241, 0.05)",
+//                             },
+//                           }}
+//                         >
+//                           View Details
+//                         </Button>
+//                         <IconButton
+//                           onClick={() => handleEditCourse(course)}
+//                           sx={{
+//                             background:
+//                               "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+//                             color: "white",
+//                             borderRadius: 2,
+//                             p: 1.5,
+//                             "&:hover": {
+//                               background:
+//                                 "linear-gradient(135deg, #5856eb 0%, #7c3aed 100%)",
+//                               transform: "scale(1.05)",
+//                             },
+//                           }}
+//                         >
+//                           <EditIcon />
+//                         </IconButton>
+//                       </Stack>
+//                     </Box>
+//                   </ModernCard>
+//                 </Grid>
+//               ))}
+//             </Grid>
+//           )}
+//         </Box>
+//       </Fade>
+//     </Container>
+//   );
+
+//   const AssignmentsView = () => (
+//     <Container maxWidth="xl" sx={{ py: 4 }}>
+//       <Fade in timeout={800}>
+//         <Box>
+//           <Box
+//             sx={{
+//               background:
+//                 "linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(34, 197, 94, 0.05) 100%)",
+//               borderRadius: 4,
+//               p: 4,
+//               mb: 4,
+//               border: "1px solid rgba(16, 185, 129, 0.12)",
+//               position: "relative",
+//               overflow: "hidden",
+//               "&::before": {
+//                 content: '""',
+//                 position: "absolute",
+//                 top: 0,
+//                 left: 0,
+//                 right: 0,
+//                 height: "4px",
+//                 background: "linear-gradient(90deg, #10b981 0%, #22c55e 100%)",
+//               },
+//             }}
+//           >
+//             <Stack
+//               direction={{ xs: "column", md: "row" }}
+//               justifyContent="space-between"
+//               alignItems={{ xs: "flex-start", md: "center" }}
+//               spacing={3}
+//             >
+//               <Box>
+//                 <Typography
+//                   variant="h3"
+//                   sx={{
+//                     fontWeight: 800,
+//                     background:
+//                       "linear-gradient(135deg, #10b981 0%, #22c55e 100%)",
+//                     backgroundClip: "text",
+//                     WebkitBackgroundClip: "text",
+//                     WebkitTextFillColor: "transparent",
+//                     mb: 1,
+//                     fontSize: { xs: "2rem", md: "3rem" },
+//                   }}
+//                 >
+//                   Assignments
+//                 </Typography>
+//                 <Typography
+//                   variant="h6"
+//                   sx={{
+//                     color: "#64748b",
+//                     fontWeight: 500,
+//                     fontSize: "1.1rem",
+//                   }}
+//                 >
+//                   Create and manage course assignments
+//                 </Typography>
+//               </Box>
+//               <ModernButton
+//                 startIcon={<AssignmentIcon />}
+//                 color="#10b981"
+//                 sx={{ minWidth: 200 }}
+//               >
+//                 Create Assignment
+//               </ModernButton>
+//             </Stack>
+//           </Box>
+//           <ModernCard>
+//             <AssignmentsList />
+//           </ModernCard>
+//         </Box>
+//       </Fade>
+//     </Container>
+//   );
+
+//   const QuizzesView = () => (
+//     <Container maxWidth="xl" sx={{ py: 4 }}>
+//       <Fade in timeout={800}>
+//         <ModernCard>
+//           <QuizPage />
+//         </ModernCard>
+//       </Fade>
+//     </Container>
+//   );
+
+//   const SettingsView = () => (
+//     <Container maxWidth="xl" sx={{ py: 4 }}>
+//       <Fade in timeout={800}>
+//         <ModernCard>
+//           <Settings />
+//         </ModernCard>
+//       </Fade>
+//     </Container>
+//   );
+
+//   const renderView = () => {
+//     switch (currentView) {
+//       case "dashboard":
+//         return (
+//           <InstructorDashboardView
+//             onCreateCourse={handleCreateCourse}
+//             onEditCourse={handleEditCourse}
+//           />
+//         );
+//       case "my-courses":
+//         return <MyCoursesView />;
+//       case "create-course":
+//         return (
+//           <Container maxWidth="xl" sx={{ py: 4 }}>
+//             <ModernCard>
+//               <CourseForm
+//                 course={editingCourse}
+//                 onBack={handleBackToDashboard}
+//                 onSuccess={() => {
+//                   handleBackToDashboard();
+//                   fetchCourses();
+//                 }}
+//               />
+//             </ModernCard>
+//           </Container>
+//         );
+//       case "enrollment-stats":
+//         return (
+//           <Container maxWidth="xl" sx={{ py: 4 }}>
+//             <ModernCard>
+//               <StudentEnrollmentDashboardd />
+//             </ModernCard>
+//           </Container>
+//         );
+//       case "assignments":
+//         return <AssignmentsView />;
+//       case "visualization":
+//         return (
+//           <Container maxWidth="xl" sx={{ py: 4 }}>
+//             <ModernCard>
+//               <VisualizationView />
+//             </ModernCard>
+//           </Container>
+//         );
+//       case "quizzes":
+//         return <QuizzesView />;
+//       case "settings":
+//         return <SettingsView />;
+//       default:
+//         return (
+//           <InstructorDashboardView
+//             onCreateCourse={handleCreateCourse}
+//             onEditCourse={handleEditCourse}
+//           />
+//         );
+//     }
+//   };
+
+//   return (
+//     <Box sx={{ display: "flex", minHeight: "100vh" }}>
+//       <CssBaseline />
+//       <Header />
+//       <InstructorSidebar
+//         mobileOpen={mobileOpen}
+//         handleDrawerToggle={handleDrawerToggle}
+//         collapsed={collapsed}
+//         setCollapsed={setCollapsed}
+//         isMobile={isMobile}
+//         currentView={currentView}
+//         onViewChange={handleViewChange}
+//       />
+
+//       <Box
+//         component="main"
+//         sx={{
+//           flexGrow: 1,
+//           pt: 10,
+//           width: {
+//             sm: `calc(100% - ${collapsed ? collapsedWidth : drawerWidth}px)`,
+//           },
+//           background:
+//             "linear-gradient(145deg, #ffffff 0%, #f8faff 40%, #f1f5ff 100%)",
+//           minHeight: "100vh",
+//           position: "relative",
+//           "&::before": {
+//             content: '""',
+//             position: "fixed",
+//             top: 0,
+//             left: 0,
+//             right: 0,
+//             bottom: 0,
+//             background:
+//               "radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.02) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.02) 0%, transparent 50%)",
+//             pointerEvents: "none",
+//             zIndex: 0,
+//           },
+//           "& > *": {
+//             position: "relative",
+//             zIndex: 1,
+//           },
+//         }}
+//       >
+//         {renderView()}
+//       </Box>
+//     </Box>
+//   );
+// };
 
 // export default InstructorDashboard;
 import React, { useState, useEffect } from "react";
 import {
   Box,
+  CssBaseline,
+  useTheme,
+  useMediaQuery,
   Typography,
   Paper,
   Grid,
-  styled,
-  Divider,
-  Button,
-  CircularProgress,
-  Dialog,
-  IconButton,
-  Tooltip,
-  TextField,
-  InputAdornment,
-  CssBaseline,
-  Container,
-  useTheme,
-  useMediaQuery,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Snackbar,
-  Alert,
-  Avatar,
-  Badge,
-  Chip,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Card,
   CardContent,
-  CardActions,
+  Button,
+  Chip,
+  Avatar,
+  CircularProgress,
+  Container,
+  Stack,
+  IconButton,
+  Fade,
+  Grow,
 } from "@mui/material";
 import {
-  Dashboard as DashboardIcon,
-  School as CoursesIcon,
-  People as StudentsIcon,
-  BarChart as AnalyticsIcon,
-  Message as MessagesIcon,
-  Settings as SettingsIcon,
-  School as SchoolIcon,
-  Add as AddIcon,
-  Search as SearchIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Visibility as VisibilityIcon,
-  Schedule as ScheduleIcon,
   Assignment as AssignmentIcon,
-  CheckCircle as CheckCircleIcon,
-  ExpandMore as ExpandMoreIcon,
-  VideoLibrary as VideoLibraryIcon,
-  Article as ArticleIcon,
-  Star as StarIcon,
-  Bookmark as BookmarkIcon,
-  MoreVert as MoreVertIcon,
-  Category as CategoryIcon,
-  MenuBook as MenuBookIcon,
-  Class as ClassIcon,
+  Quiz as QuizIcon,
+  BarChart as BarChartIcon,
+  People as PeopleIcon,
+  Add as AddIcon,
+  Book as BookIcon,
+  Edit as EditIcon,
+  Refresh as RefreshIcon,
+  TrendingUp as TrendingUpIcon,
+  School as SchoolIcon,
+  Timeline as TimelineIcon,
+  AutoStories as AutoStoriesIcon,
 } from "@mui/icons-material";
-// import { useTheme } from "@mui/material/styles";
-import PeopleIcon from "@mui/icons-material/People";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import InstructorService from "../../services/instructorService";
+
 import InstructorSidebar from "../../components/common/Sidebar/InstructorSidebar";
-import CreateAssignmentDialog from "../../components/assignmnet/CreatAssignmentDialog";
-import StatusChip from "../../pages/instructor/StatusChip";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import { orange } from "@mui/material/colors";
-import { useAuth } from "../../contexts/AuthContext/AuthContext";
 import Header from "../../components/common/Header/Header";
-const collapsedWidth = 72;
-
-// Enhanced Styled Components
-const StatsCard = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(3),
-  borderRadius: theme.shape.borderRadius * 2,
-  boxShadow: theme.shadows[2],
-  transition: "all 0.3s ease",
-  background:
-    theme.palette.mode === "light"
-      ? `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.grey[100]} 100%)`
-      : `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.grey[900]} 100%)`,
-  border: `1px solid ${theme.palette.divider}`,
-  position: "relative",
-  overflow: "hidden",
-  "&:before": {
-    content: '""',
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "4px",
-    height: "100%",
-    background: theme.palette.primary.main,
-  },
-  "&:hover": {
-    transform: "translateY(-5px)",
-    boxShadow: theme.shadows[8],
-  },
-}));
-
-const CourseCard = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2.5),
-  marginBottom: theme.spacing(2),
-  borderRadius: theme.shape.borderRadius * 2,
-  boxShadow: theme.shadows[1],
-  transition: "all 0.3s ease",
-  border: `1px solid ${theme.palette.divider}`,
-  position: "relative",
-  overflow: "hidden",
-  "&:hover": {
-    transform: "translateY(-5px)",
-    boxShadow: theme.shadows[6],
-    borderColor: theme.palette.primary.main,
-    "& .course-actions": {
-      opacity: 1,
-      transform: "translateY(0)",
-    },
-  },
-  "& .course-actions": {
-    position: "absolute",
-    top: theme.spacing(1),
-    right: theme.spacing(1),
-    opacity: 0,
-    transform: "translateY(-10px)",
-    transition: "all 0.3s ease",
-    display: "flex",
-    gap: theme.spacing(0.5),
-    backgroundColor: theme.palette.background.paper,
-    borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(0.5),
-    boxShadow: theme.shadows[2],
-  },
-}));
-
-const SearchInput = styled(TextField)(({ theme }) => ({
-  "& .MuiOutlinedInput-root": {
-    borderRadius: theme.shape.borderRadius * 2,
-    backgroundColor: theme.palette.background.paper,
-    "& fieldset": {
-      borderColor: theme.palette.divider,
-    },
-    "&:hover fieldset": {
-      borderColor: theme.palette.primary.light,
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: theme.palette.primary.main,
-      borderWidth: 1,
-    },
-  },
-}));
-
-const ProgressBadge = styled(Badge)(({ theme }) => ({
-  "& .MuiBadge-badge": {
-    right: 10,
-    top: 10,
-    padding: "0 4px",
-    backgroundColor: theme.palette.success.main,
-    color: theme.palette.success.contrastText,
-  },
-}));
+import InstructorDashboardView from "./InstructorDashboardView";
+import CourseForm from "../instructor/CourseForm";
+import AssignmentsList from "../../components/assignmnet/AssignmentsList";
+import StudentEnrollmentDashboardd from "../instructor/EnrollmentStats";
+import QuizPage from "../../components/assignmnet/QuizPage";
+import Settings from "../../components/common/Settings/Settings";
+import InstructorService from "../../services/instructorService";
+import { useNavigate } from "react-router-dom";
+import VisualizationView from "../instructor/StudantEnrollment";
 
 const InstructorDashboard = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const { user, logout, loading } = useAuth();
-  const navigate = useNavigate();
   const drawerWidth = 240;
+  const collapsedWidth = 72;
+  const navigate = useNavigate();
 
-  const [courses, setCourses] = useState([]);
-  const [loadingCourses, setLoadingCourses] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [stats, setStats] = useState({
-    totalCourses: 0,
-    approvedCourses: 0,
-    pendingCourses: 0,
-    rejectedCourses: 0,
-  });
-  const [selectedCourse, setSelectedCourse] = useState(null);
-  const [modules, setModules] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [loadingDetails, setLoadingDetails] = useState(false);
-  const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [recentlyCreatedAssignment, setRecentlyCreatedAssignment] =
-    useState(null);
+  // State management
+  const [currentView, setCurrentView] = useState("dashboard");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [editingCourse, setEditingCourse] = useState(null);
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // Fetch courses when My Courses view is selected
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoadingCourses(true);
-        const data = await InstructorService.getCourses();
-        setCourses(data);
+    if (currentView === "my-courses") {
+      fetchCourses();
+    }
+  }, [currentView]);
 
-        const approved = data.filter((c) => c.status === "approved").length;
-        const pending = data.filter((c) => c.status === "pending").length;
-        const rejected = data.filter((c) => c.status === "rejected").length;
-
-        setStats({
-          totalCourses: data.length,
-          approvedCourses: approved,
-          pendingCourses: pending,
-          rejectedCourses: rejected,
-        });
-      } catch (error) {
-        console.error("Failed to fetch courses:", error);
-      } finally {
-        setLoadingCourses(false);
-      }
-    };
-
-    fetchCourses();
-  }, []);
-
-  const filteredCourses = courses.filter(
-    (course) =>
-      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleViewCourse = (course) => {
-    setSelectedCourse(course);
-    setDialogOpen(true);
-    fetchCourseDetails(course.id);
-  };
-
-  const fetchCourseDetails = async (courseId) => {
+  const fetchCourses = async () => {
     try {
-      setLoadingDetails(true);
-      const modules = await InstructorService.getCourseModules(courseId);
-      setModules(modules);
-    } catch (error) {
-      console.error("Failed to fetch course details:", error);
+      setLoading(true);
+      setError(null);
+      const response = await InstructorService.getInstructorCourses();
+
+      // Handle different response structures
+      const coursesData = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data)
+        ? response.data
+        : [];
+
+      setCourses(coursesData);
+    } catch (err) {
+      console.error("Failed to fetch courses:", err);
+      setError("Failed to load courses. Please try again.");
+      setCourses([]);
     } finally {
-      setLoadingDetails(false);
-    }
-  };
-
-  const handleDeleteCourse = async (courseId) => {
-    if (window.confirm("Are you sure you want to delete this course?")) {
-      try {
-        await InstructorService.deleteCourse(courseId);
-        setCourses(courses.filter((course) => course.id !== courseId));
-        setStats({
-          ...stats,
-          totalCourses: stats.totalCourses - 1,
-        });
-      } catch (error) {
-        console.error("Failed to delete course:", error);
-      }
-    }
-  };
-
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
-    setSelectedCourse(null);
-    setModules([]);
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "published":
-        return "success";
-      case "draft":
-        return "warning";
-      case "pending":
-        return "info";
-      default:
-        return "default";
-    }
-  };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "published":
-        return <CheckCircleIcon fontSize="small" />;
-      case "draft":
-        return <EditIcon fontSize="small" />;
-      case "pending":
-        return <ScheduleIcon fontSize="small" />;
-      default:
-        return null;
+      setLoading(false);
     }
   };
 
@@ -2421,1980 +2535,615 @@ const InstructorDashboard = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <Box
+  const handleViewChange = (view) => {
+    setCurrentView(view);
+    if (isMobile) {
+      setMobileOpen(false);
+    }
+  };
+
+  const handleCreateCourse = () => {
+    setEditingCourse(null);
+    setCurrentView("create-course");
+  };
+
+  const handleEditCourse = (course) => {
+    setEditingCourse(course);
+    setCurrentView("create-course");
+  };
+
+  const handleBackToDashboard = () => {
+    setEditingCourse(null);
+    setCurrentView("dashboard");
+  };
+
+  const handleViewCourseDetails = (courseId) => {
+    navigate(`/instructor/courses/${courseId}`);
+  };
+
+  const getStatusColor = (status) => {
+    if (!status) return "default";
+    switch (status.toLowerCase()) {
+      case "published":
+        return "success";
+      case "draft":
+        return "warning";
+      case "pending":
+        return "info";
+      case "rejected":
+        return "error";
+      default:
+        return "default";
+    }
+  };
+
+  // Modern styled components
+  const ModernCard = ({ children, delay = 0, ...props }) => (
+    <Grow in timeout={1000 + delay}>
+      <Card
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
           background:
-            theme.palette.mode === "light"
-              ? "linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%)"
-              : "linear-gradient(135deg, #121826 0%, #1a2030 100%)",
+            "linear-gradient(145deg, #ffffff 0%, #f8faff 40%, #f1f5ff 100%)",
+          borderRadius: 4,
+          border: "1px solid rgba(99, 102, 241, 0.12)",
+          boxShadow:
+            "0 8px 32px rgba(99, 102, 241, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8)",
+          backdropFilter: "blur(20px)",
+          position: "relative",
+          overflow: "hidden",
+          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background:
+              "radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.03) 0%, transparent 50%)",
+            pointerEvents: "none",
+          },
+          "&:hover": {
+            transform: "translateY(-8px) scale(1.02)",
+            boxShadow:
+              "0 16px 48px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
+            borderColor: "rgba(99, 102, 241, 0.2)",
+          },
+          ...props.sx,
         }}
+        {...props}
       >
-        <CircularProgress size={60} />
-      </Box>
-    );
-  }
+        {children}
+      </Card>
+    </Grow>
+  );
+
+  const ModernButton = ({
+    children,
+    variant = "contained",
+    color = "#6366f1",
+    ...props
+  }) => (
+    <Button
+      variant={variant}
+      sx={{
+        borderRadius: 3,
+        px: 4,
+        py: 1.5,
+        fontWeight: 700,
+        textTransform: "none",
+        fontSize: "0.95rem",
+        letterSpacing: "0.02em",
+        background:
+          variant === "contained"
+            ? `linear-gradient(135deg, ${color} 0%, ${color}dd 100%)`
+            : "transparent",
+        border: variant === "outlined" ? `2px solid ${color}40` : "none",
+        color: variant === "contained" ? "#ffffff" : color,
+        boxShadow:
+          variant === "contained"
+            ? `0 4px 16px ${color}30, inset 0 1px 0 rgba(255, 255, 255, 0.2)`
+            : "none",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        "&:hover": {
+          transform: "translateY(-2px) scale(1.05)",
+          boxShadow:
+            variant === "contained"
+              ? `0 8px 24px ${color}40, inset 0 1px 0 rgba(255, 255, 255, 0.3)`
+              : `0 4px 16px ${color}20`,
+          background:
+            variant === "contained"
+              ? `linear-gradient(135deg, ${color}ee 0%, ${color}cc 100%)`
+              : `${color}08`,
+        },
+        ...props.sx,
+      }}
+      {...props}
+    >
+      {children}
+    </Button>
+  );
+
+  const MyCoursesView = () => (
+    <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Fade in timeout={800}>
+        <Box>
+          {/* Header Section */}
+          <Box
+            sx={{
+              background:
+                "linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 50%, rgba(236, 72, 153, 0.05) 100%)",
+              borderRadius: 4,
+              p: 4,
+              mb: 4,
+              border: "1px solid rgba(99, 102, 241, 0.12)",
+              position: "relative",
+              overflow: "hidden",
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: "4px",
+                background:
+                  "linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)",
+              },
+            }}
+          >
+            <Stack
+              direction={{ xs: "column", md: "row" }}
+              justifyContent="space-between"
+              alignItems={{ xs: "flex-start", md: "center" }}
+              spacing={3}
+            >
+              <Box>
+                <Typography
+                  variant="h3"
+                  sx={{
+                    fontWeight: 800,
+                    background:
+                      "linear-gradient(135deg, #6366f1 0%, #8b5cf6 70%, #ec4899 100%)",
+                    backgroundClip: "text",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    mb: 1,
+                    fontSize: { xs: "2rem", md: "3rem" },
+                  }}
+                >
+                  My Courses
+                </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "#64748b",
+                    fontWeight: 500,
+                    fontSize: "1.1rem",
+                  }}
+                >
+                  Manage all your published and draft courses
+                </Typography>
+              </Box>
+              <ModernButton
+                startIcon={<AddIcon />}
+                onClick={handleCreateCourse}
+                sx={{ minWidth: 200 }}
+              >
+                Create New Course
+              </ModernButton>
+            </Stack>
+          </Box>
+
+          {/* Content Section */}
+          {error ? (
+            <ModernCard>
+              <CardContent sx={{ textAlign: "center", py: 6 }}>
+                <BookIcon
+                  sx={{ fontSize: 80, color: "#ef4444", mb: 3, opacity: 0.8 }}
+                />
+                <Typography
+                  variant="h5"
+                  gutterBottom
+                  sx={{ color: "#ef4444", fontWeight: 700 }}
+                >
+                  {error}
+                </Typography>
+                <ModernButton
+                  variant="outlined"
+                  startIcon={<RefreshIcon />}
+                  onClick={fetchCourses}
+                  color="#ef4444"
+                  sx={{ mt: 2 }}
+                >
+                  Retry
+                </ModernButton>
+              </CardContent>
+            </ModernCard>
+          ) : loading ? (
+            <Box display="flex" justifyContent="center" py={8}>
+              <CircularProgress
+                size={80}
+                sx={{
+                  color: "#6366f1",
+                  filter: "drop-shadow(0 4px 8px rgba(99, 102, 241, 0.3))",
+                }}
+              />
+            </Box>
+          ) : courses.length === 0 ? (
+            <ModernCard>
+              <CardContent sx={{ textAlign: "center", py: 8 }}>
+                <AutoStoriesIcon
+                  sx={{ fontSize: 100, color: "#6366f1", mb: 3, opacity: 0.8 }}
+                />
+                <Typography
+                  variant="h4"
+                  gutterBottom
+                  sx={{
+                    fontWeight: 700,
+                    color: "#1e293b",
+                    mb: 2,
+                  }}
+                >
+                  No courses yet
+                </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "#64748b",
+                    mb: 4,
+                    maxWidth: 500,
+                    mx: "auto",
+                  }}
+                >
+                  Start your teaching journey by creating your first course
+                </Typography>
+                <ModernButton
+                  startIcon={<AddIcon />}
+                  onClick={handleCreateCourse}
+                  sx={{ py: 2, px: 6 }}
+                >
+                  Create Your First Course
+                </ModernButton>
+              </CardContent>
+            </ModernCard>
+          ) : (
+            <Grid container spacing={4}>
+              {courses.map((course, index) => (
+                <Grid item xs={12} md={4} key={course._id || course.id}>
+                  <ModernCard delay={index * 100}>
+                    {course.thumbnail_url && (
+                      <Box
+                        sx={{
+                          height: 200,
+                          backgroundImage: `url(${course.thumbnail_url})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          position: "relative",
+                          "&::after": {
+                            content: '""',
+                            position: "absolute",
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            height: "50%",
+                            background:
+                              "linear-gradient(transparent, rgba(0,0,0,0.3))",
+                          },
+                        }}
+                      />
+                    )}
+                    <CardContent sx={{ p: 3 }}>
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        mb={2}
+                      >
+                        <Typography
+                          variant="h5"
+                          sx={{
+                            fontWeight: 700,
+                            color: "#1e293b",
+                            lineHeight: 1.3,
+                          }}
+                        >
+                          {course.title || "Untitled Course"}
+                        </Typography>
+                        <Chip
+                          label={course.status || "unknown"}
+                          size="medium"
+                          color={getStatusColor(course.status)}
+                          sx={{
+                            textTransform: "capitalize",
+                            fontWeight: 600,
+                            borderRadius: 2,
+                          }}
+                        />
+                      </Stack>
+
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          color: "#64748b",
+                          mb: 3,
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {course.description
+                          ? course.description.length > 120
+                            ? `${course.description.substring(0, 120)}...`
+                            : course.description
+                          : "No description available"}
+                      </Typography>
+
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={1}
+                        mb={3}
+                      >
+                        <PeopleIcon sx={{ color: "#6366f1", fontSize: 20 }} />
+                        <Typography
+                          variant="body1"
+                          sx={{ color: "#475569", fontWeight: 600 }}
+                        >
+                          {course.enrolledStudents || 0} students enrolled
+                        </Typography>
+                      </Stack>
+                    </CardContent>
+
+                    <Box sx={{ p: 3, pt: 0 }}>
+                      <Stack direction="row" spacing={2}>
+                        <Button
+                          variant="outlined"
+                          onClick={() =>
+                            handleViewCourseDetails(course._id || course.id)
+                          }
+                          sx={{
+                            flex: 1,
+                            borderRadius: 2,
+                            border: "2px solid rgba(99, 102, 241, 0.3)",
+                            color: "#6366f1",
+                            fontWeight: 600,
+                            "&:hover": {
+                              borderColor: "#6366f1",
+                              background: "rgba(99, 102, 241, 0.05)",
+                            },
+                          }}
+                        >
+                          View Details
+                        </Button>
+                        <IconButton
+                          onClick={() => handleEditCourse(course)}
+                          sx={{
+                            background:
+                              "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+                            color: "white",
+                            borderRadius: 2,
+                            p: 1.5,
+                            "&:hover": {
+                              background:
+                                "linear-gradient(135deg, #5856eb 0%, #7c3aed 100%)",
+                              transform: "scale(1.05)",
+                            },
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Stack>
+                    </Box>
+                  </ModernCard>
+                </Grid>
+              ))}
+            </Grid>
+          )}
+        </Box>
+      </Fade>
+    </Container>
+  );
+
+  const AssignmentsView = () => (
+    <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Fade in timeout={800}>
+        <Box>
+          <Box
+            sx={{
+              background:
+                "linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(34, 197, 94, 0.05) 100%)",
+              borderRadius: 4,
+              p: 4,
+              mb: 4,
+              border: "1px solid rgba(16, 185, 129, 0.12)",
+              position: "relative",
+              overflow: "hidden",
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: "4px",
+                background: "linear-gradient(90deg, #10b981 0%, #22c55e 100%)",
+              },
+            }}
+          >
+            <Stack
+              direction={{ xs: "column", md: "row" }}
+              justifyContent="space-between"
+              alignItems={{ xs: "flex-start", md: "center" }}
+              spacing={3}
+            >
+              <Box>
+                <Typography
+                  variant="h3"
+                  sx={{
+                    fontWeight: 800,
+                    background:
+                      "linear-gradient(135deg, #10b981 0%, #22c55e 100%)",
+                    backgroundClip: "text",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    mb: 1,
+                    fontSize: { xs: "2rem", md: "3rem" },
+                  }}
+                >
+                  Assignments
+                </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "#64748b",
+                    fontWeight: 500,
+                    fontSize: "1.1rem",
+                  }}
+                >
+                  Create and manage course assignments
+                </Typography>
+              </Box>
+              <ModernButton
+                startIcon={<AssignmentIcon />}
+                color="#10b981"
+                sx={{ minWidth: 200 }}
+              >
+                Create Assignment
+              </ModernButton>
+            </Stack>
+          </Box>
+          <ModernCard>
+            <AssignmentsList />
+          </ModernCard>
+        </Box>
+      </Fade>
+    </Container>
+  );
+
+  const QuizzesView = () => (
+    <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Fade in timeout={800}>
+        <ModernCard>
+          <QuizPage />
+        </ModernCard>
+      </Fade>
+    </Container>
+  );
+
+  const SettingsView = () => (
+    <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Fade in timeout={800}>
+        <ModernCard>
+          <Settings />
+        </ModernCard>
+      </Fade>
+    </Container>
+  );
+
+  const renderView = () => {
+    switch (currentView) {
+      case "dashboard":
+        return (
+          <InstructorDashboardView
+            onCreateCourse={handleCreateCourse}
+            onEditCourse={handleEditCourse}
+          />
+        );
+      case "my-courses":
+        return <MyCoursesView />;
+      case "create-course":
+        return (
+          <Container maxWidth="xl" sx={{ py: 4 }}>
+            <ModernCard>
+              <CourseForm
+                course={editingCourse}
+                onBack={handleBackToDashboard}
+                onSuccess={() => {
+                  handleBackToDashboard();
+                  fetchCourses();
+                }}
+              />
+            </ModernCard>
+          </Container>
+        );
+      case "enrollment-stats":
+        return (
+          <Container maxWidth="xl" sx={{ py: 4 }}>
+            <ModernCard>
+              <StudentEnrollmentDashboardd />
+            </ModernCard>
+          </Container>
+        );
+      case "assignments":
+        return <AssignmentsView />;
+      case "visualization":
+        return (
+          <Container maxWidth="xl" sx={{ py: 4 }}>
+            <ModernCard>
+              <VisualizationView />
+            </ModernCard>
+          </Container>
+        );
+      case "quizzes":
+        return <QuizzesView />;
+      case "settings":
+        return <SettingsView />;
+      default:
+        return (
+          <InstructorDashboardView
+            onCreateCourse={handleCreateCourse}
+            onEditCourse={handleEditCourse}
+          />
+        );
+    }
+  };
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
-      <Header />
+    <Box sx={{ display: "flex", height: "100vh", overflow: "hidden" }}>
       <CssBaseline />
+      <Header />
       <InstructorSidebar
         mobileOpen={mobileOpen}
         handleDrawerToggle={handleDrawerToggle}
         collapsed={collapsed}
         setCollapsed={setCollapsed}
         isMobile={isMobile}
+        currentView={currentView}
+        onViewChange={handleViewChange}
       />
 
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          p: 5,
-          pt: 13,
+          pt: 10,
           width: {
             sm: `calc(100% - ${collapsed ? collapsedWidth : drawerWidth}px)`,
           },
-          backgroundColor: theme.palette.background.default,
           background:
-            theme.palette.mode === "light"
-              ? "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)"
-              : "linear-gradient(135deg, #121826 0%, #0f172a 100%)",
+            "linear-gradient(145deg, #ffffff 0%, #f8faff 40%, #f1f5ff 100%)",
+          height: "100vh",
+          position: "relative",
+          overflowY: "auto",
+          "&::before": {
+            content: '""',
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background:
+              "radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.02) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.02) 0%, transparent 50%)",
+            pointerEvents: "none",
+            zIndex: 0,
+          },
+          "& > *": {
+            position: "relative",
+            zIndex: 1,
+          },
         }}
       >
-        {/* Main content header */}
-        <Box mb={4}>
-          <Box display="flex" alignItems="center" mb={1}>
-            <Box>
-              <Typography variant="h4" fontWeight="bold" gutterBottom>
-                Welcome back, {user?.displayName || "Instructor"}!
-              </Typography>
-              <Box display="flex" alignItems="center">
-                <StarIcon color="warning" fontSize="small" sx={{ mr: 0.5 }} />
-                <Typography variant="body1" color="textSecondary">
-                  Instructor since{" "}
-                  {new Date(user?.metadata?.creationTime).getFullYear() ||
-                    "2024"}
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-          <Typography variant="body1" color="textSecondary">
-            Here's what's happening with your courses today.
-          </Typography>
-        </Box>
-
-        {/* Stats cards */}
-        <Grid container spacing={3} mb={4}>
-          {[
-            {
-              title: "Total Courses",
-              value: stats.totalCourses,
-              icon: <CoursesIcon fontSize="medium" />,
-              color: theme.palette.primary.main,
-              trend: "up",
-            },
-            {
-              title: "Approved Courses",
-              value: stats.approvedCourses,
-              icon: <SchoolIcon fontSize="medium" />,
-              color: theme.palette.success.main,
-              trend: "up",
-            },
-            {
-              title: "Pending Approval",
-              value: stats.pendingCourses,
-              icon: <ScheduleIcon fontSize="medium" />,
-              color: theme.palette.warning.main,
-              trend: "neutral",
-            },
-            {
-              title: "Rejected Courses",
-              value: stats.rejectedCourses,
-              icon: <DeleteIcon fontSize="medium" />,
-              color: theme.palette.error.main,
-              trend: "down",
-            },
-          ].map((stat) => (
-            <Grid item xs={12} sm={6} md={3} key={stat.title}>
-              <StatsCard>
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      gutterBottom
-                      sx={{
-                        textTransform: "uppercase",
-                        fontWeight: 500,
-                        letterSpacing: 0.5,
-                      }}
-                    >
-                      {stat.title}
-                    </Typography>
-                    <Typography
-                      variant="h3"
-                      fontWeight="bold"
-                      color={stat.color}
-                    >
-                      {stat.value}
-                    </Typography>
-                    <Chip
-                      label={`5% ${
-                        stat.trend === "up"
-                          ? "↑"
-                          : stat.trend === "down"
-                          ? "↓"
-                          : "→"
-                      }`}
-                      size="small"
-                      sx={{
-                        mt: 1,
-                        backgroundColor: `${stat.color}20`,
-                        color: stat.color,
-                        fontWeight: 600,
-                      }}
-                    />
-                  </Box>
-                  <Box
-                    sx={{
-                      p: 1,
-                      borderRadius: "55%",
-                      backgroundColor: `${stat.color}10`,
-                      color: stat.color,
-                      border: `1px solid ${stat.color}30`,
-                    }}
-                  >
-                    {stat.icon}
-                  </Box>
-                </Box>
-              </StatsCard>
-            </Grid>
-          ))}
-        </Grid>
-
-        {/* Courses section */}
-        <Box mb={4}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mb={3}
-            sx={{
-              backgroundColor: theme.palette.background.paper,
-              p: 3,
-              borderRadius: theme.shape.borderRadius * 0.3,
-              border: `1px solid ${theme.palette.divider}`,
-            }}
-          >
-            <Box>
-              <Typography variant="h5" fontWeight="bold">
-                My Courses
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                Manage and create new courses
-              </Typography>
-            </Box>
-            <Box display="flex" gap={2}>
-              <Button
-                component={Link}
-                to="/instructor/courses/create"
-                variant="contained"
-                startIcon={<AddIcon />}
-                sx={{
-                  borderRadius: theme.shape.borderRadius * 2,
-                  textTransform: "none",
-                  boxShadow: "none",
-                  px: 3,
-                  "&:hover": {
-                    boxShadow: theme.shadows[4],
-                  },
-                }}
-              >
-                Create Course
-              </Button>
-              <Button
-                variant="outlined"
-                startIcon={<AssignmentIcon />}
-                onClick={() => setAssignmentDialogOpen(true)}
-                sx={{
-                  borderRadius: theme.shape.borderRadius * 2,
-                  textTransform: "none",
-                  px: 3,
-                  borderWidth: 2,
-                  "&:hover": {
-                    borderWidth: 2,
-                  },
-                }}
-              >
-                New Assignment
-              </Button>
-            </Box>
-          </Box>
-
-          <Box mb={3}>
-            <SearchInput
-              fullWidth
-              placeholder="Search courses by title or description..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon color="action" />
-                  </InputAdornment>
-                ),
-                sx: {
-                  maxWidth: 500,
-                },
-              }}
-            />
-          </Box>
-
-          {loadingCourses ? (
-            <Box display="flex" justifyContent="center" my={4}>
-              <CircularProgress />
-            </Box>
-          ) : filteredCourses.length === 0 ? (
-            <Paper
-              sx={{
-                p: 4,
-                textAlign: "center",
-                // borderRadius: theme.shape.borderRadius * 2,
-                backgroundColor: theme.palette.background.paper,
-                border: `1px dashed ${theme.palette.divider}`,
-              }}
-            >
-              <Box
-                sx={{
-                  width: 80,
-                  height: 80,
-                  mx: "auto",
-                  mb: 2,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: `${theme.palette.primary.light}20`,
-                  borderRadius: "50%",
-                  color: theme.palette.primary.main,
-                }}
-              >
-                <SchoolIcon fontSize="large" />
-              </Box>
-              <Typography variant="h6" gutterBottom>
-                {searchTerm ? "No courses found" : "No courses created yet"}
-              </Typography>
-              <Typography variant="body1" color="textSecondary" mb={3}>
-                {searchTerm
-                  ? "Try adjusting your search query"
-                  : "Get started by creating your first course"}
-              </Typography>
-              <Button
-                component={Link}
-                to="/instructor/courses/create"
-                variant="contained"
-                startIcon={<AddIcon />}
-                sx={{
-                  borderRadius: theme.shape.borderRadius * 2,
-                  px: 3,
-                }}
-              >
-                Create Your First Course
-              </Button>
-            </Paper>
-          ) : (
-            <Grid container spacing={3}>
-              {filteredCourses.map((course) => (
-                <Grid item xs={12} sm={6} xl={4} key={course._id || course.id}>
-                  <Card
-                    sx={{
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      transition: "all 0.3s ease",
-                      borderRadius: 3,
-                      border: `1px solid ${theme.palette.divider}`,
-                      boxShadow: "none",
-                      "&:hover": {
-                        transform: "translateY(-8px)",
-                        boxShadow: theme.shadows[6],
-                        borderColor: theme.palette.primary.main,
-                      },
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        height: 140,
-                        position: "relative",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {course.thumbnail ? (
-                        <Box
-                          component="img"
-                          src={course.thumbnail}
-                          alt={course.title}
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      ) : (
-                        <Box
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            background:
-                              theme.palette.mode === "light"
-                                ? "linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)"
-                                : "linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%)",
-                          }}
-                        >
-                          <SchoolIcon
-                            sx={{
-                              fontSize: 60,
-                              color: theme.palette.primary.main,
-                            }}
-                          />
-                        </Box>
-                      )}
-                      <Box
-                        sx={{
-                          position: "absolute",
-                          top: 16,
-                          right: 16,
-                        }}
-                      >
-                        <Chip
-                          icon={getStatusIcon(course.status)}
-                          label={course.status}
-                          color={getStatusColor(course.status)}
-                          size="small"
-                          sx={{
-                            fontWeight: 600,
-                            textTransform: "capitalize",
-                            borderRadius: 1,
-                          }}
-                        />
-                      </Box>
-                    </Box>
-
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography
-                        variant="h6"
-                        component="h3"
-                        gutterBottom
-                        sx={{ fontWeight: 600 }}
-                      >
-                        {course.title}
-                      </Typography>
-
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        mb={2}
-                        sx={{
-                          display: "-webkit-box",
-                          WebkitLineClamp: 3,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {course.description?.substring(0, 150) ||
-                          "No description available."}
-                        {course.description?.length > 150 && "..."}
-                      </Typography>
-
-                      <Divider sx={{ my: 2 }} />
-
-                      <Grid container spacing={1} mb={1}>
-                        <Grid item xs={6}>
-                          <Box display="flex" alignItems="center">
-                            <CategoryIcon
-                              fontSize="small"
-                              color="action"
-                              sx={{ mr: 1 }}
-                            />
-                            <Typography variant="body2" color="text.secondary">
-                              {categories.find(
-                                (c) => c._id === course.category_id
-                              )?.name || "Uncategorized"}
-                            </Typography>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Box display="flex" alignItems="center">
-                            <MenuBookIcon
-                              fontSize="small"
-                              color="action"
-                              sx={{ mr: 1 }}
-                            />
-                            <Typography variant="body2" color="text.secondary">
-                              {course.modules?.length || 0} Modules
-                            </Typography>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Box display="flex" alignItems="center">
-                            <ClassIcon
-                              fontSize="small"
-                              color="action"
-                              sx={{ mr: 1 }}
-                            />
-                            <Typography variant="body2" color="text.secondary">
-                              {course.modules?.reduce(
-                                (acc, module) =>
-                                  acc + (module.lessons?.length || 0),
-                                0
-                              )}{" "}
-                              Lessons
-                            </Typography>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Box display="flex" alignItems="center">
-                            <StarIcon
-                              fontSize="small"
-                              color="action"
-                              sx={{ mr: 1 }}
-                            />
-                            <Typography variant="body2" color="text.secondary">
-                              4.8 (24)
-                            </Typography>
-                          </Box>
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-
-                    <CardActions
-                      sx={{
-                        justifyContent: "space-between",
-                        p: 2,
-                        borderTop: `1px solid ${theme.palette.divider}`,
-                      }}
-                    >
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        startIcon={<VisibilityIcon />}
-                        onClick={() => handleViewCourse(course)}
-                        sx={{
-                          borderRadius: 2,
-                          px: 2,
-                        }}
-                      >
-                        View
-                      </Button>
-                      <Box>
-                        <Tooltip title="Edit Course">
-                          <IconButton
-                            onClick={() =>
-                              navigate(
-                                `/instructor/courses/edit/${
-                                  course._id || course.id
-                                }`
-                              )
-                            }
-                            size="small"
-                            sx={{
-                              color: orange[600],
-                              "&:hover": {
-                                bgcolor: `${orange[50]} !important`,
-                              },
-                            }}
-                          >
-                            <EditIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Delete Course">
-                          <IconButton
-                            onClick={() => handleDeleteCourse(course.id)}
-                            size="small"
-                            sx={{
-                              color: "error.main",
-                              ml: 1,
-                              "&:hover": {
-                                bgcolor: "rgba(244, 67, 54, 0.08) !important",
-                              },
-                            }}
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </Box>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-          )}
-        </Box>
-
-        {/* Course Details Dialog */}
-        <Dialog
-          open={dialogOpen}
-          onClose={handleCloseDialog}
-          fullWidth
-          maxWidth="md"
-          PaperProps={{
-            sx: {
-              borderRadius: theme.shape.borderRadius * 0.2,
-              minHeight: "70vh",
-              background: theme.palette.background.paper,
-              border: `1px solid ${theme.palette.divider}`,
-            },
-          }}
-        >
-          {loadingDetails ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height="60vh"
-            >
-              <CircularProgress size={60} />
-            </Box>
-          ) : (
-            <>
-              <DialogTitle
-                sx={{ borderBottom: `1px solid ${theme.palette.divider}` }}
-              >
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Box display="flex" alignItems="center">
-                    <Avatar
-                      variant="rounded"
-                      sx={{
-                        width: 48,
-                        height: 48,
-                        mr: 2,
-                        backgroundColor: `${theme.palette.primary.light}20`,
-                        color: theme.palette.primary.main,
-                      }}
-                    >
-                      <SchoolIcon />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="h5" fontWeight="bold">
-                        {selectedCourse?.title}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        Course ID: {selectedCourse?.id}
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <StatusChip status={selectedCourse?.status} />
-                </Box>
-              </DialogTitle>
-              <DialogContent dividers>
-                <Typography variant="body1" paragraph>
-                  {selectedCourse?.description}
-                </Typography>
-
-                <Box display="flex" gap={2} mb={3}>
-                  <Chip
-                    icon={<PeopleIcon fontSize="small" />}
-                    label={`${Math.floor(Math.random() * 100) + 20} Students`}
-                    variant="outlined"
-                  />
-                  <Chip
-                    icon={<AssignmentIcon fontSize="small" />}
-                    label={`${Math.floor(Math.random() * 10) + 1} Assignments`}
-                    variant="outlined"
-                  />
-                  <Chip
-                    icon={<BarChartIcon fontSize="small" />}
-                    label={`${Math.floor(Math.random() * 100)}% Completion`}
-                    variant="outlined"
-                    color="success"
-                  />
-                </Box>
-
-                <Typography variant="h6" fontWeight="bold" mt={3} mb={2}>
-                  Course Modules
-                </Typography>
-
-                {modules.length === 0 ? (
-                  <Paper
-                    sx={{
-                      p: 3,
-                      textAlign: "center",
-                      borderRadius: theme.shape.borderRadius,
-                      backgroundColor: theme.palette.background.default,
-                    }}
-                  >
-                    <Typography variant="body2" color="textSecondary">
-                      No modules added yet
-                    </Typography>
-                    <Button
-                      variant="outlined"
-                      startIcon={<AddIcon />}
-                      sx={{ mt: 2 }}
-                    >
-                      Add Module
-                    </Button>
-                  </Paper>
-                ) : (
-                  modules.map((module) => (
-                    <Accordion
-                      key={module.id}
-                      sx={{
-                        mb: 1,
-                        borderRadius: theme.shape.borderRadius,
-                        "&:before": {
-                          display: "none",
-                        },
-                      }}
-                    >
-                      <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        sx={{
-                          backgroundColor: theme.palette.background.default,
-                          borderRadius: theme.shape.borderRadius,
-                        }}
-                      >
-                        <Box display="flex" alignItems="center" width="100%">
-                          <Box
-                            sx={{
-                              width: 36,
-                              height: 36,
-                              mr: 2,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              backgroundColor: `${theme.palette.secondary.light}20`,
-                              borderRadius: "50%",
-                              color: theme.palette.secondary.main,
-                            }}
-                          >
-                            {module.lessons.length > 0 ? (
-                              <VideoLibraryIcon fontSize="small" />
-                            ) : (
-                              <ArticleIcon fontSize="small" />
-                            )}
-                          </Box>
-                          <Typography fontWeight={600}>
-                            {module.title}
-                          </Typography>
-                          <Box flexGrow={1} />
-                          <Chip
-                            label={`${module.lessons.length} Lessons`}
-                            size="small"
-                            variant="outlined"
-                          />
-                        </Box>
-                      </AccordionSummary>
-                      <AccordionDetails
-                        sx={{
-                          backgroundColor: theme.palette.background.paper,
-                          borderTop: `1px solid ${theme.palette.divider}`,
-                        }}
-                      >
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          mb={2}
-                        >
-                          {module.description}
-                        </Typography>
-
-                        {module.lessons.length === 0 ? (
-                          <Typography variant="body2" color="textSecondary">
-                            No lessons added yet
-                          </Typography>
-                        ) : (
-                          <Box>
-                            <Typography
-                              variant="subtitle2"
-                              fontWeight={600}
-                              mb={1}
-                            >
-                              Lessons:
-                            </Typography>
-                            {module.lessons.map((lesson) => (
-                              <Box
-                                key={lesson.id}
-                                display="flex"
-                                alignItems="center"
-                                mb={1}
-                                px={2}
-                                py={1}
-                                sx={{
-                                  borderRadius: theme.shape.borderRadius,
-                                  backgroundColor:
-                                    theme.palette.background.default,
-                                  "&:hover": {
-                                    backgroundColor: theme.palette.action.hover,
-                                  },
-                                }}
-                              >
-                                {lesson.type === "video" ? (
-                                  <VideoLibraryIcon
-                                    color="primary"
-                                    fontSize="small"
-                                    sx={{ mr: 2 }}
-                                  />
-                                ) : (
-                                  <ArticleIcon
-                                    color="secondary"
-                                    fontSize="small"
-                                    sx={{ mr: 2 }}
-                                  />
-                                )}
-                                <Box flexGrow={1}>
-                                  <Typography variant="body2">
-                                    {lesson.title}
-                                  </Typography>
-                                  <Typography
-                                    variant="caption"
-                                    color="textSecondary"
-                                  >
-                                    {lesson.duration || "10 min"}
-                                  </Typography>
-                                </Box>
-                                <IconButton size="small">
-                                  <MoreVertIcon fontSize="small" />
-                                </IconButton>
-                              </Box>
-                            ))}
-                          </Box>
-                        )}
-                      </AccordionDetails>
-                    </Accordion>
-                  ))
-                )}
-              </DialogContent>
-              <DialogActions
-                sx={{ borderTop: `1px solid ${theme.palette.divider}`, p: 2 }}
-              >
-                <Button
-                  onClick={handleCloseDialog}
-                  variant="outlined"
-                  sx={{ borderRadius: theme.shape.borderRadius * 2 }}
-                >
-                  Close
-                </Button>
-                <Button
-                  variant="contained"
-                  sx={{ borderRadius: theme.shape.borderRadius * 2 }}
-                >
-                  Edit Course
-                </Button>
-              </DialogActions>
-            </>
-          )}
-        </Dialog>
-
-        {/* Create Assignment Dialog */}
-        <CreateAssignmentDialog
-          open={assignmentDialogOpen}
-          onClose={() => setAssignmentDialogOpen(false)}
-          onAssignmentCreated={(assignment) => {
-            setRecentlyCreatedAssignment(assignment);
-            setSnackbarOpen(true);
-          }}
-        />
-
-        {/* Snackbar Notification */}
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={() => setSnackbarOpen(false)}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          sx={{
-            "& .MuiPaper-root": {
-              borderRadius: theme.shape.borderRadius * 2,
-            },
-          }}
-        >
-          <Alert
-            elevation={6}
-            severity="success"
-            onClose={() => setSnackbarOpen(false)}
-            icon={<CheckCircleIcon fontSize="inherit" />}
-            sx={{
-              width: "100%",
-              alignItems: "center",
-              "& .MuiAlert-message": {
-                display: "flex",
-                alignItems: "center",
-              },
-            }}
-          >
-            <Box display="flex" alignItems="center">
-              <Typography>
-                Assignment <strong>"{recentlyCreatedAssignment?.title}"</strong>{" "}
-                created successfully!
-              </Typography>
-            </Box>
-          </Alert>
-        </Snackbar>
+        {renderView()}
       </Box>
     </Box>
   );
 };
 
 export default InstructorDashboard;
-
-// // Modern styled components
-// const DashboardContainer = styled(Box)(({ theme }) => ({
-//   display: "flex",
-//   minHeight: "100vh",
-//   backgroundColor: theme.palette.background.default,
-// }));
-
-// const Sidebar = styled(Paper)(({ theme }) => ({
-//   width: 280,
-//   padding: theme.spacing(3, 2),
-//   borderRadius: 0,
-//   boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-//   backgroundColor: theme.palette.background.paper,
-//   borderRight: `1px solid ${theme.palette.divider}`,
-// }));
-
-// const MainContent = styled(Box)(({ theme }) => ({
-//   flexGrow: 1,
-//   padding: theme.spacing(4),
-//   backgroundColor: theme.palette.background.default,
-// }));
-
-// const StatsCard = styled(Paper)(({ theme }) => ({
-//   padding: theme.spacing(3),
-//   borderRadius: theme.shape.borderRadius,
-//   boxShadow: theme.shadows[2],
-//   transition: "all 0.3s ease",
-//   background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`,
-//   border: `1px solid ${theme.palette.divider}`,
-//   "&:hover": {
-//     transform: "translateY(-5px)",
-//     boxShadow: theme.shadows[6],
-//   },
-// }));
-
-// const CourseCard = styled(Paper)(({ theme }) => ({
-//   padding: theme.spacing(3),
-//   marginBottom: theme.spacing(2),
-//   borderRadius: theme.shape.borderRadius,
-//   boxShadow: theme.shadows[1],
-//   transition: "all 0.3s ease",
-//   border: `1px solid ${theme.palette.divider}`,
-//   "&:hover": {
-//     transform: "translateY(-5px)",
-//     boxShadow: theme.shadows[4],
-//     borderColor: theme.palette.primary.main,
-//   },
-// }));
-
-// const SearchInput = styled(TextField)(({ theme }) => ({
-//   "& .MuiOutlinedInput-root": {
-//     borderRadius: theme.shape.borderRadius,
-//     backgroundColor: theme.palette.background.paper,
-//     "& fieldset": {
-//       borderColor: theme.palette.divider,
-//     },
-//     "&:hover fieldset": {
-//       borderColor: theme.palette.primary.light,
-//     },
-//     "&.Mui-focused fieldset": {
-//       borderColor: theme.palette.primary.main,
-//       borderWidth: 1,
-//     },
-//   },
-// }));
-
-// const steps = [
-//   "Select Course",
-//   "Select Module",
-//   "Select Lesson",
-//   "Assignment Details",
-// ];
-
-// const CreateAssignmentDialog = ({ open, onClose, onAssignmentCreated }) => {
-//   const theme = useTheme();
-//   const [activeStep, setActiveStep] = useState(0);
-//   const [courses, setCourses] = useState([]);
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState(null);
-
-//   const [selectedCourse, setSelectedCourse] = useState("");
-//   const [selectedModule, setSelectedModule] = useState("");
-//   const [selectedLesson, setSelectedLesson] = useState("");
-//   const [assignmentData, setAssignmentData] = useState({
-//     title: "",
-//     description: "",
-//     max_score: 100,
-//   });
-
-//   useEffect(() => {
-//     if (open) {
-//       fetchCoursesHierarchy();
-//     }
-//   }, [open]);
-
-//   const fetchCoursesHierarchy = async () => {
-//     setLoading(true);
-//     setError(null);
-//     try {
-//       const data = await InstructorService.getCoursesHierarchy();
-//       const filteredCourses = data.filter(
-//         (course) =>
-//           Array.isArray(course.modules) &&
-//           course.modules.length > 0 &&
-//           course.modules.some(
-//             (module) =>
-//               Array.isArray(module.lessons) && module.lessons.length > 0
-//           )
-//       );
-//       setCourses(filteredCourses);
-//     } catch (err) {
-//       setError("Failed to load courses. Please try again.");
-//       console.error(err);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleNext = () => {
-//     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-//   };
-
-//   const handleBack = () => {
-//     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-//   };
-
-//   const handleCourseChange = (event) => {
-//     const selected = event.target.value;
-//     setSelectedCourse(selected);
-//     setSelectedModule("");
-//     setSelectedLesson("");
-//   };
-
-//   const handleModuleChange = (event) => {
-//     const selected = String(event.target.value);
-//     setSelectedModule(event.target.value);
-//     setSelectedLesson("");
-//   };
-
-//   const handleLessonChange = (event) => {
-//     setSelectedLesson(String(event.target.value));
-//   };
-
-//   const handleInputChange = (event) => {
-//     const { name, value } = event.target;
-//     setAssignmentData((prev) => ({
-//       ...prev,
-//       [name]: value,
-//     }));
-//   };
-
-//   const handleSubmit = async () => {
-//     try {
-//       const assignment = {
-//         lesson_id: selectedLesson,
-//         ...assignmentData,
-//       };
-//       const createdAssignment = await InstructorService.createAssignment(
-//         assignment
-//       );
-//       onAssignmentCreated(createdAssignment);
-//       onClose();
-//     } catch (err) {
-//       setError("Failed to create assignment. Please try again.");
-//       console.error(err);
-//     }
-//   };
-
-//   const getSelectedCourse = () =>
-//     courses.find((c) => String(c.id || c._id) === String(selectedCourse));
-
-//   const getSelectedModule = () => {
-//     const course = getSelectedCourse();
-//     if (!course) return null;
-//     return course.modules.find(
-//       (m) => String(m.id || m._id) === String(selectedModule)
-//     );
-//   };
-
-//   return (
-//     <Dialog
-//       open={open}
-//       onClose={onClose}
-//       fullWidth
-//       maxWidth="md"
-//       PaperProps={{
-//         sx: {
-//           borderRadius: theme.shape.borderRadius * 2,
-//           background: theme.palette.background.paper,
-//         },
-//       }}
-//     >
-//       <DialogTitle>
-//         <Box display="flex" justifyContent="space-between" alignItems="center">
-//           <Typography variant="h6" fontWeight="bold">
-//             Create New Assignment
-//           </Typography>
-//           <IconButton onClick={onClose} size="small">
-//             <CloseIcon />
-//           </IconButton>
-//         </Box>
-//         <Stepper activeStep={activeStep} alternativeLabel sx={{ mt: 3 }}>
-//           {steps.map((label) => (
-//             <Step key={label}>
-//               <StepLabel
-//                 sx={{
-//                   "& .MuiStepLabel-label": {
-//                     color: theme.palette.text.secondary,
-//                     "&.Mui-active": {
-//                       color: theme.palette.text.primary,
-//                     },
-//                     "&.Mui-completed": {
-//                       color: theme.palette.text.primary,
-//                     },
-//                   },
-//                 }}
-//               >
-//                 {label}
-//               </StepLabel>
-//             </Step>
-//           ))}
-//         </Stepper>
-//       </DialogTitle>
-
-//       <DialogContent dividers sx={{ py: 3 }}>
-//         {loading ? (
-//           <Box display="flex" justifyContent="center" p={4}>
-//             <CircularProgress />
-//           </Box>
-//         ) : error ? (
-//           <Paper elevation={0} sx={{ p: 2, bgcolor: "error.light" }}>
-//             <Typography color="error">{error}</Typography>
-//             <Button onClick={fetchCoursesHierarchy} sx={{ mt: 1 }}>
-//               Retry
-//             </Button>
-//           </Paper>
-//         ) : (
-//           <>
-//             {activeStep === 0 && (
-//               <Box sx={{ mt: 2 }}>
-//                 <FormControl fullWidth>
-//                   <InputLabel>Select Course</InputLabel>
-//                   <Select
-//                     value={selectedCourse}
-//                     onChange={handleCourseChange}
-//                     label="Select Course"
-//                     sx={{ mb: 2 }}
-//                   >
-//                     {courses.map((course) => (
-//                       <MenuItem
-//                         key={course._id}
-//                         value={String(course.id || course._id)}
-//                       >
-//                         {course.title}
-//                       </MenuItem>
-//                     ))}
-//                   </Select>
-//                 </FormControl>
-//                 {selectedCourse && (
-//                   <Box
-//                     sx={{
-//                       mt: 2,
-//                       p: 2,
-//                       borderRadius: theme.shape.borderRadius,
-//                       backgroundColor: theme.palette.action.hover,
-//                     }}
-//                   >
-//                     <Typography variant="subtitle2" fontWeight="bold">
-//                       Course Description:
-//                     </Typography>
-//                     <Typography variant="body2" color="text.secondary">
-//                       {getSelectedCourse()?.description ||
-//                         "No description available"}
-//                     </Typography>
-//                   </Box>
-//                 )}
-//               </Box>
-//             )}
-
-//             {activeStep === 1 && (
-//               <Box sx={{ mt: 2 }}>
-//                 <FormControl fullWidth>
-//                   <InputLabel>Select Module</InputLabel>
-//                   <Select
-//                     value={selectedModule}
-//                     onChange={handleModuleChange}
-//                     label="Select Module"
-//                     disabled={!selectedCourse}
-//                     sx={{ mb: 2 }}
-//                   >
-//                     <MenuItem value="">
-//                       <em>Select Module</em>
-//                     </MenuItem>
-//                     {getSelectedCourse()?.modules?.map((module) => (
-//                       <MenuItem
-//                         key={module.id || module._id}
-//                         value={String(module.id || module._id)}
-//                       >
-//                         {module.title}
-//                       </MenuItem>
-//                     ))}
-//                   </Select>
-//                 </FormControl>
-
-//                 {selectedModule && (
-//                   <Box
-//                     sx={{
-//                       mt: 2,
-//                       p: 2,
-//                       borderRadius: theme.shape.borderRadius,
-//                       backgroundColor: theme.palette.action.hover,
-//                     }}
-//                   >
-//                     <Typography variant="subtitle2" fontWeight="bold">
-//                       Module Details:
-//                     </Typography>
-//                     <Typography variant="body2" color="text.secondary">
-//                       {getSelectedModule()?.description ||
-//                         "No description available"}
-//                     </Typography>
-//                   </Box>
-//                 )}
-//               </Box>
-//             )}
-
-//             {activeStep === 2 && (
-//               <Box sx={{ mt: 2 }}>
-//                 <FormControl fullWidth>
-//                   <InputLabel>Select Lesson</InputLabel>
-//                   <Select
-//                     value={selectedLesson}
-//                     onChange={handleLessonChange}
-//                     label="Select Lesson"
-//                     disabled={!selectedModule}
-//                     sx={{ mb: 2 }}
-//                   >
-//                     {getSelectedModule()?.lessons?.map((lesson) => (
-//                       <MenuItem
-//                         key={lesson.id || lesson._id}
-//                         value={String(lesson.id || lesson._id)}
-//                       >
-//                         {lesson.title}
-//                       </MenuItem>
-//                     ))}
-//                   </Select>
-//                 </FormControl>
-//                 {selectedLesson && (
-//                   <Box
-//                     sx={{
-//                       mt: 2,
-//                       p: 2,
-//                       borderRadius: theme.shape.borderRadius,
-//                       backgroundColor: theme.palette.action.hover,
-//                     }}
-//                   >
-//                     <Typography variant="subtitle2" fontWeight="bold">
-//                       Lesson Details:
-//                     </Typography>
-//                     <Typography variant="body2" color="text.secondary">
-//                       {getSelectedModule()?.lessons?.find(
-//                         (l) => String(l.id || l._id) === selectedLesson
-//                       )?.description || "No description available"}
-//                     </Typography>
-//                   </Box>
-//                 )}
-//               </Box>
-//             )}
-
-//             {activeStep === 3 && (
-//               <Box sx={{ mt: 2 }}>
-//                 <TextField
-//                   fullWidth
-//                   label="Assignment Title"
-//                   name="title"
-//                   value={assignmentData.title}
-//                   onChange={handleInputChange}
-//                   sx={{ mb: 2 }}
-//                   InputProps={{
-//                     startAdornment: (
-//                       <InputAdornment position="start">
-//                         <AssignmentIcon color="action" />
-//                       </InputAdornment>
-//                     ),
-//                   }}
-//                 />
-//                 <TextField
-//                   fullWidth
-//                   label="Description"
-//                   name="description"
-//                   value={assignmentData.description}
-//                   onChange={handleInputChange}
-//                   multiline
-//                   rows={4}
-//                   sx={{ mb: 2 }}
-//                 />
-//                 <TextField
-//                   fullWidth
-//                   label="Maximum Score"
-//                   name="max_score"
-//                   type="number"
-//                   value={assignmentData.max_score}
-//                   onChange={handleInputChange}
-//                   inputProps={{ min: 1 }}
-//                   InputProps={{
-//                     startAdornment: (
-//                       <InputAdornment position="start">
-//                         <CheckCircleIcon color="action" />
-//                       </InputAdornment>
-//                     ),
-//                   }}
-//                 />
-//               </Box>
-//             )}
-//           </>
-//         )}
-//       </DialogContent>
-
-//       <DialogActions sx={{ p: 2 }}>
-//         <Button onClick={handleBack} disabled={activeStep === 0} sx={{ mr: 1 }}>
-//           Back
-//         </Button>
-//         {activeStep === steps.length - 1 ? (
-//           <Button
-//             onClick={handleSubmit}
-//             variant="contained"
-//             disabled={!selectedLesson || !assignmentData.title}
-//             startIcon={<AssignmentIcon />}
-//           >
-//             Create Assignment
-//           </Button>
-//         ) : (
-//           <Button
-//             onClick={handleNext}
-//             variant="contained"
-//             disabled={
-//               activeStep === 0 &&
-//               (!selectedCourse || getSelectedCourse()?.modules?.length === 0)
-//             }
-//           >
-//             Next
-//           </Button>
-//         )}
-//       </DialogActions>
-//     </Dialog>
-//   );
-// };
-
-// const InstructorDashboard = () => {
-//   const theme = useTheme();
-//   const location = useLocation();
-//   const navigate = useNavigate();
-//   const [courses, setCourses] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [searchTerm, setSearchTerm] = useState("");
-//   const [stats, setStats] = useState({
-//     totalCourses: 0,
-//     approvedCourses: 0,
-//     pendingCourses: 0,
-//     rejectedCourses: 0,
-//   });
-//   const [selectedCourse, setSelectedCourse] = useState(null);
-//   const [modules, setModules] = useState([]);
-//   const [dialogOpen, setDialogOpen] = useState(false);
-//   const [loadingDetails, setLoadingDetails] = useState(false);
-//   const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
-//   const [snackbarOpen, setSnackbarOpen] = useState(false);
-//   const [recentlyCreatedAssignment, setRecentlyCreatedAssignment] =
-//     useState(null);
-
-//   useEffect(() => {
-//     const fetchCourses = async () => {
-//       try {
-//         setLoading(true);
-//         const data = await InstructorService.getCourses();
-//         setCourses(data);
-
-//         const approved = data.filter((c) => c.status === "approved").length;
-//         const pending = data.filter((c) => c.status === "pending").length;
-//         const rejected = data.filter((c) => c.status === "rejected").length;
-
-//         setStats({
-//           totalCourses: data.length,
-//           approvedCourses: approved,
-//           pendingCourses: pending,
-//           rejectedCourses: rejected,
-//         });
-//       } catch (error) {
-//         console.error("Failed to fetch courses:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchCourses();
-//   }, []);
-
-//   const handleDeleteCourse = async (courseId) => {
-//     try {
-//       await InstructorService.deleteCourse(courseId);
-//       setCourses(courses.filter((course) => course.id !== courseId));
-//       setStats((prev) => ({
-//         ...prev,
-//         totalCourses: prev.totalCourses - 1,
-//         approvedCourses: courses.filter(
-//           (c) => c.id !== courseId && c.status === "approved"
-//         ).length,
-//         pendingCourses: courses.filter(
-//           (c) => c.id !== courseId && c.status === "pending"
-//         ).length,
-//         rejectedCourses: courses.filter(
-//           (c) => c.id !== courseId && c.status === "rejected"
-//         ).length,
-//       }));
-//     } catch (error) {
-//       console.error("Failed to delete course:", error);
-//     }
-//   };
-
-//   const handleViewCourse = async (course) => {
-//     try {
-//       setSelectedCourse(course);
-//       setLoadingDetails(true);
-//       setDialogOpen(true);
-
-//       const modulesData = await InstructorService.getModulesByCourse(
-//         course._id || course.id
-//       );
-//       setModules(modulesData);
-//     } catch (error) {
-//       console.error("Error fetching course modules:", error);
-//     } finally {
-//       setLoadingDetails(false);
-//     }
-//   };
-
-//   const handleCloseDialog = () => {
-//     setDialogOpen(false);
-//     setSelectedCourse(null);
-//     setModules([]);
-//   };
-
-//   const filteredCourses = courses.filter(
-//     (course) =>
-//       course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//       course.description.toLowerCase().includes(searchTerm.toLowerCase())
-//   );
-
-//   return (
-//     <DashboardContainer>
-//       <Sidebar>
-//         <Box display="flex" alignItems="center" mb={4}>
-//           <Avatar
-//             alt="Instructor"
-//             src="/path/to/instructor-avatar.jpg"
-//             sx={{
-//               width: 56,
-//               height: 56,
-//               mr: 2,
-//               border: `2px solid ${theme.palette.primary.main}`,
-//             }}
-//           />
-//           <Box>
-//             <Typography variant="h6" fontWeight="bold">
-//               Dr. Sarah Johnson
-//             </Typography>
-//             <Typography variant="body2" color="textSecondary">
-//               Computer Science Instructor
-//             </Typography>
-//           </Box>
-//         </Box>
-//         <Divider sx={{ my: 2 }} />
-//         <List>
-//           {[
-//             {
-//               text: "Dashboard",
-//               icon: <DashboardIcon />,
-//               path: "/instructor/dashboard",
-//             },
-//             {
-//               text: "My Courses",
-//               icon: <CoursesIcon />,
-//               path: "/instructor/courses",
-//             },
-//             {
-//               text: "Create Course",
-//               icon: <AddIcon />,
-//               path: "/instructor/courses/create",
-//             },
-//             {
-//               text: "Enrollment Stats",
-//               icon: <PeopleIcon />,
-//               path: "/instructor/enrollments",
-//             },
-//             {
-//               text: "Assignment",
-//               icon: <StudentsIcon />,
-//               path: "/instructor/assignments",
-//             },
-//             {
-//               text: "Visualization",
-//               icon: <AnalyticsIcon />,
-//               path: "/instructor/Visualization",
-//             },
-//             {
-//               text: "Messages",
-//               icon: <MessagesIcon />,
-//               path: "/instructor/messages",
-//             },
-//             {
-//               text: "Quizzez",
-//               icon: <SettingsIcon />,
-//               path: "/instructor/Quizze",
-//             },
-//           ].map((item) => (
-//             <ListItem
-//               button
-//               key={item.text}
-//               component={Link}
-//               to={item.path}
-//               sx={{
-//                 borderRadius: theme.shape.borderRadius,
-//                 mb: 0.5,
-//                 backgroundColor:
-//                   location.pathname === item.path
-//                     ? theme.palette.action.selected
-//                     : "transparent",
-//                 "&:hover": {
-//                   backgroundColor: theme.palette.action.hover,
-//                 },
-//               }}
-//             >
-//               <ListItemIcon
-//                 sx={{
-//                   minWidth: 40,
-//                   color:
-//                     location.pathname === item.path
-//                       ? theme.palette.primary.main
-//                       : theme.palette.text.secondary,
-//                 }}
-//               >
-//                 {item.icon}
-//               </ListItemIcon>
-//               <ListItemText
-//                 primary={item.text}
-//                 primaryTypographyProps={{
-//                   fontWeight:
-//                     location.pathname === item.path ? "bold" : "normal",
-//                   color:
-//                     location.pathname === item.path
-//                       ? theme.palette.text.primary
-//                       : theme.palette.text.secondary,
-//                 }}
-//               />
-//             </ListItem>
-//           ))}
-//         </List>
-//       </Sidebar>
-
-//       <MainContent>
-//         <Box mb={4}>
-//           <Typography variant="h4" fontWeight="bold" gutterBottom>
-//             Instructor Dashboard
-//           </Typography>
-//           <Typography variant="body1" color="textSecondary">
-//             Welcome back! Here's what's happening with your courses today.
-//           </Typography>
-//         </Box>
-
-//         <Grid container spacing={3} mb={4}>
-//           {[
-//             {
-//               title: "Total Courses",
-//               value: stats.totalCourses,
-//               icon: <CoursesIcon fontSize="large" />,
-//               color: theme.palette.primary.main,
-//             },
-//             {
-//               title: "Approved Courses",
-//               value: stats.approvedCourses,
-//               icon: <SchoolIcon fontSize="large" />,
-//               color: theme.palette.success.main,
-//             },
-//             {
-//               title: "Pending Approval",
-//               value: stats.pendingCourses,
-//               icon: <ScheduleIcon fontSize="large" />,
-//               color: theme.palette.warning.main,
-//             },
-//             {
-//               title: "Rejected Courses",
-//               value: stats.rejectedCourses,
-//               icon: <DeleteIcon fontSize="large" />,
-//               color: theme.palette.error.main,
-//             },
-//           ].map((stat) => (
-//             <Grid item xs={12} sm={6} md={3} key={stat.title}>
-//               <StatsCard>
-//                 <Box
-//                   display="flex"
-//                   justifyContent="space-between"
-//                   alignItems="center"
-//                 >
-//                   <Box>
-//                     <Typography
-//                       variant="body2"
-//                       color="textSecondary"
-//                       gutterBottom
-//                     >
-//                       {stat.title}
-//                     </Typography>
-//                     <Typography
-//                       variant="h4"
-//                       fontWeight="bold"
-//                       color={stat.color}
-//                     >
-//                       {stat.value}
-//                     </Typography>
-//                   </Box>
-//                   <Box
-//                     sx={{
-//                       p: 2,
-//                       borderRadius: "50%",
-//                       backgroundColor: `${stat.color}20`,
-//                       color: stat.color,
-//                     }}
-//                   >
-//                     {stat.icon}
-//                   </Box>
-//                 </Box>
-//               </StatsCard>
-//             </Grid>
-//           ))}
-//         </Grid>
-
-//         <Box mb={4}>
-//           <Box
-//             display="flex"
-//             justifyContent="space-between"
-//             alignItems="center"
-//             mb={3}
-//           >
-//             <Typography variant="h5" fontWeight="bold">
-//               My Courses
-//             </Typography>
-//             <Box display="flex" gap={2}>
-//               <Button
-//                 component={Link}
-//                 to="/instructor/courses/create"
-//                 variant="contained"
-//                 startIcon={<AddIcon />}
-//                 sx={{
-//                   borderRadius: theme.shape.borderRadius,
-//                   textTransform: "none",
-//                   boxShadow: "none",
-//                   "&:hover": {
-//                     boxShadow: theme.shadows[2],
-//                   },
-//                 }}
-//               >
-//                 Create Course
-//               </Button>
-//               <Button
-//                 variant="outlined"
-//                 startIcon={<AssignmentIcon />}
-//                 onClick={() => setAssignmentDialogOpen(true)}
-//                 sx={{
-//                   borderRadius: theme.shape.borderRadius,
-//                   textTransform: "none",
-//                 }}
-//               >
-//                 Create Assignment
-//               </Button>
-//             </Box>
-//           </Box>
-
-//           <Box mb={3}>
-//             <SearchInput
-//               fullWidth
-//               placeholder="Search courses..."
-//               value={searchTerm}
-//               onChange={(e) => setSearchTerm(e.target.value)}
-//               InputProps={{
-//                 startAdornment: (
-//                   <InputAdornment position="start">
-//                     <SearchIcon color="action" />
-//                   </InputAdornment>
-//                 ),
-//                 sx: {
-//                   maxWidth: 500,
-//                 },
-//               }}
-//             />
-//           </Box>
-
-//           {loading ? (
-//             <Box display="flex" justifyContent="center" my={4}>
-//               <CircularProgress />
-//             </Box>
-//           ) : filteredCourses.length === 0 ? (
-//             <Paper
-//               sx={{
-//                 p: 4,
-//                 textAlign: "center",
-//                 borderRadius: theme.shape.borderRadius,
-//                 backgroundColor: theme.palette.background.paper,
-//               }}
-//             >
-//               <Typography variant="body1">
-//                 {searchTerm
-//                   ? "No courses match your search"
-//                   : "You haven't created any courses yet"}
-//               </Typography>
-//               <Button
-//                 component={Link}
-//                 to="/instructor/courses/create"
-//                 variant="contained"
-//                 startIcon={<AddIcon />}
-//                 sx={{ mt: 2 }}
-//               >
-//                 Create Your First Course
-//               </Button>
-//             </Paper>
-//           ) : (
-//             <Grid container spacing={3}>
-//               {filteredCourses.map((course) => (
-//                 <Grid item xs={12} md={6} lg={4} key={course._id || course.id}>
-//                   <CourseCard>
-//                     <Box
-//                       display="flex"
-//                       justifyContent="space-between"
-//                       alignItems="flex-start"
-//                       mb={2}
-//                     >
-//                       <Typography variant="h6" fontWeight="bold">
-//                         {course.title}
-//                       </Typography>
-//                       <StatusChip status={course.status} />
-//                     </Box>
-//                     <Typography variant="body2" color="textSecondary" mb={2}>
-//                       {course.description.length > 100
-//                         ? `${course.description.substring(0, 100)}...`
-//                         : course.description}
-//                     </Typography>
-//                     <Box display="flex" justifyContent="flex-end" mb={2}>
-//                       <Tooltip title="View Course">
-//                         <IconButton
-//                           size="small"
-//                           onClick={() => handleViewCourse(course)}
-//                           sx={{
-//                             mr: 1,
-//                             "&:hover": {
-//                               backgroundColor: theme.palette.primary.light,
-//                               color: theme.palette.primary.main,
-//                             },
-//                           }}
-//                         >
-//                           <VisibilityIcon fontSize="small" />
-//                         </IconButton>
-//                       </Tooltip>
-//                       <Tooltip title="Edit Course">
-//                         <IconButton
-//                           size="small"
-//                           onClick={() =>
-//                             navigate(
-//                               `/instructor/courses/edit/${
-//                                 course._id || course.id
-//                               }`
-//                             )
-//                           }
-//                           sx={{
-//                             mr: 1,
-//                             "&:hover": {
-//                               backgroundColor: theme.palette.secondary.light,
-//                               color: theme.palette.secondary.main,
-//                             },
-//                           }}
-//                         >
-//                           <EditIcon fontSize="small" />
-//                         </IconButton>
-//                       </Tooltip>
-//                       <Tooltip title="Delete Course">
-//                         <IconButton
-//                           size="small"
-//                           color="error"
-//                           onClick={() => handleDeleteCourse(course.id)}
-//                           sx={{
-//                             "&:hover": {
-//                               backgroundColor: theme.palette.error.light,
-//                             },
-//                           }}
-//                         >
-//                           <DeleteIcon fontSize="small" />
-//                         </IconButton>
-//                       </Tooltip>
-//                     </Box>
-//                   </CourseCard>
-//                 </Grid>
-//               ))}
-//             </Grid>
-//           )}
-//         </Box>
-
-//         <Dialog
-//           open={dialogOpen}
-//           onClose={handleCloseDialog}
-//           fullWidth
-//           maxWidth="md"
-//           PaperProps={{
-//             sx: {
-//               borderRadius: theme.shape.borderRadius * 2,
-//               minHeight: "70vh",
-//               background: theme.palette.background.paper,
-//             },
-//           }}
-//         >
-//           <DialogTitle>
-//             <Box
-//               display="flex"
-//               justifyContent="space-between"
-//               alignItems="center"
-//             >
-//               <Typography variant="h5" fontWeight="bold">
-//                 {selectedCourse?.title || "Course Details"}
-//               </Typography>
-//               <IconButton onClick={handleCloseDialog}>
-//                 <CloseIcon />
-//               </IconButton>
-//             </Box>
-//             <Box mt={1} display="flex" alignItems="center">
-//               <StatusChip status={selectedCourse?.status} />
-//             </Box>
-//           </DialogTitle>
-//           <DialogContent dividers>
-//             {loadingDetails ? (
-//               <Box
-//                 display="flex"
-//                 justifyContent="center"
-//                 alignItems="center"
-//                 minHeight="200px"
-//               >
-//                 <CircularProgress />
-//               </Box>
-//             ) : (
-//               <>
-//                 <Box mb={3}>
-//                   <Typography variant="body1" paragraph>
-//                     {selectedCourse?.description || "No description available"}
-//                   </Typography>
-//                 </Box>
-
-//                 <Box mb={2}>
-//                   <Typography variant="h6" fontWeight="bold" gutterBottom>
-//                     Course Content
-//                   </Typography>
-//                   {modules.length === 0 ? (
-//                     <Paper
-//                       sx={{
-//                         p: 3,
-//                         textAlign: "center",
-//                         borderRadius: theme.shape.borderRadius,
-//                         backgroundColor: theme.palette.action.hover,
-//                       }}
-//                     >
-//                       <Typography variant="body2" color="textSecondary">
-//                         No modules added yet
-//                       </Typography>
-//                       <Button
-//                         variant="outlined"
-//                         startIcon={<AddIcon />}
-//                         sx={{ mt: 2 }}
-//                         onClick={() => {
-//                           handleCloseDialog();
-//                           navigate(
-//                             `/instructor/courses/edit/${
-//                               selectedCourse._id || selectedCourse.id
-//                             }`
-//                           );
-//                         }}
-//                       >
-//                         Add Modules
-//                       </Button>
-//                     </Paper>
-//                   ) : (
-//                     modules.map((module) => (
-//                       <Accordion
-//                         key={module._id || module.id}
-//                         sx={{
-//                           mb: 1,
-//                           borderRadius: theme.shape.borderRadius,
-//                           "&:before": {
-//                             display: "none",
-//                           },
-//                         }}
-//                       >
-//                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-//                           <Box display="flex" alignItems="center" width="100%">
-//                             <VideoLibraryIcon color="primary" sx={{ mr: 2 }} />
-//                             <Box flexGrow={1}>
-//                               <Typography fontWeight="bold">
-//                                 {module.title}
-//                               </Typography>
-//                             </Box>
-//                           </Box>
-//                         </AccordionSummary>
-//                         <AccordionDetails>
-//                           {module.lessons?.length > 0 ? (
-//                             module.lessons.map((lesson) => (
-//                               <Box
-//                                 key={lesson._id || lesson.id}
-//                                 sx={{
-//                                   display: "flex",
-//                                   alignItems: "center",
-//                                   p: 1.5,
-//                                   mb: 1,
-//                                   borderRadius: theme.shape.borderRadius,
-//                                   bgcolor: theme.palette.action.hover,
-//                                   "&:hover": {
-//                                     bgcolor: theme.palette.action.selected,
-//                                     boxShadow: theme.shadows[1],
-//                                   },
-//                                 }}
-//                               >
-//                                 <ArticleIcon color="secondary" sx={{ mr: 2 }} />
-//                                 <Box flexGrow={1}>
-//                                   <Typography>{lesson.title}</Typography>
-//                                   <Typography
-//                                     variant="caption"
-//                                     color="textSecondary"
-//                                   >
-//                                     {lesson.duration || "No duration set"}
-//                                   </Typography>
-//                                 </Box>
-//                                 <IconButton
-//                                   size="small"
-//                                   sx={{
-//                                     "&:hover": {
-//                                       backgroundColor:
-//                                         theme.palette.secondary.light,
-//                                       color: theme.palette.secondary.main,
-//                                     },
-//                                   }}
-//                                 >
-//                                   <EditIcon fontSize="small" />
-//                                 </IconButton>
-//                               </Box>
-//                             ))
-//                           ) : (
-//                             <Typography variant="body2" color="textSecondary">
-//                               No lessons in this module
-//                             </Typography>
-//                           )}
-//                         </AccordionDetails>
-//                       </Accordion>
-//                     ))
-//                   )}
-//                 </Box>
-//               </>
-//             )}
-//           </DialogContent>
-//           <DialogActions sx={{ p: 2 }}>
-//             <Button
-//               variant="outlined"
-//               onClick={handleCloseDialog}
-//               sx={{ mr: 1 }}
-//             >
-//               Close
-//             </Button>
-//             <Button
-//               variant="contained"
-//               onClick={() => {
-//                 handleCloseDialog();
-//                 navigate(
-//                   `/instructor/courses/edit/${
-//                     selectedCourse._id || selectedCourse.id
-//                   }`
-//                 );
-//               }}
-//             >
-//               Edit Course
-//             </Button>
-//           </DialogActions>
-//         </Dialog>
-
-//         <CreateAssignmentDialog
-//           open={assignmentDialogOpen}
-//           onClose={() => setAssignmentDialogOpen(false)}
-//           onAssignmentCreated={(assignment) => {
-//             setRecentlyCreatedAssignment(assignment);
-//             setSnackbarOpen(true);
-//           }}
-//         />
-
-//         <Snackbar
-//           open={snackbarOpen}
-//           autoHideDuration={6000}
-//           onClose={() => setSnackbarOpen(false)}
-//           anchorOrigin={{ vertical: "top", horizontal: "right" }}
-//           sx={{
-//             "& .MuiPaper-root": {
-//               borderRadius: theme.shape.borderRadius,
-//             },
-//           }}
-//         >
-//           <Paper
-//             elevation={3}
-//             sx={{
-//               p: 2,
-//               backgroundColor: theme.palette.success.light,
-//               color: theme.palette.success.contrastText,
-//             }}
-//           >
-//             <Box display="flex" alignItems="center">
-//               <CheckCircleIcon sx={{ mr: 1 }} />
-//               <Typography variant="body1" sx={{ flexGrow: 1 }}>
-//                 Assignment created successfully!
-//               </Typography>
-//               <Button
-//                 color="inherit"
-//                 size="small"
-//                 onClick={() => {
-//                   navigate(`/assignments/${recentlyCreatedAssignment?.id}`);
-//                   setSnackbarOpen(false);
-//                 }}
-//                 startIcon={<VisibilityIcon />}
-//                 sx={{ ml: 2 }}
-//               >
-//                 View
-//               </Button>
-//               <IconButton
-//                 size="small"
-//                 color="inherit"
-//                 onClick={() => setSnackbarOpen(false)}
-//                 sx={{ ml: 1 }}
-//               >
-//                 <CloseIcon fontSize="small" />
-//               </IconButton>
-//             </Box>
-//           </Paper>
-//         </Snackbar>
-//       </MainContent>
-//     </DashboardContainer>
-//   );
-// };
-
-// export default InstructorDashboard;

@@ -273,7 +273,7 @@ const StudentEnrollmentDashboardd = () => {
             delay: 300,
           },
         ].map((stat, index) => (
-          <Grid item xs={12} md={3} key={stat.label}>
+          <Grid item size={{ xs: 12, md: 3 }} key={stat.label}>
             <Fade in={!loading} style={{ transitionDelay: `${stat.delay}ms` }}>
               <Card
                 sx={{
@@ -337,7 +337,7 @@ const StudentEnrollmentDashboardd = () => {
         sx={{ display: "flex", justifyContent: "center" }}
       >
         {/* Pie Chart */}
-        <Grid item xs={12} xl={6}>
+        <Grid item size={{ xs: 12, md: 6 }}>
           <Fade in={!loading} style={{ transitionDelay: "400ms" }}>
             <Paper
               sx={{
@@ -451,7 +451,7 @@ const StudentEnrollmentDashboardd = () => {
         </Grid>
 
         {/* Bar Chart */}
-        <Grid item xs={12} lg={6}>
+        <Grid itemsize={{ xs: 12, md: 6 }}>
           <Fade in={!loading} style={{ transitionDelay: "500ms" }}>
             <Paper
               elevation={0}
