@@ -477,6 +477,8 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { AuthProvider } from "./contexts/AuthContext/AuthContext";
 import { ThemeContextProvider } from "./contexts/ThemeContext";
 import HomePage from "./pages/HomePage/HomePage";
+import GoogleOAuthCallback from "./components/auth/GoogleOAuthCallback";
+
 import LoginForm from "./components/auth/LoginForm/LoginForm";
 import StudentDashboard from "./pages/Dashboard/StudentDashboard";
 import AdminDashboard from "./pages/Dashboard/AdminDashboard";
@@ -499,6 +501,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<LoginForm />} />
       <Route path="/register" element={<RegisterForm />} />
       <Route path="/courses" element={<AllCoursesPage />} />{" "}
+      <Route path="/auth/google/callback" element={<GoogleOAuthCallback />} />
       {/* Add route for courses page */}
       {/* Student Routes */}
       <Route
