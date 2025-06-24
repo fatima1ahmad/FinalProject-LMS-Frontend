@@ -351,7 +351,7 @@ const GoogleOAuthCallback = () => {
     };
 
     handleCallback();
-  }, []); // 👈 فقط مرة واحدة
+  }, []);
 
   const getErrorMessage = (errorType) => {
     switch (errorType) {

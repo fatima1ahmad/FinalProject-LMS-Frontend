@@ -502,7 +502,6 @@ const AppRoutes = () => {
       <Route path="/register" element={<RegisterForm />} />
       <Route path="/courses" element={<AllCoursesPage />} />{" "}
       <Route path="/auth/google/callback" element={<GoogleOAuthCallback />} />
-      {/* Add route for courses page */}
       {/* Student Routes */}
       <Route
         path="/student/dashboard"

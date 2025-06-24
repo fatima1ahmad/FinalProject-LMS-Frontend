@@ -53,7 +53,7 @@ import api from "./../api/index";
 export const authService = {
   login: async (credentials) => {
     const response = await api.post("/auth/login", credentials);
-    return response.data; // { token, user }
+    return response.data;
   },
 
   register: async (userData) => {
