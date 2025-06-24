@@ -360,7 +360,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     register,
     setToken,
-    loginWithGoogle, // Add Google login function
+    loginWithGoogle,
     DEFAULT_REDIRECTS,
   };
 
