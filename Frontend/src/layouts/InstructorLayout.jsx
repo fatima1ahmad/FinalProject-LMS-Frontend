@@ -1,25 +1,3 @@
-// // src/layouts/InstructorLayout.jsx
-// import React from "react";
-// import { Outlet } from "react-router-dom";
-// import { Box } from "@mui/material";
-// import InstructorNavbar from "../components/instructor/InstructorNavbar ";
-// import InstructorSidebar from "../components/instructor/InstructorSidebar";
-
-// const InstructorLayout = () => {
-//   return (
-//     <Box sx={{ display: "flex", minHeight: "100vh" }}>
-//       <InstructorSidebar />
-//       <Box sx={{ flexGrow: 1 }}>
-//         <InstructorNavbar />
-//         <Box component="main" sx={{ p: 3 }}>
-//           <Outlet />
-//         </Box>
-//       </Box>
-//     </Box>
-//   );
-// };
-
-// export default InstructorLayout;
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Toolbar from "@mui/material/Toolbar";
