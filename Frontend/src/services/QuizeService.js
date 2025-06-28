@@ -1,12 +1,3 @@
-// import api from "../api/index";
-// import { API_ENDPOINTS } from "../constants/ApiEndpoints";
-
-// const QuizService = {
-//   // Create a new quiz
-//
-// };
-
-// export default QuizService;
 import api from "../api/index";
 import { API_ENDPOINTS } from "../constants/ApiEndpoints";
 

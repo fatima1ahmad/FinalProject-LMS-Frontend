@@ -7,35 +7,60 @@ import {
   Typography,
   Divider,
   IconButton,
+  Button,
+  useTheme,
 } from "@mui/material";
 import { School } from "@mui/icons-material";
-import styles from "./Footer.module.css";
 
 const Footer = () => {
+  const theme = useTheme();
+
   return (
-    <Box component="footer" className={styles.footer}>
+    <Box component="footer" sx={{ py: 6, bgcolor: "background.white" }}>
       <Container maxWidth="lg">
         <Grid container spacing={6}>
           <Grid item xs={12} md={4}>
             <Stack
               direction="row"
               alignItems="center"
-              spacing={1}
-              className={styles.logoContainer}
+              spacing={2}
+              sx={{ mb: 4 }}
             >
-              <School className={styles.logoIcon} />
-              <Typography variant="h6" className={styles.logoText}>
+              <Box
+                sx={{
+                  background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                  borderRadius: 2,
+                  p: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <School sx={{ color: "white", fontSize: 28 }} />
+              </Box>
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 800,
+                  background:
+                    "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  letterSpacing: "-0.02em",
+                }}
+              >
                 LearnHub
               </Typography>
             </Stack>
-            <Typography variant="body2" className={styles.description}>
+            <Typography variant="body2" color="text.secondary" mt={2} mb={2}>
               The next-generation learning platform that adapts to your needs
               and helps you achieve your educational goals faster.
             </Typography>
             <Stack direction="row" spacing={2}>
               {["Twitter", "Facebook", "LinkedIn", "Instagram"].map(
                 (social) => (
-                  <IconButton key={social} className={styles.socialIcon}>
+                  <IconButton key={social} color="primary">
                     <Box component="span" sx={{ width: 24, height: 24 }} />
                   </IconButton>
                 )
@@ -44,17 +69,13 @@ const Footer = () => {
           </Grid>
 
           <Grid item xs={6} md={2}>
-            <Typography variant="subtitle1" className={styles.sectionTitle}>
+            <Typography variant="subtitle1" gutterBottom>
               Product
             </Typography>
             <Stack spacing={1.5}>
               {["Features", "Pricing", "Integrations", "Roadmap"].map(
                 (item) => (
-                  <Typography
-                    key={item}
-                    variant="body2"
-                    className={styles.link}
-                  >
+                  <Typography key={item} variant="body2" color="text.secondary">
                     {item}
                   </Typography>
                 )
@@ -63,12 +84,12 @@ const Footer = () => {
           </Grid>
 
           <Grid item xs={6} md={2}>
-            <Typography variant="subtitle1" className={styles.sectionTitle}>
+            <Typography variant="subtitle1" gutterBottom>
               Resources
             </Typography>
             <Stack spacing={1.5}>
               {["Blog", "Guides", "Webinars", "Help Center"].map((item) => (
-                <Typography key={item} variant="body2" className={styles.link}>
+                <Typography key={item} variant="body2" color="text.secondary">
                   {item}
                 </Typography>
               ))}
@@ -76,25 +97,33 @@ const Footer = () => {
           </Grid>
 
           <Grid item xs={6} md={2}>
-            <Typography variant="subtitle1" className={styles.sectionTitle}>
+            <Typography variant="subtitle1" gutterBottom>
               Company
             </Typography>
             <Stack spacing={1.5}>
-              {["About Us", "Careers", "Partners", "Contact"].map((item) => (
-                <Typography key={item} variant="body2" className={styles.link}>
+              {["About Us", "Careers", "Partners"].map((item) => (
+                <Typography key={item} variant="body2" color="text.secondary">
                   {item}
                 </Typography>
               ))}
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                sx={{ alignSelf: "flex-start" }}
+              >
+                Contact
+              </Button>
             </Stack>
           </Grid>
 
           <Grid item xs={6} md={2}>
-            <Typography variant="subtitle1" className={styles.sectionTitle}>
+            <Typography variant="subtitle1" gutterBottom>
               Legal
             </Typography>
             <Stack spacing={1.5}>
               {["Privacy", "Terms", "Security", "Cookies"].map((item) => (
-                <Typography key={item} variant="body2" className={styles.link}>
+                <Typography key={item} variant="body2" color="text.secondary">
                   {item}
                 </Typography>
               ))}
@@ -102,20 +131,20 @@ const Footer = () => {
           </Grid>
         </Grid>
 
-        <Divider className={styles.divider} />
+        <Divider sx={{ my: 4 }} />
 
-        <Box className={styles.bottomBar}>
-          <Typography variant="body2" className={styles.copyright}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="body2" color="text.secondary">
             © {new Date().getFullYear()} LearnHub. All rights reserved.
           </Typography>
-          <Stack direction="row" spacing={3} className={styles.bottomLinks}>
-            <Typography variant="body2" className={styles.link}>
+          <Stack direction="row" spacing={3}>
+            <Typography variant="body2" color="text.secondary">
               English
             </Typography>
-            <Typography variant="body2" className={styles.link}>
+            <Typography variant="body2" color="text.secondary">
               Terms of Service
             </Typography>
-            <Typography variant="body2" className={styles.link}>
+            <Typography variant="body2" color="text.secondary">
               Privacy Policy
             </Typography>
           </Stack>
